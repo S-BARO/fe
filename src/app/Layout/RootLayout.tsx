@@ -20,7 +20,6 @@ function RootLayout() {
   const location = useLocation();
   const isProductDetailPage = location.pathname.startsWith("/product/");
 
-  // 페이지별 필터 매핑
   const getFilterComponent = () => {
     if (isProductDetailPage) return null;
 
@@ -68,7 +67,7 @@ function RootLayout() {
         <ScrollArea>
           <Outlet />
         </ScrollArea>
-        <GNB />
+        {!isProductDetailPage && <GNB />}
       </div>
     </div>
   );

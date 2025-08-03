@@ -57,6 +57,12 @@ importers:
       eslint:
         specifier: ^9.30.1
         version: 9.31.0
+      eslint-config-prettier:
+        specifier: ^10.1.8
+        version: 10.1.8(eslint@9.31.0)
+      eslint-plugin-prettier:
+        specifier: ^5.5.3
+        version: 5.5.3(eslint-config-prettier@10.1.8(eslint@9.31.0))(eslint@9.31.0)(prettier@3.6.2)
       eslint-plugin-react-hooks:
         specifier: ^5.2.0
         version: 5.2.0(eslint@9.31.0)
@@ -69,6 +75,9 @@ importers:
       msw:
         specifier: ^2.10.4
         version: 2.10.4(typescript@5.8.3)
+      prettier:
+        specifier: ^3.6.2
+        version: 3.6.2
       typescript:
         specifier: ~5.8.3
         version: 5.8.3
@@ -605,6 +614,10 @@ packages:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
 
+  '@pkgr/core@0.2.9':
+    resolution: {integrity: sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA==}
+    engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
+
   '@react-router/dev@7.6.3':
     resolution: {integrity: sha512-nnJQMVeE+LDViFTQDxeQV5FcfJ48a6aCScrFHwPHWgViQmiJxUBtDU1Pl7XZKEoTus5KDg/W3Vz2spiY6wXg3Q==}
     engines: {node: '>=20.0.0'}
@@ -1054,6 +1067,26 @@ packages:
     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
     engines: {node: '>=10'}
 
+  eslint-config-prettier@10.1.8:
+    resolution: {integrity: sha512-82GZUjRS0p/jganf6q1rEO25VSoHH0hKPCTrgillPjdI/3bgBhAE1QzHrHTizjpRvy6pGAvKjDJtk2pF9NDq8w==}
+    hasBin: true
+    peerDependencies:
+      eslint: '>=7.0.0'
+
+  eslint-plugin-prettier@5.5.3:
+    resolution: {integrity: sha512-NAdMYww51ehKfDyDhv59/eIItUVzU0Io9H2E8nHNGKEeeqlnci+1gCvrHib6EmZdf6GxF+LCV5K7UC65Ezvw7w==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    peerDependencies:
+      '@types/eslint': '>=8.0.0'
+      eslint: '>=8.0.0'
+      eslint-config-prettier: '>= 7.0.0 <10.0.0 || >=10.1.0'
+      prettier: '>=3.0.0'
+    peerDependenciesMeta:
+      '@types/eslint':
+        optional: true
+      eslint-config-prettier:
+        optional: true
+
   eslint-plugin-react-hooks@5.2.0:
     resolution: {integrity: sha512-+f15FfK64YQwZdJNELETdn5ibXEUQmW1DZL6KXhNnc2heoy/sg9VJJeT7n8TlMWouzWqSWavFkIhHyIbIAEapg==}
     engines: {node: '>=10'}
@@ -1113,6 +1146,9 @@ packages:
 
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
+
+  fast-diff@1.3.0:
+    resolution: {integrity: sha512-VxPP4NqbUjj6MaAOafWeUn2cXWLcCtljklUtZf0Ind4XQ+QPtmA0b18zZy0jIQx+ExRVCR/ZQpBmik5lXshNsw==}
 
   fast-glob@3.3.3:
     resolution: {integrity: sha512-7MptL8U0cqcFdzIzwOTHoilX9x5BrNqye7Z/LuC7kCMRio1EMSyqRK3BEAUD7sXRq4iT4AzTVuZdhgQ2TCvYLg==}
@@ -1498,9 +1534,18 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
+  prettier-linter-helpers@1.0.0:
+    resolution: {integrity: sha512-GbK2cP9nraSSUF9N2XwUwqfzlAFlMNYYl+ShE/V+H8a9uNl/oUqB1w2EL54Jh0OlyRSd8RfWYJ3coVS4TROP2w==}
+    engines: {node: '>=6.0.0'}
+
   prettier@2.8.8:
     resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
     engines: {node: '>=10.13.0'}
+    hasBin: true
+
+  prettier@3.6.2:
+    resolution: {integrity: sha512-I7AIg5boAr5R0FFtJ6rCfD+LFsWHp81dolrFD8S79U9tb8Az2nGrJncnMSnys+bpQJfRUzqs9hnA81OAA3hCuQ==}
+    engines: {node: '>=14'}
     hasBin: true
 
   proc-log@3.0.0:
@@ -1689,6 +1734,10 @@ packages:
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+
+  synckit@0.11.11:
+    resolution: {integrity: sha512-MeQTA1r0litLUf0Rp/iisCaL8761lKAZHaimlbGK4j0HysC4PLfqygQj9srcs0m2RdtDYnF8UuYyKpbjHYp7Jw==}
+    engines: {node: ^14.18.0 || >=16.0.0}
 
   tinyglobby@0.2.14:
     resolution: {integrity: sha512-tX5e7OM1HnYr2+a2C/4V0htOcSQcoSTH9KgJnVvNm5zm/cyEWKJ7j7YutsH9CxMdtOkkLFy2AHrMci9IM8IPZQ==}
@@ -2412,6 +2461,8 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
+  '@pkgr/core@0.2.9': {}
+
   '@react-router/dev@7.6.3(babel-plugin-macros@3.1.0)(react-router@7.6.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(typescript@5.8.3)(vite@7.0.4)':
     dependencies:
       '@babel/core': 7.28.0
@@ -2897,6 +2948,19 @@ snapshots:
 
   escape-string-regexp@4.0.0: {}
 
+  eslint-config-prettier@10.1.8(eslint@9.31.0):
+    dependencies:
+      eslint: 9.31.0
+
+  eslint-plugin-prettier@5.5.3(eslint-config-prettier@10.1.8(eslint@9.31.0))(eslint@9.31.0)(prettier@3.6.2):
+    dependencies:
+      eslint: 9.31.0
+      prettier: 3.6.2
+      prettier-linter-helpers: 1.0.0
+      synckit: 0.11.11
+    optionalDependencies:
+      eslint-config-prettier: 10.1.8(eslint@9.31.0)
+
   eslint-plugin-react-hooks@5.2.0(eslint@9.31.0):
     dependencies:
       eslint: 9.31.0
@@ -2975,6 +3039,8 @@ snapshots:
   exit-hook@2.2.1: {}
 
   fast-deep-equal@3.1.3: {}
+
+  fast-diff@1.3.0: {}
 
   fast-glob@3.3.3:
     dependencies:
@@ -3319,7 +3385,13 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
+  prettier-linter-helpers@1.0.0:
+    dependencies:
+      fast-diff: 1.3.0
+
   prettier@2.8.8: {}
+
+  prettier@3.6.2: {}
 
   proc-log@3.0.0: {}
 
@@ -3482,6 +3554,10 @@ snapshots:
       has-flag: 4.0.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
+
+  synckit@0.11.11:
+    dependencies:
+      '@pkgr/core': 0.2.9
 
   tinyglobby@0.2.14:
     dependencies:
