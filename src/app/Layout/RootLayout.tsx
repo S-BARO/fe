@@ -7,6 +7,8 @@ import SwapFilter from "../../components/Filter/SwapFilter";
 import LikeFilter from "../../components/Filter/LikeFilter";
 
 const ScrollArea = styled.div`
+  max-width: 390px;
+  margin: 0 auto;
   flex: 1;
   overflow-y: auto;
   scrollbar-width: none; /* Firefox */
@@ -46,6 +48,7 @@ function RootLayout() {
       style={{
         width: "100vw",
         height: "100vh",
+
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -53,8 +56,8 @@ function RootLayout() {
     >
       <div
         style={{
-          maxWidth: "390px",
           width: "100%",
+          maxWidth: "450px",
           height: "100vh",
           display: "flex",
           flexDirection: "column",
