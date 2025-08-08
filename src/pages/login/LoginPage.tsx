@@ -6,15 +6,14 @@ const LoginContainer = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
+  width: 100%;
   background: white;
 `;
 
 const LoginCard = styled.div`
-  padding: 40px 30px;
   text-align: center;
   width: 100%;
-  max-width: 320px;
-  margin: 0 auto;
+  min-width: 320px;
 `;
 
 const KakaoLoginButton = styled.button`
