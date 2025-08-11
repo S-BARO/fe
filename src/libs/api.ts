@@ -31,20 +31,25 @@ const createCredentialInstance = (): AxiosInstance => {
       "Content-Type": "application/json",
     },
     withCredentials: true,
+    timeout: 10000,
   });
 
   // 요청 인터셉터
   instance.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-      console.log(
-        "Credential API Request:",
-        config.method?.toUpperCase(),
-        config.url
-      );
+      if (import.meta.env.DEV) {
+        console.debug(
+          "Credential API Request:",
+          config.method?.toUpperCase(),
+          config.url
+        );
+      }
       return config;
     },
     (error: AxiosError) => {
-      console.error("Credential API Request Error:", error);
+      if (import.meta.env.DEV) {
+        console.debug("Credential API Request Error:", error.message);
+      }
       return Promise.reject(error);
     }
   );
@@ -71,9 +76,12 @@ const createCredentialInstance = (): AxiosInstance => {
         | { message?: string }
         | undefined;
       const errorMessage =
-        errorData?.message || "알 수 없는 오류가 발생했습니다.";
-      const customError = new Error(errorMessage);
-
+        errorData?.message ?? "알 수 없는 오류가 발생했습니다.";
+      const status = error.response?.status;
+      const customError = Object.assign(new Error(errorMessage), {
+        status,
+        data: error.response?.data,
+      });
       return Promise.reject(customError);
     }
   );
@@ -89,20 +97,25 @@ const createPublicInstance = (): AxiosInstance => {
       "Content-Type": "application/json",
     },
     withCredentials: false, // 쿠키 미포함
+    timeout: 10000,
   });
 
   // 요청 인터셉터
   instance.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-      console.log(
-        "Public API Request:",
-        config.method?.toUpperCase(),
-        config.url
-      );
+      if (import.meta.env.DEV) {
+        console.debug(
+          "Public API Request:",
+          config.method?.toUpperCase(),
+          config.url
+        );
+      }
       return config;
     },
     (error: AxiosError) => {
-      console.error("Public API Request Error:", error);
+      if (import.meta.env.DEV) {
+        console.debug("Public API Request Error:", error.message);
+      }
       return Promise.reject(error);
     }
   );
@@ -125,9 +138,12 @@ const createPublicInstance = (): AxiosInstance => {
         | { message?: string }
         | undefined;
       const errorMessage =
-        errorData?.message || "알 수 없는 오류가 발생했습니다.";
-      const customError = new Error(errorMessage);
-
+        errorData?.message ?? "알 수 없는 오류가 발생했습니다.";
+      const status = error.response?.status;
+      const customError = Object.assign(new Error(errorMessage), {
+        status,
+        data: error.response?.data,
+      });
       return Promise.reject(customError);
     }
   );
