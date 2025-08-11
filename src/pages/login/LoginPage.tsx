@@ -1,4 +1,7 @@
 import styled from "@emotion/styled";
+import { useNavigate } from "react-router";
+import { useState } from "react";
+import { useAuth } from "../../contexts/AuthContext";
 
 const LoginContainer = styled.div`
   display: flex;
@@ -82,9 +85,32 @@ const LoginSubtitle = styled.div`
   margin-bottom: 32px;
 `;
 
+const LoadingText = styled.div`
+  color: #666;
+  font-size: 14px;
+  margin-top: 10px;
+`;
+
+const ErrorText = styled.div`
+  color: #ff4444;
+  font-size: 14px;
+  margin-top: 10px;
+`;
+
 function LoginPage() {
-  const handleKakaoLogin = () => {
-    console.log("카카오 로그인 버튼 클릭됨");
+  const navigate = useNavigate();
+  const { login, isLoading } = useAuth();
+  const [error, setError] = useState<string | null>(null);
+
+  const handleKakaoLogin = async () => {
+    try {
+      setError(null);
+      await login();
+      navigate("/");
+    } catch (err) {
+      console.error("카카오 로그인 실패:", err);
+      setError("로그인에 실패했습니다. 다시 시도해주세요.");
+    }
   };
 
   return (
@@ -92,10 +118,13 @@ function LoginPage() {
       <LoginCard>
         <LoginTitle>Login</LoginTitle>
         <LoginSubtitle>로그인이 필요합니다.</LoginSubtitle>
-        <KakaoLoginButton onClick={handleKakaoLogin}>
+        <KakaoLoginButton onClick={handleKakaoLogin} disabled={isLoading}>
           <KakaoIcon>K</KakaoIcon>
-          카카오로 시작하기
+          {isLoading ? "로그인 중..." : "카카오로 시작하기"}
         </KakaoLoginButton>
+        
+        {isLoading && <LoadingText>잠시만 기다려주세요...</LoadingText>}
+        {error && <ErrorText>{error}</ErrorText>}
       </LoginCard>
     </LoginContainer>
   );
