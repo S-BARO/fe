@@ -1,10 +1,6 @@
-import {
-  createContext,
-  useState,
-  useEffect,
-  type ReactNode,
-} from "react";
+import { useState, useEffect, useCallback, type ReactNode } from "react";
 import type { KakaoUser } from "../../types/kakao";
+import { AuthContext, type AuthContextType } from "./context";
 import {
   initKakaoSDK,
   loginWithKakao,
@@ -15,17 +11,6 @@ import {
   getKakaoUserInfo,
 } from "../../libs/kakaoAuth";
 import { loginWithOAuth } from "../../libs/api";
-
-interface AuthContextType {
-  user: KakaoUser | null;
-  isLoading: boolean;
-  isAuthenticated: boolean;
-  login: () => Promise<void>;
-  logout: () => Promise<void>;
-  initializeAuth: () => Promise<void>;
-}
-
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -50,7 +35,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   // 인증 상태 초기화
-  const initializeAuth = async () => {
+  const initializeAuth = useCallback(async () => {
     setIsLoading(true);
     try {
       await initializeKakao();
@@ -73,7 +58,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   // 로그인
   const login = async () => {
@@ -132,7 +117,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // 컴포넌트 마운트 시 인증 상태 초기화
   useEffect(() => {
     initializeAuth();
-  }, []);
+  }, [initializeAuth]);
 
   const value: AuthContextType = {
     user,

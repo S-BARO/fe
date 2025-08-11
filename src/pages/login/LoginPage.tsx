@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { useNavigate } from "react-router";
 import { useState } from "react";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../contexts/auth";
 
 const LoginContainer = styled.div`
   display: flex;
