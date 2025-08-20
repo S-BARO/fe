@@ -11,10 +11,7 @@ import {
   loginWithOAuth, 
   checkAuthStatus, 
   getUserProfile, 
-  logout as apiLogout, 
-  getAllCookies, 
-  hasCookie, 
-  removeCookie 
+  logout as apiLogout
 } from "../../libs/api";
 
 interface AuthProviderProps {
@@ -43,16 +40,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setIsLoading(true);
     try {
       await initializeKakao();
-      
-      // 불필요한 쿠키 삭제
-      removeCookie('auth_token');
-      
-      // 개발 환경에서 쿠키 상태 확인
-      if (import.meta.env.DEV) {
-        const cookies = getAllCookies();
-        console.log("현재 쿠키 상태:", cookies);
-        console.log("JSESSIONID 쿠키 존재:", hasCookie('JSESSIONID'));
-      }
       
       // 서버에서 인증 상태 확인
       const isAuth = await checkAuthStatus();
@@ -99,16 +86,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setIsLoading(true);
 
-      if (import.meta.env.DEV) {
-        console.log("로그인 시작, 현재 쿠키:", getAllCookies());
-      }
-
       // 카카오 로그인 실행
       const authResponse = await loginWithKakao();
-
-      if (import.meta.env.DEV) {
-        console.log("카카오 로그인 완료, 현재 쿠키:", getAllCookies());
-      }
 
       // 백엔드로 카카오 액세스 토큰 전송하여 세션 생성
       const loginResponse = await loginWithOAuth(
@@ -116,22 +95,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
         authResponse.access_token
       );
 
-      if (import.meta.env.DEV) {
-        console.log("서버 로그인 완료, 현재 쿠키:", getAllCookies());
-        console.log("document.cookie:", document.cookie);
-      }
-
       // 카카오에서 사용자 정보 가져오기
       const kakaoUser = await getKakaoUserInfo();
 
-      // 상태 업데이트 (쿠키 기반이므로 로컬 스토리지에 저장하지 않음)
+      // 상태 업데이트
       setUser(kakaoUser);
       setIsAuthenticated(true);
-
-      if (import.meta.env.DEV) {
-        console.log("로그인 완료, 쿠키 상태:", getAllCookies());
-        console.log("최종 document.cookie:", document.cookie);
-      }
 
       console.log("Login successful, isNew:", loginResponse.isNew);
     } catch (error) {
@@ -166,7 +135,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setIsAuthenticated(false);
       
       if (import.meta.env.DEV) {
-        console.log("로그아웃 완료, 쿠키 상태:", getAllCookies());
+        console.log("로그아웃 완료");
       }
     }
   };

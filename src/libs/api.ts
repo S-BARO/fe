@@ -20,41 +20,6 @@ export interface ApiError {
   message: string;
 }
 
-// 쿠키 관련 유틸리티 함수들
-export const getCookie = (name: string): string | null => {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
-  return null;
-};
-
-export const setCookie = (name: string, value: string, days: number = 7): void => {
-  const expires = new Date();
-  expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
-  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
-};
-
-export const removeCookie = (name: string): void => {
-  document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
-};
-
-// 모든 쿠키 확인 함수 (디버깅용)
-export const getAllCookies = (): Record<string, string> => {
-  const cookies: Record<string, string> = {};
-  document.cookie.split(';').forEach(cookie => {
-    const [name, value] = cookie.trim().split('=');
-    if (name && value) {
-      cookies[name] = value;
-    }
-  });
-  return cookies;
-};
-
-// 쿠키 존재 여부 확인
-export const hasCookie = (name: string): boolean => {
-  return getCookie(name) !== null;
-};
-
 // 인증 상태 확인 함수
 export const checkAuthStatus = async (): Promise<boolean> => {
   try {
