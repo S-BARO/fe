@@ -88,7 +88,7 @@ export async function logout(): Promise<void> {
 }
 
 // API 기본 설정
-const API_BASE_URL = "http://43.200.221.180:8080";
+const API_BASE_URL = "https://api.s-baro.shop";
 
 const createCredentialInstance = (): AxiosInstance => {
   const instance = axios.create({
@@ -227,7 +227,7 @@ export async function loginWithOAuth(
   accessToken: string
 ): Promise<LoginResponse> {
   const body: LoginRequest = { provider, accessToken };
-  const res = await publicApi.post<LoginResponse>("/auth/login/oauth", body);
+  const res = await credentialApi.post<LoginResponse>("/auth/login/oauth", body);
 
   return res.data;
 }

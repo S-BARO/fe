@@ -7,7 +7,15 @@ import {
   logoutFromKakao,
   getKakaoUserInfo,
 } from "../../libs/kakaoAuth";
-import { loginWithOAuth, checkAuthStatus, getUserProfile, logout as apiLogout, getAllCookies, hasCookie, removeCookie } from "../../libs/api";
+import { 
+  loginWithOAuth, 
+  checkAuthStatus, 
+  getUserProfile, 
+  logout as apiLogout, 
+  getAllCookies, 
+  hasCookie, 
+  removeCookie 
+} from "../../libs/api";
 
 interface AuthProviderProps {
   children: ReactNode;
