@@ -68,39 +68,3 @@ export const logoutFromKakao = (): Promise<void> => {
     });
   });
 };
-
-// 로컬 스토리지에 토큰 저장
-export const saveKakaoToken = (token: string): void => {
-  localStorage.setItem("kakao_access_token", token);
-};
-
-// 로컬 스토리지에서 토큰 가져오기
-export const getKakaoToken = (): string | null => {
-  return localStorage.getItem("kakao_access_token");
-};
-
-// 로컬 스토리지에서 토큰 삭제
-export const removeKakaoToken = (): void => {
-  localStorage.removeItem("kakao_access_token");
-};
-
-// 로그인 상태 확인
-export const isLoggedIn = (): boolean => {
-  return !!getKakaoToken();
-};
-
-// 사용자 정보 저장
-export const saveUserInfo = (userInfo: KakaoUser): void => {
-  localStorage.setItem("user_info", JSON.stringify(userInfo));
-};
-
-// 사용자 정보 가져오기
-export const getUserInfo = (): KakaoUser | null => {
-  const userInfo = localStorage.getItem("user_info");
-  return userInfo ? JSON.parse(userInfo) : null;
-};
-
-// 사용자 정보 삭제
-export const removeUserInfo = (): void => {
-  localStorage.removeItem("user_info");
-};

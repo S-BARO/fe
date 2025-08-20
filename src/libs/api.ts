@@ -20,9 +20,75 @@ export interface ApiError {
   message: string;
 }
 
+// 쿠키 관련 유틸리티 함수들
+export const getCookie = (name: string): string | null => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+  return null;
+};
+
+export const setCookie = (name: string, value: string, days: number = 7): void => {
+  const expires = new Date();
+  expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+};
+
+export const removeCookie = (name: string): void => {
+  document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+};
+
+// 모든 쿠키 확인 함수 (디버깅용)
+export const getAllCookies = (): Record<string, string> => {
+  const cookies: Record<string, string> = {};
+  document.cookie.split(';').forEach(cookie => {
+    const [name, value] = cookie.trim().split('=');
+    if (name && value) {
+      cookies[name] = value;
+    }
+  });
+  return cookies;
+};
+
+// 쿠키 존재 여부 확인
+export const hasCookie = (name: string): boolean => {
+  return getCookie(name) !== null;
+};
+
+// 인증 상태 확인 함수
+export const checkAuthStatus = async (): Promise<boolean> => {
+  try {
+    const response = await credentialApi.get('/users/me');
+    return response.status === 200;
+  } catch (error) {
+    console.error('인증 상태 확인 실패:', error);
+    return false;
+  }
+};
+
+// 사용자 정보 가져오기 함수
+export const getUserProfile = async () => {
+  try {
+    const response = await credentialApi.get('/users/me');
+    return response.data;
+  } catch (error) {
+    console.error('사용자 정보 가져오기 실패:', error);
+    throw error;
+  }
+};
+
+// 로그아웃 API
+export async function logout(): Promise<void> {
+  try {
+    await credentialApi.post('/auth/logout');
+  } catch (error) {
+    console.error('로그아웃 실패:', error);
+    throw error;
+  }
+}
+
 // API 기본 설정
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+const API_BASE_URL = "http://43.200.221.180:8080";
 
 const createCredentialInstance = (): AxiosInstance => {
   const instance = axios.create({
