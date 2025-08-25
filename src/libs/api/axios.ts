@@ -6,23 +6,8 @@ import type {
   AxiosError,
 } from "axios";
 
-// API 응답 타입 정의
-export interface LoginRequest {
-  provider: "KAKAO";
-  accessToken: string;
-}
-
-export interface LoginResponse {
-  isNew: boolean;
-}
-
-export interface ApiError {
-  message: string;
-}
-
 // API 기본 설정
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+const API_BASE_URL = "https://api.s-baro.shop";
 
 const createCredentialInstance = (): AxiosInstance => {
   const instance = axios.create({
@@ -152,19 +137,5 @@ const createPublicInstance = (): AxiosInstance => {
 };
 
 // 인스턴스 생성
-const credentialApi = createCredentialInstance();
-const publicApi = createPublicInstance();
-
-// OAuth 로그인 API (크리덴셜 필요)
-export async function loginWithOAuth(
-  provider: "KAKAO",
-  accessToken: string
-): Promise<LoginResponse> {
-  const body: LoginRequest = { provider, accessToken };
-  const res = await publicApi.post<LoginResponse>("/auth/login/oauth", body);
-
-  return res.data;
-}
-
-// 인스턴스 직접 사용을 위한 export (필요시)
-export { credentialApi, publicApi };
+export const credentialApi = createCredentialInstance();
+export const publicApi = createPublicInstance();
