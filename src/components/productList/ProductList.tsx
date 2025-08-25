@@ -1,8 +1,9 @@
 import React, { useCallback, useRef, useEffect } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getPopularProducts } from "../../libs/api";
+import { getPopularProducts, getNewestProducts } from "../../libs/api";
 import ProductItem from "../productItem/ProductItem";
 import type { Product } from "../../libs/api/types";
+import { useTabFilter } from "../../libs/useTabFilter";
 
 // 스켈레톤 UI 컴포넌트
 function ProductSkeleton() {
@@ -59,26 +60,41 @@ function ProductSkeletonGrid({ count = 6 }: { count?: number }) {
 }
 
 export default function ProductList() {
+  const tabs = ["인기순", "최신순"];
+  const [activeTab] = useTabFilter(tabs, "tab");
+
   const {
     data,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
     isLoading,
+    isFetching,
     error,
   } = useInfiniteQuery({
-    queryKey: ["popularProducts"],
+    queryKey: ["products", activeTab],
     queryFn: ({ pageParam }) => {
-      console.log("Fetching page with param:", pageParam);
-      return getPopularProducts({
-        size: 21,
-        ...(pageParam && {
-          cursorId: pageParam.id,
-          cursorLikes: pageParam.likes,
-        }),
-      });
+      console.log("Fetching page with param:", pageParam, "for tab:", activeTab);
+      
+      if (activeTab === "인기순") {
+        return getPopularProducts({
+          size: 21,
+          ...(pageParam && {
+            cursorId: pageParam.id,
+            cursorLikes: pageParam.likes,
+          }),
+        });
+      } else {
+        // 최신순
+        return getNewestProducts({
+          size: 21,
+          ...(pageParam && {
+            cursorId: pageParam.id,
+          }),
+        });
+      }
     },
-    initialPageParam: undefined as { id: number; likes: number } | undefined,
+    initialPageParam: undefined as { id: number; likes?: number } | undefined,
     getNextPageParam: (lastPage) => {
       console.log("Last page:", lastPage);
       if (!lastPage.hasNext) return undefined;
@@ -90,7 +106,7 @@ export default function ProductList() {
   const observerRef = useRef<HTMLDivElement>(null);
 
   // 디버깅을 위한 로딩 상태 로그
-  console.log("ProductList render - isLoading:", isLoading, "isFetchingNextPage:", isFetchingNextPage);
+  console.log("ProductList render - isLoading:", isLoading, "isFetching:", isFetching, "isFetchingNextPage:", isFetchingNextPage);
 
   // Intersection Observer를 사용한 무한 스크롤
   useEffect(() => {
@@ -115,8 +131,9 @@ export default function ProductList() {
     return () => observer.disconnect();
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-  if (isLoading) {
-    console.log("Rendering skeleton UI for initial loading");
+  // 초기 로딩 또는 탭 변경 시 스켈레톤 UI 표시
+  if (isLoading || (isFetching && allProducts.length === 0)) {
+    console.log("Rendering skeleton UI for initial loading or tab change");
     return (
       <div className="flex-1 overflow-y-auto">
         <ProductSkeletonGrid count={9} />
@@ -171,10 +188,12 @@ export default function ProductList() {
 
       {import.meta.env.DEV && (
         <div className="fixed bottom-4 right-4 bg-black/80 text-white p-2 rounded text-xs">
+          <div>현재 탭: {activeTab}</div>
           <div>총 상품: {allProducts.length}</div>
           <div>다음 페이지: {hasNextPage ? "있음" : "없음"}</div>
           <div>로딩 중: {isFetchingNextPage ? "예" : "아니오"}</div>
           <div>초기 로딩: {isLoading ? "예" : "아니오"}</div>
+          <div>탭 변경 로딩: {isFetching ? "예" : "아니오"}</div>
         </div>
       )}
     </div>

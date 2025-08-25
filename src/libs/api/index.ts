@@ -9,6 +9,8 @@ export type {
   Product,
   PopularResponse,
   PopularProductsParams,
+  NewestResponse,
+  NewestProductsParams,
 } from "./types";
 
 // 인증 관련 API
@@ -22,4 +24,5 @@ export {
 // 상품 관련 API
 export {
   getPopularProducts,
+  getNewestProducts,
 } from "./products";

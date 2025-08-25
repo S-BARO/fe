@@ -30,9 +30,23 @@ export interface PopularResponse {
   };
 }
 
+export interface NewestResponse {
+  content: Product[];
+  hasNext: boolean;
+  nextCursor: {
+    id: number;
+  };
+}
+
 export interface PopularProductsParams {
   categoryId?: number;
   cursorId?: number;
   cursorLikes?: number;
+  size?: number;
+}
+
+export interface NewestProductsParams {
+  categoryId?: number;
+  cursorId?: number;
   size?: number;
 }
