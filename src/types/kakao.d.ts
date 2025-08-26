@@ -6,7 +6,7 @@ declare global {
       Auth: {
         login: (options: {
           success: (authObj: KakaoAuthResponse) => void;
-          fail: (err: any) => void;
+          fail: (err: unknown) => void;
         }) => void;
         logout: (callback: () => void) => void;
         getAccessToken: () => string | null;
@@ -15,8 +15,8 @@ declare global {
       API: {
         request: (options: {
           url: string;
-          success: (res: any) => void;
-          fail: (err: any) => void;
+          success: (res: unknown) => void;
+          fail: (err: unknown) => void;
         }) => void;
       };
     };

@@ -28,7 +28,7 @@ export const loginWithKakao = (): Promise<KakaoAuthResponse> => {
       success: (authObj: KakaoAuthResponse) => {
         resolve(authObj);
       },
-      fail: (err: any) => {
+      fail: (err: unknown) => {
         reject(err);
       },
     });
@@ -48,7 +48,7 @@ export const getKakaoUserInfo = (): Promise<KakaoUser> => {
       success: (res: KakaoUser) => {
         resolve(res);
       },
-      fail: (err: any) => {
+      fail: (err: unknown) => {
         reject(err);
       },
     });

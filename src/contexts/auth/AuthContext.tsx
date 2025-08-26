@@ -10,12 +10,7 @@ import {
   removeUserInfo,
   getKakaoUserInfo,
 } from "../../libs/kakaoAuth";
-import { 
-  loginWithOAuth, 
-  checkAuthStatus, 
-  getUserProfile, 
-  logout as apiLogout
-} from "../../libs/api";
+import { loginWithOAuth } from "../../libs/api";
 
 interface AuthProviderProps {
   children: ReactNode;

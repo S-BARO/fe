@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getPopularProducts, getNewestProducts } from "../../libs/api";
 import ProductItem from "../productItem/ProductItem";
@@ -8,33 +8,43 @@ import { useTabFilter } from "../../libs/useTabFilter";
 // 스켈레톤 UI 컴포넌트
 function ProductSkeleton() {
   return (
-    <div style={{ animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}>
-      <div style={{ 
-        backgroundColor: '#e5e7eb', 
-        borderRadius: '8px', 
-        aspectRatio: '1', 
-        marginBottom: '8px',
-        width: '100%'
-      }}></div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <div style={{ 
-          height: '12px', 
-          backgroundColor: '#e5e7eb', 
-          borderRadius: '4px', 
-          width: '75%' 
-        }}></div>
-        <div style={{ 
-          height: '12px', 
-          backgroundColor: '#e5e7eb', 
-          borderRadius: '4px', 
-          width: '50%' 
-        }}></div>
-        <div style={{ 
-          height: '16px', 
-          backgroundColor: '#e5e7eb', 
-          borderRadius: '4px', 
-          width: '66%' 
-        }}></div>
+    <div
+      style={{ animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite" }}
+    >
+      <div
+        style={{
+          backgroundColor: "#e5e7eb",
+          borderRadius: "8px",
+          aspectRatio: "1",
+          marginBottom: "8px",
+          width: "100%",
+        }}
+      ></div>
+      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        <div
+          style={{
+            height: "12px",
+            backgroundColor: "#e5e7eb",
+            borderRadius: "4px",
+            width: "75%",
+          }}
+        ></div>
+        <div
+          style={{
+            height: "12px",
+            backgroundColor: "#e5e7eb",
+            borderRadius: "4px",
+            width: "50%",
+          }}
+        ></div>
+        <div
+          style={{
+            height: "16px",
+            backgroundColor: "#e5e7eb",
+            borderRadius: "4px",
+            width: "66%",
+          }}
+        ></div>
       </div>
     </div>
   );
@@ -49,7 +59,7 @@ function ProductSkeletonGrid({ count = 6 }: { count?: number }) {
         gap: "16px",
         justifyContent: "center",
         gridTemplateColumns: "repeat(3, 1fr)",
-        padding: "16px"
+        padding: "16px",
       }}
     >
       {Array.from({ length: count }).map((_, index) => (
@@ -74,8 +84,13 @@ export default function ProductList() {
   } = useInfiniteQuery({
     queryKey: ["products", activeTab],
     queryFn: ({ pageParam }) => {
-      console.log("Fetching page with param:", pageParam, "for tab:", activeTab);
-      
+      console.log(
+        "Fetching page with param:",
+        pageParam,
+        "for tab:",
+        activeTab
+      );
+
       if (activeTab === "인기순") {
         return getPopularProducts({
           size: 21,
@@ -106,7 +121,14 @@ export default function ProductList() {
   const observerRef = useRef<HTMLDivElement>(null);
 
   // 디버깅을 위한 로딩 상태 로그
-  console.log("ProductList render - isLoading:", isLoading, "isFetching:", isFetching, "isFetchingNextPage:", isFetchingNextPage);
+  console.log(
+    "ProductList render - isLoading:",
+    isLoading,
+    "isFetching:",
+    isFetching,
+    "isFetchingNextPage:",
+    isFetchingNextPage
+  );
 
   // Intersection Observer를 사용한 무한 스크롤
   useEffect(() => {
