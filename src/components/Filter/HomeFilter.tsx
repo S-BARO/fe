@@ -37,7 +37,7 @@ const underlineStyle = css`
 /**
  * TabMenu에서 사용할 탭 이름 목록입니다.
  */
-const tabs = ["전체보기", "신상품", "이벤트", "장바구니"];
+const tabs = ["인기순", "최신순"];
 
 export default function HomeFilter() {
   const [activeTab, handleTabClick] = useTabFilter(tabs, "tab");
