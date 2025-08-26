@@ -45,8 +45,13 @@ export const getKakaoUserInfo = (): Promise<KakaoUser> => {
 
     window.Kakao.API.request({
       url: "/v2/user/me",
-      success: (res: KakaoUser) => {
-        resolve(res);
+        success: (res: unknown) => {
+        if (typeof res !== "object" || res === null || !("id" in res)) {
+          reject(new Error("Invalid response format"));
+          return;
+        }
+        const user = res as KakaoUser;
+        resolve(user);
       },
       fail: (err: unknown) => {
         reject(err);
