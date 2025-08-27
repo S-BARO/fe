@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getProductDetail } from "../../libs/api";
@@ -27,7 +27,10 @@ import {
 
 function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const productId = parseInt(id || "0", 10);
+  
+  // productId 유효성 검사
+  const parsedId = parseInt(id || "", 10);
+  const productId = Number.isInteger(parsedId) && parsedId > 0 ? parsedId : null;
 
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
   const [isLiked, setIsLiked] = useState(false);
@@ -43,10 +46,27 @@ function ProductDetailPage() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["product", productId],
-    queryFn: () => getProductDetail(productId),
-    enabled: productId > 0,
+    queryKey: productId != null ? ["product", productId] : ["product"],
+    queryFn: () => getProductDetail(productId!),
+    enabled: productId != null,
   });
+
+  // product나 images.length가 변경될 때 currentImageIndex 관리
+  useEffect(() => {
+    if (!product) {
+      setCurrentImageIndex(0);
+      return;
+    }
+
+    const imagesLength = product.images?.length ?? 0;
+    
+    if (imagesLength === 0) {
+      setCurrentImageIndex(0);
+    } else {
+      // currentImageIndex를 이미지 배열 범위 내로 클램핑
+      setCurrentImageIndex(prev => Math.max(0, Math.min(prev, imagesLength - 1)));
+    }
+  }, [product, product?.images?.length]);
 
   const toggleSection = (sectionName: string) => {
     setOpenSections((prev) => ({
@@ -64,8 +84,10 @@ function ProductDetailPage() {
   };
 
   const handleImageClick = () => {
-    if (product?.images && product.images.length > 1) {
-      setCurrentImageIndex((prev) => (prev + 1) % product.images.length);
+    const images = product?.images ?? [];
+    const imagesLength = images.length;
+    if (imagesLength > 1) {
+      setCurrentImageIndex((prev) => (prev + 1) % imagesLength);
     }
   };
 
@@ -82,11 +104,14 @@ function ProductDetailPage() {
   const onTouchEnd = () => {
     if (touchStart == null || touchEnd == null || !product?.images?.length) return;
     
+    const images = product?.images ?? [];
+    const imagesLength = images.length;
+    
     const distance = touchStart - touchEnd;
     const isLeftSwipe = distance > 50;
     const isRightSwipe = distance < -50;
 
-    if (isLeftSwipe && currentImageIndex < product.images.length - 1) {
+    if (isLeftSwipe && currentImageIndex < imagesLength - 1) {
       setCurrentImageIndex(prev => prev + 1);
     }
     if (isRightSwipe && currentImageIndex > 0) {
@@ -127,45 +152,66 @@ function ProductDetailPage() {
     );
   }
 
+  const images = product?.images ?? [];
+  const imagesLength = images.length;
+
   return (
     <ProductDetailContainer>
       <ProductImageSection>
-        <ProductImage
-          ref={imageRef}
-          src={product.images[currentImageIndex] || "/shirt.png"}
-          alt={`${product.productName} - 이미지 ${currentImageIndex + 1}`}
-          onClick={handleImageClick}
-          onTouchStart={onTouchStart}
-          onTouchMove={onTouchMove}
-          onTouchEnd={onTouchEnd}
-          style={{ cursor: product.images.length > 1 ? "pointer" : "default" }}
-        />
-        {product.images.length > 1 && (
-          <PaginationDots>
-            {product.images.map((_, index) => (
-              <Dot
-                key={index}
-                active={index === currentImageIndex}
-                onClick={() => handleImageDotClick(index)}
-                style={{ cursor: "pointer" }}
-              />
-            ))}
-          </PaginationDots>
-        )}
-        {product.images.length > 1 && (
+        {imagesLength > 0 ? (
+          <>
+            <ProductImage
+              ref={imageRef}
+              src={images[currentImageIndex] || "/shirt.png"}
+              alt={`${product.productName} - 이미지 ${currentImageIndex + 1}`}
+              onClick={handleImageClick}
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
+              style={{ cursor: imagesLength > 1 ? "pointer" : "default" }}
+            />
+            {imagesLength > 1 && (
+              <PaginationDots>
+                {images.map((_, index) => (
+                  <Dot
+                    key={index}
+                    active={index === currentImageIndex}
+                    onClick={() => handleImageDotClick(index)}
+                    style={{ cursor: "pointer" }}
+                  />
+                ))}
+              </PaginationDots>
+            )}
+            {imagesLength > 1 && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "10px",
+                  right: "10px",
+                  background: "rgba(0, 0, 0, 0.7)",
+                  color: "white",
+                  padding: "4px 8px",
+                  borderRadius: "12px",
+                  fontSize: "12px",
+                }}
+              >
+                {currentImageIndex + 1} / {imagesLength}
+              </div>
+            )}
+          </>
+        ) : (
           <div
             style={{
-              position: "absolute",
-              top: "10px",
-              right: "10px",
-              background: "rgba(0, 0, 0, 0.7)",
-              color: "white",
-              padding: "4px 8px",
-              borderRadius: "12px",
-              fontSize: "12px",
+              width: "320px",
+              height: "384px",
+              backgroundColor: "#f3f4f6",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#6b7280",
             }}
           >
-            {currentImageIndex + 1} / {product.images.length}
+            이미지가 없습니다
           </div>
         )}
       </ProductImageSection>
