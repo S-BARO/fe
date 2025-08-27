@@ -22,9 +22,10 @@
     const location = useLocation();
     const isProductDetailPage = location.pathname.startsWith("/product/");
     const isLoginPage = location.pathname === "/login";
+    const isMyPage = location.pathname === "/my";
 
     const getFilterComponent = () => {
-      if (isProductDetailPage || isLoginPage) return null;
+      if (isProductDetailPage || isLoginPage || isMyPage) return null;
 
       switch (location.pathname) {
         case "/":
@@ -35,8 +36,6 @@
           return <HomeFilter />; // 임시로 HomeFilter 사용
         case "/like":
           return <LikeFilter />; // 임시로 HomeFilter 사용
-        case "/my":
-          return <HomeFilter />; // 임시로 HomeFilter 사용
         default:
           return null;
       }
@@ -49,7 +48,6 @@
         style={{
           width: "100vw",
           height: "100vh",
-
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -65,7 +63,7 @@
           }}
         >
           <Header
-            showFilter={!isProductDetailPage && !isLoginPage}
+            showFilter={!isProductDetailPage && !isLoginPage && !isMyPage}
             filterComponent={filterComponent}
           />
           <ScrollArea>

@@ -12,6 +12,16 @@ export interface ApiError {
   message: string;
 }
 
+// 사용자 관련 타입 정의
+export interface UserProfile {
+  id: number;
+  name: string;
+  email: string;
+  phoneNumber: string;
+  address: string;
+  role: "BUYER" | "SELLER" | "ADMIN";
+}
+
 // 상품 관련 타입 정의
 export interface Product {
   id: number;
