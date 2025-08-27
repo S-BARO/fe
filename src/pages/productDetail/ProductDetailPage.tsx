@@ -80,7 +80,7 @@ function ProductDetailPage() {
   };
 
   const onTouchEnd = () => {
-    if (!touchStart || !touchEnd || !product?.images) return;
+    if (touchStart == null || touchEnd == null || !product?.images?.length) return;
     
     const distance = touchStart - touchEnd;
     const isLeftSwipe = distance > 50;
