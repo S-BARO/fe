@@ -13,10 +13,9 @@ function GNB() {
   // 현재 경로에 따라 active 상태를 결정
   const isHome = location.pathname === "/";
   const isSwap = location.pathname.startsWith("/swap");
-  // 아래는 예시, 실제 경로에 맞게 수정 필요
   const isCategory = location.pathname.startsWith("/category");
   const isLike = location.pathname.startsWith("/like");
-  const isMypage = location.pathname.startsWith("/mypage");
+  const isMypage = location.pathname.startsWith("/my");
 
   return (
     <GNBWrapper>
@@ -32,7 +31,7 @@ function GNB() {
       <IconButton onClick={() => navigate("/like")}>
         <LikeTabIcon active={isLike} />
       </IconButton>
-      <IconButton onClick={() => navigate("/mypage")}>
+      <IconButton onClick={() => navigate("/my")}>
         <MypageTabIcon active={isMypage} />
       </IconButton>
     </GNBWrapper>

@@ -1,5 +1,5 @@
 import { credentialApi, publicApi } from "./axios";
-import type { LoginRequest, LoginResponse } from "./types";
+import type { LoginRequest, LoginResponse, UserProfile } from "./types";
 
 // OAuth 로그인 API
 export async function loginWithOAuth(
@@ -27,9 +27,9 @@ export const checkAuthStatus = async (): Promise<boolean> => {
 };
 
 // 사용자 정보 가져오기 함수
-export const getUserProfile = async () => {
+export const getUserProfile = async (): Promise<UserProfile> => {
   try {
-    const response = await credentialApi.get("/users/me");
+    const response = await credentialApi.get<UserProfile>("/users/me");
     return response.data;
   } catch (error) {
     console.error("사용자 정보 가져오기 실패:", error);

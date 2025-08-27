@@ -6,6 +6,7 @@ export type {
   LoginRequest,
   LoginResponse,
   ApiError,
+  UserProfile,
   Product,
   ProductDetail,
   PopularResponse,

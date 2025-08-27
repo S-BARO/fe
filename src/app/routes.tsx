@@ -3,6 +3,7 @@ import HomePage from "../pages/home/HomePage";
 import ProductDetailPage from "../pages/productDetail/ProductDetailPage";
 import SwapPage from "../pages/swap/SwapPage";
 import LoginPage from "../pages/login/LoginPage";
+import MyPage from "../pages/my/MyPage";
 import RootLayout from "./Layout/RootLayout";
 
 const router = createBrowserRouter([
@@ -23,6 +24,7 @@ const router = createBrowserRouter([
         element: <SwapPage />,
       },
       { path: "login", element: <LoginPage /> },
+      { path: "my", element: <MyPage /> },
     ],
   },
 ]);
