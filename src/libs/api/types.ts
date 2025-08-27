@@ -21,6 +21,16 @@ export interface Product {
   thumbnailUrl: string;
 }
 
+export interface ProductDetail {
+  id: number;
+  storeName: string;
+  productName: string;
+  price: number;
+  description: string;
+  images: string[];
+  categories: string[];
+}
+
 export interface PopularResponse {
   content: Product[];
   hasNext: boolean;

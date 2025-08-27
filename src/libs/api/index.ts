@@ -7,6 +7,7 @@ export type {
   LoginResponse,
   ApiError,
   Product,
+  ProductDetail,
   PopularResponse,
   PopularProductsParams,
   NewestResponse,
@@ -25,4 +26,5 @@ export {
 export {
   getPopularProducts,
   getNewestProducts,
+  getProductDetail,
 } from "./products";

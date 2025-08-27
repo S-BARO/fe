@@ -8,12 +8,18 @@ export const ProductDetailContainer = styled.div`
 export const ProductImageSection = styled.div`
   position: relative;
   background: #fff;
+  overflow: hidden;
 `;
 
 export const ProductImage = styled.img`
-  width: 100%;
+  width: 320px;
   height: 384px;
-  object-fit: contain;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.02);
+  }
 `;
 
 export const PaginationDots = styled.div`
@@ -21,6 +27,11 @@ export const PaginationDots = styled.div`
   justify-content: center;
   gap: 8px;
   padding: 12px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.1));
 `;
 
 export const Dot = styled.div<{ active?: boolean }>`
@@ -28,6 +39,12 @@ export const Dot = styled.div<{ active?: boolean }>`
   height: 8px;
   border-radius: 50%;
   background: ${(props) => (props.active ? "#111827" : "#D1D5DB")};
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: scale(1.2);
+    background: ${(props) => (props.active ? "#111827" : "#9CA3AF")};
+  }
 `;
 
 export const ProductInfo = styled.div`
@@ -79,6 +96,11 @@ export const SectionHeader = styled.button`
   cursor: pointer;
   font-size: 14px;
   text-align: left;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background-color: #f9fafb;
+  }
 `;
 
 export const SectionTitle = styled.span`
@@ -90,7 +112,10 @@ export const SectionTitle = styled.span`
   line-height: 20px;
 `;
 
-export const ChevronIconWrapper = styled.span<{ isOpen?: boolean }>``;
+export const ChevronIconWrapper = styled.span<{ isOpen?: boolean }>`
+  transition: transform 0.3s ease;
+  transform: ${(props) => (props.isOpen ? "rotate(180deg)" : "rotate(0deg)")};
+`;
 
 export const SectionContent = styled.div<{ isOpen?: boolean }>`
   max-height: ${(props) => (props.isOpen ? "200px" : "0")};
@@ -116,6 +141,7 @@ export const ActionBar = styled.div`
   background: #fff;
   border-top: 1px solid #e5e7eb;
   gap: 12px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
 `;
 
 export const LikeButton = styled.button`
@@ -125,6 +151,12 @@ export const LikeButton = styled.button`
   padding: 12px;
   cursor: pointer;
   font-size: 20px;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: #d1d5db;
+    background-color: #f9fafb;
+  }
 `;
 
 export const BuyButton = styled.button`
@@ -137,6 +169,11 @@ export const BuyButton = styled.button`
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background: #374151;
+  }
 `;
 
 export const BottomSpacer = styled.div`

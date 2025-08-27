@@ -1,5 +1,5 @@
 import { publicApi } from "./axios";
-import type { PopularResponse, PopularProductsParams, NewestResponse, NewestProductsParams } from "./types";
+import type { PopularResponse, PopularProductsParams, NewestResponse, NewestProductsParams, ProductDetail } from "./types";
 
 // 인기 상품 목록 API
 export async function getPopularProducts(params: PopularProductsParams = {}): Promise<PopularResponse> {
@@ -41,5 +41,11 @@ export async function getNewestProducts(params: NewestProductsParams = {}): Prom
   const url = `/products/newest${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
   const response = await publicApi.get<NewestResponse>(url);
   
+  return response.data;
+}
+
+// 상품 상세 API
+export async function getProductDetail(productId: number): Promise<ProductDetail> {
+  const response = await publicApi.get<ProductDetail>(`/products/${productId}`);
   return response.data;
 }
