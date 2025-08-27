@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getProductDetail } from "../../libs/api";
@@ -32,6 +32,11 @@ function ProductDetailPage() {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
   const [isLiked, setIsLiked] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  // 터치 슬라이드 관련 상태
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
 
   const {
     data: product,
@@ -61,6 +66,31 @@ function ProductDetailPage() {
   const handleImageClick = () => {
     if (product?.images && product.images.length > 1) {
       setCurrentImageIndex((prev) => (prev + 1) % product.images.length);
+    }
+  };
+
+  // 터치 이벤트 핸들러
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd || !product?.images) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe && currentImageIndex < product.images.length - 1) {
+      setCurrentImageIndex(prev => prev + 1);
+    }
+    if (isRightSwipe && currentImageIndex > 0) {
+      setCurrentImageIndex(prev => prev - 1);
     }
   };
 
@@ -101,9 +131,13 @@ function ProductDetailPage() {
     <ProductDetailContainer>
       <ProductImageSection>
         <ProductImage
+          ref={imageRef}
           src={product.images[currentImageIndex] || "/shirt.png"}
           alt={`${product.productName} - 이미지 ${currentImageIndex + 1}`}
           onClick={handleImageClick}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
           style={{ cursor: product.images.length > 1 ? "pointer" : "default" }}
         />
         {product.images.length > 1 && (
