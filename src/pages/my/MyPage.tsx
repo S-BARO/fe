@@ -1,8 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { isAxiosError } from "axios";
 import { getUserProfile } from "../../libs/api";
 import styled from "@emotion/styled";
+
+// HTTP 상태 코드 추출 헬퍼 함수
+const getHttpStatus = (err: unknown): number | undefined => {
+  return isAxiosError(err) ? err.response?.status : undefined;
+};
 
 const MyPageContainer = styled.div`
   padding: 20px 16px;
@@ -141,9 +147,9 @@ function MyPage() {
   // 에러 처리 - 401 에러 시 로그인 페이지로 리다이렉트
   useEffect(() => {
     if (error) {
-      const status = (error as any)?.status ?? (error as any)?.response?.status;
+      const status = getHttpStatus(error);
       if (status === 401) {
-        navigate("/login");
+        navigate("/login", { replace: true });
       }
     }
   }, [error, navigate]);
@@ -163,7 +169,7 @@ function MyPage() {
 
   if (error) {
     // 에러가 있지만 401이 아닌 경우 (네트워크 에러 등)
-    const status = (error as any)?.status ?? (error as any)?.response?.status;
+    const status = getHttpStatus(error);
     if (status !== 401) {
       return (
         <MyPageContainer>
