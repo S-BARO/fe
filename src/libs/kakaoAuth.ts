@@ -24,6 +24,7 @@ export const loginWithKakao = (): Promise<KakaoAuthResponse> => {
       return;
     }
 
+    // v1 SDK: popup login, accessToken 반환
     window.Kakao.Auth.login({
       success: (authObj: KakaoAuthResponse) => {
         resolve(authObj);

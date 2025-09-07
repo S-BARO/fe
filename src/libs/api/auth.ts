@@ -1,7 +1,7 @@
 import { credentialApi, publicApi } from "./axios";
 import type { LoginRequest, LoginResponse, UserProfile } from "./types";
 
-// OAuth 로그인 API
+// OAuth 로그인 API (토큰 방식 - v1)
 export async function loginWithOAuth(
   provider: "KAKAO",
   accessToken: string
@@ -9,6 +9,20 @@ export async function loginWithOAuth(
   const body: LoginRequest = { provider, accessToken };
   const res = await publicApi.post<LoginResponse>("/auth/login/oauth", body);
 
+  return res.data;
+}
+
+// OAuth 로그인 API (인가 코드 방식 - v2)
+export async function loginWithOAuthCode(
+  provider: "KAKAO",
+  authorizationCode: string,
+  redirectUri: string
+): Promise<LoginResponse> {
+  const res = await publicApi.post<LoginResponse>("/auth/login/oauth", {
+    provider,
+    authorizationCode,
+    redirectUri,
+  });
   return res.data;
 }
 

@@ -35,6 +35,8 @@ jobs:
 
       - name: Build
         run: pnpm build
+        env:
+          VITE_KAKAO_APP_KEY: ${{ secrets.VITE_KAKAO_APP_KEY }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4

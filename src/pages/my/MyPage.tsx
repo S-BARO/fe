@@ -142,6 +142,8 @@ function MyPage() {
     queryKey: ["userProfile"],
     queryFn: getUserProfile,
     retry: false,
+    staleTime: 5 * 60 * 1000, // 5분 동안 신선도로 간주
+    refetchOnWindowFocus: false,
   });
 
   // 에러 처리 - 401 에러 시 로그인 페이지로 리다이렉트
