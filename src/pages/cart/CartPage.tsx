@@ -130,13 +130,15 @@ function CartPage() {
     setSelected(next);
   };
 
-  const handleQtyChange = async (itemId: number, nextQty: number) => {
+  const handleQtyChangeByProduct = async (productId: number, nextQty: number) => {
     if (nextQty < 1) return;
+    const target = items.find((it) => it.productId === productId);
+    if (!target) return;
     try {
-      await updateCartItemQuantity(itemId, nextQty);
+      await updateCartItemQuantity(target.itemId, nextQty);
       setItems((prev) =>
         prev.map((it) =>
-          it.itemId === itemId
+          it.productId === productId
             ? { ...it, quantity: nextQty, subtotal: it.price * nextQty }
             : it
         )
@@ -206,7 +208,9 @@ function CartPage() {
                 </div>
                 <QtyStepper>
                   <StepBtn
-                    onClick={() => handleQtyChange(it.itemId, it.quantity - 1)}
+                    onClick={() =>
+                      handleQtyChangeByProduct(it.productId, it.quantity - 1)
+                    }
                   >
                     -
                   </StepBtn>
@@ -214,7 +218,9 @@ function CartPage() {
                     {it.quantity}
                   </span>
                   <StepBtn
-                    onClick={() => handleQtyChange(it.itemId, it.quantity + 1)}
+                    onClick={() =>
+                      handleQtyChangeByProduct(it.productId, it.quantity + 1)
+                    }
                   >
                     +
                   </StepBtn>
