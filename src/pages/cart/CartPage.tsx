@@ -103,7 +103,7 @@ const SelectAll = styled.label`
 
 function CartPage() {
   const [items, setItems] = useState<CartItemDto[]>([]);
-  const [selected, setSelected] = useState<Record<number, boolean>>({});
+  const [selected, setSelected] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     const run = async () => {
@@ -111,8 +111,8 @@ function CartPage() {
         const res = await getCart();
         setItems(res.items);
         // 기본은 모두 선택
-        const nextSel: Record<number, boolean> = {};
-        for (const it of res.items) nextSel[it.itemId] = true;
+        const nextSel: Record<string, boolean> = {};
+        for (const it of res.items) nextSel[String(it.itemId)] = true;
         setSelected(nextSel);
       } catch {
         // noop
@@ -121,12 +121,12 @@ function CartPage() {
     void run();
   }, []);
 
-  const toggleSelect = (itemId: number) =>
-    setSelected((prev) => ({ ...prev, [itemId]: !prev[itemId] }));
+  const toggleSelect = (itemId: string) =>
+    setSelected((prev) => ({ ...prev, [String(itemId)]: !prev[String(itemId)] }));
 
   const setAll = (checked: boolean) => {
-    const next: Record<number, boolean> = {};
-    for (const it of items) next[it.itemId] = checked;
+    const next: Record<string, boolean> = {};
+    for (const it of items) next[String(it.itemId)] = checked;
     setSelected(next);
   };
 
@@ -135,7 +135,7 @@ function CartPage() {
     const target = items.find((it) => it.productId === productId);
     if (!target) return;
     try {
-      await updateCartItemQuantity(target.itemId, nextQty);
+      await updateCartItemQuantity(String(target.itemId), nextQty);
       setItems((prev) =>
         prev.map((it) =>
           it.productId === productId
@@ -149,13 +149,13 @@ function CartPage() {
     }
   };
 
-  const handleRemove = async (itemId: number) => {
+  const handleRemove = async (itemId: string) => {
     try {
-      await deleteCartItem(itemId);
-      setItems((prev) => prev.filter((it) => it.itemId !== itemId));
+      await deleteCartItem(String(itemId));
+      setItems((prev) => prev.filter((it) => String(it.itemId) !== String(itemId)));
       setSelected((prev) => {
         const n = { ...prev };
-        delete n[itemId];
+        delete n[String(itemId)];
         return n;
       });
     } catch (err) {
@@ -165,7 +165,7 @@ function CartPage() {
   };
 
   const selectedItems = useMemo(
-    () => items.filter((it) => selected[it.itemId]),
+    () => items.filter((it) => selected[String(it.itemId)]),
     [items, selected]
   );
   const itemsAmount = useMemo(
@@ -197,8 +197,8 @@ function CartPage() {
             <Row>
               <input
                 type="checkbox"
-                checked={!!selected[it.itemId]}
-                onChange={() => toggleSelect(it.itemId)}
+                checked={!!selected[String(it.itemId)]}
+                onChange={() => toggleSelect(String(it.itemId))}
               />
               <ItemThumb src={it.productThumbnailUrl} alt={it.productName} />
               <div style={{ flex: 1 }}>
@@ -226,7 +226,7 @@ function CartPage() {
                   </StepBtn>
                 </QtyStepper>
               </div>
-              <DeleteBtn onClick={() => handleRemove(it.itemId)}>×</DeleteBtn>
+              <DeleteBtn onClick={() => handleRemove(String(it.itemId))}>×</DeleteBtn>
             </Row>
           </Section>
         ))

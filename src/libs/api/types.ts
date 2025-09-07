@@ -77,7 +77,7 @@ export interface AddCartItemRequest {
 }
 
 export interface CartItemDto {
-  itemId: number;
+  itemId: string; // 64-bit 정수 안전 처리: 문자열로 보관
   productId: number;
   productName: string;
   productThumbnailUrl: string;
