@@ -3,6 +3,7 @@ import HomeTabIcon from "../icons/HomeTabIcon";
 import LikeTabIcon from "../icons/LikeTabIcon";
 import MypageTabIcon from "../icons/MypageTabIcon";
 import SwapTabIcon from "../icons/SwapTabIcon";
+import CartTabIcon from "../icons/CartTabIcon";
 import { GNBWrapper, IconButton } from "./styles";
 
 function GNB() {
@@ -13,6 +14,7 @@ function GNB() {
   const isHome = location.pathname === "/";
   const isSwap = location.pathname.startsWith("/swap");
   const isLike = location.pathname.startsWith("/like");
+  const isCart = location.pathname.startsWith("/cart");
   const isMypage = location.pathname.startsWith("/my");
 
   return (
@@ -20,11 +22,14 @@ function GNB() {
       <IconButton onClick={() => navigate("/like")}>
         <LikeTabIcon active={isLike} />
       </IconButton>
+      <IconButton onClick={() => navigate("/swap")}>
+        <SwapTabIcon active={isSwap} />
+      </IconButton>
       <IconButton onClick={() => navigate("/")}>
         <HomeTabIcon active={isHome} />
       </IconButton>
-      <IconButton onClick={() => navigate("/swap")}>
-        <SwapTabIcon active={isSwap} />
+      <IconButton onClick={() => navigate("/cart")}>
+        <CartTabIcon active={isCart} />
       </IconButton>
       <IconButton onClick={() => navigate("/my")}>
         <MypageTabIcon active={isMypage} />

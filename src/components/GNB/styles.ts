@@ -11,7 +11,7 @@ export const GNBWrapper = styled.div`
 
 export const IconButton = styled.button`
   display: flex;
-  width: 25%;
+  width: 20%;
   justify-content: center;
   align-items: center;
   background-color: transparent;

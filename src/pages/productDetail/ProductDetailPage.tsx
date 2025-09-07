@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getProductDetail } from "../../libs/api";
+import { getProductDetail, addCartItem } from "../../libs/api";
 import ChevronIcon from "../../components/icons/ChevronIcon";
 import HeartIcon from "../../components/icons/HeartIcon";
 import {
@@ -116,6 +116,21 @@ function ProductDetailPage() {
     }
     if (isRightSwipe && currentImageIndex > 0) {
       setCurrentImageIndex(prev => prev - 1);
+    }
+  };
+
+  const handleAddToCart = async () => {
+    try {
+      if (productId == null) return;
+      await addCartItem({ productId, quantity: 1 });
+      alert("장바구니에 담았어요.");
+    } catch (err) {
+      const anyErr = err as { status?: number; message?: string };
+      if (anyErr?.status === 401 || anyErr?.status === 403) {
+        alert("로그인이 필요합니다.");
+        return;
+      }
+      alert(anyErr?.message ?? "장바구니 담기에 실패했어요.");
     }
   };
 
@@ -242,7 +257,7 @@ function ProductDetailPage() {
         <LikeButton onClick={handleLikeClick}>
           <HeartIcon active={isLiked} />
         </LikeButton>
-        <BuyButton>구매하기</BuyButton>
+        <BuyButton onClick={handleAddToCart}>장바구니 담기</BuyButton>
       </ActionBar>
     </ProductDetailContainer>
   );

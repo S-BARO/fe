@@ -6,6 +6,7 @@ import LoginPage from "../pages/login/LoginPage";
 import KakaoCallbackPage from "../pages/login/KakaoCallbackPage";
 import MyPage from "../pages/my/MyPage";
 import LikePage from "../pages/like/LikePage";
+import CartPage from "../pages/cart/CartPage";
 import RootLayout from "./Layout/RootLayout";
 import { AuthGuard } from "../components/AuthGuard/AuthGuard";
 
@@ -35,6 +36,14 @@ const router = createBrowserRouter([
         element: (
           <AuthGuard>
             <LikePage />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: "cart",
+        element: (
+          <AuthGuard>
+            <CartPage />
           </AuthGuard>
         ),
       },

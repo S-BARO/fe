@@ -13,6 +13,9 @@ export type {
   PopularProductsParams,
   NewestResponse,
   NewestProductsParams,
+  AddCartItemRequest,
+  CartItemDto,
+  CartResponse,
 } from "./types";
 
 // 인증 관련 API
@@ -30,3 +33,6 @@ export {
   getNewestProducts,
   getProductDetail,
 } from "./products";
+
+// 장바구니 관련 API
+export { addCartItem, deleteCartItem, updateCartItemQuantity, getCart } from "./cart";

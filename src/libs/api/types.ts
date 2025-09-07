@@ -70,3 +70,23 @@ export interface NewestProductsParams {
   cursorId?: number;
   size?: number;
 }
+
+export interface AddCartItemRequest {
+  productId: number;
+  quantity: number;
+}
+
+export interface CartItemDto {
+  itemId: number;
+  productId: number;
+  productName: string;
+  productThumbnailUrl: string;
+  price: number;
+  quantity: number;
+  subtotal: number;
+}
+
+export interface CartResponse {
+  items: CartItemDto[];
+  totalPrice: number;
+}
