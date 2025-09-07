@@ -1,5 +1,3 @@
-import React from "react";
-
 function CategoriesPage() {
   return <div>CategoriesPage</div>;
 }
