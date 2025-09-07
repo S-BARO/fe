@@ -6,13 +6,13 @@ export async function addCartItem(body: AddCartItemRequest): Promise<void> {
 }
 
 // 장바구니 아이템 삭제
-export async function deleteCartItem(itemId: string | number): Promise<void> {
+export async function deleteCartItem(itemId: string): Promise<void> {
   await credentialApi.delete(`/cart/items/${itemId}`);
 }
 
 // 장바구니 수량 수정
 export async function updateCartItemQuantity(
-  itemId: string | number,
+  itemId: string,
   quantity: number
 ): Promise<void> {
   await credentialApi.patch(`/cart/items/${itemId}`, { quantity });
@@ -23,5 +23,3 @@ export async function getCart(): Promise<CartResponse> {
   const res = await credentialApi.get<CartResponse>("/cart");
   return res.data;
 }
-
-
