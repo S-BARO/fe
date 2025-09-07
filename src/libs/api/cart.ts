@@ -20,6 +20,20 @@ export async function updateCartItemQuantity(
 
 // 장바구니 조회
 export async function getCart(): Promise<CartResponse> {
-  const res = await credentialApi.get<CartResponse>("/cart");
-  return res.data;
+  // 큰 정수 itemId 정밀도 보존을 위해 수동 파싱
+  const res = await credentialApi.get("/cart", {
+    responseType: "text",
+    transformResponse: [
+      (data: string) => {
+        try {
+          return JSON.parse(data, (key, value) =>
+            key === "itemId" ? String(value) : value
+          );
+        } catch {
+          return data;
+        }
+      },
+    ],
+  });
+  return res.data as CartResponse;
 }
