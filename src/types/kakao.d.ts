@@ -11,6 +11,8 @@ declare global {
         logout: (callback: () => void) => void;
         getAccessToken: () => string | null;
         setAccessToken: (token: string) => void;
+        /** v2 SDK 리다이렉트 방식 */
+        authorize?: (options: { redirectUri: string; state?: string }) => void;
       };
       API: {
         request: (options: {

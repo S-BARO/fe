@@ -18,6 +18,7 @@ export type {
 // 인증 관련 API
 export {
   loginWithOAuth,
+  loginWithOAuthCode,
   checkAuthStatus,
   getUserProfile,
   logout,
