@@ -1,4 +1,4 @@
-import { credentialApi, publicApi } from "./axios";
+import { credentialApi } from "./axios";
 import type { LoginRequest, LoginResponse, UserProfile } from "./types";
 
 // OAuth 로그인 API (토큰 방식 - v1)
@@ -7,7 +7,8 @@ export async function loginWithOAuth(
   accessToken: string
 ): Promise<LoginResponse> {
   const body: LoginRequest = { provider, accessToken };
-  const res = await publicApi.post<LoginResponse>("/auth/login/oauth", body);
+  // 쿠키 발급을 위해 withCredentials 인스턴스를 사용
+  const res = await credentialApi.post<LoginResponse>("/auth/login/oauth", body);
 
   return res.data;
 }
@@ -18,7 +19,8 @@ export async function loginWithOAuthCode(
   authorizationCode: string,
   redirectUri: string
 ): Promise<LoginResponse> {
-  const res = await publicApi.post<LoginResponse>("/auth/login/oauth", {
+  // 쿠키 발급을 위해 withCredentials 인스턴스를 사용
+  const res = await credentialApi.post<LoginResponse>("/auth/login/oauth", {
     provider,
     authorizationCode,
     redirectUri,
