@@ -4,7 +4,9 @@ import ProductDetailPage from "../pages/productDetail/ProductDetailPage";
 import SwapPage from "../pages/swap/SwapPage";
 import LoginPage from "../pages/login/LoginPage";
 import MyPage from "../pages/my/MyPage";
+import LikePage from "../pages/like/LikePage";
 import RootLayout from "./Layout/RootLayout";
+import { AuthGuard } from "../components/AuthGuard/AuthGuard";
 
 const router = createBrowserRouter([
   {
@@ -21,10 +23,29 @@ const router = createBrowserRouter([
       },
       {
         path: "swap",
-        element: <SwapPage />,
+        element: (
+          <AuthGuard>
+            <SwapPage />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: "like",
+        element: (
+          <AuthGuard>
+            <LikePage />
+          </AuthGuard>
+        ),
       },
       { path: "login", element: <LoginPage /> },
-      { path: "my", element: <MyPage /> },
+      {
+        path: "my",
+        element: (
+          <AuthGuard>
+            <MyPage />
+          </AuthGuard>
+        ),
+      },
     ],
   },
 ]);

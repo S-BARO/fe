@@ -1,5 +1,4 @@
 import { useNavigate, useLocation } from "react-router";
-import CategoryTabIcon from "../icons/CategoryTabIcon";
 import HomeTabIcon from "../icons/HomeTabIcon";
 import LikeTabIcon from "../icons/LikeTabIcon";
 import MypageTabIcon from "../icons/MypageTabIcon";
@@ -13,23 +12,19 @@ function GNB() {
   // 현재 경로에 따라 active 상태를 결정
   const isHome = location.pathname === "/";
   const isSwap = location.pathname.startsWith("/swap");
-  const isCategory = location.pathname.startsWith("/category");
   const isLike = location.pathname.startsWith("/like");
   const isMypage = location.pathname.startsWith("/my");
 
   return (
     <GNBWrapper>
-      <IconButton onClick={() => navigate("/category")}>
-        <CategoryTabIcon active={isCategory} />
-      </IconButton>
-      <IconButton onClick={() => navigate("/swap")}>
-        <SwapTabIcon active={isSwap} />
+      <IconButton onClick={() => navigate("/like")}>
+        <LikeTabIcon active={isLike} />
       </IconButton>
       <IconButton onClick={() => navigate("/")}>
         <HomeTabIcon active={isHome} />
       </IconButton>
-      <IconButton onClick={() => navigate("/like")}>
-        <LikeTabIcon active={isLike} />
+      <IconButton onClick={() => navigate("/swap")}>
+        <SwapTabIcon active={isSwap} />
       </IconButton>
       <IconButton onClick={() => navigate("/my")}>
         <MypageTabIcon active={isMypage} />
