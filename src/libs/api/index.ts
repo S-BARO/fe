@@ -21,6 +21,9 @@ export type {
   SwipeLooksParams,
   ReactionType,
   PutLookReactionRequest,
+  LookImageItem,
+  LookProductItem,
+  LookDetailResponse,
 } from "./types";
 
 // 인증 관련 API
@@ -40,6 +43,7 @@ export {
   getSwipeLooks,
   putLookReaction,
   deleteLookReaction,
+  getLookDetail,
 } from "./products";
 
 // 장바구니 관련 API

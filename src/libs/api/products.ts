@@ -1,5 +1,5 @@
 import { publicApi, credentialApi } from "./axios";
-import type { PopularResponse, PopularProductsParams, NewestResponse, NewestProductsParams, ProductDetail, SwipeLooksParams, SwipeLooksResponse, PutLookReactionRequest } from "./types";
+import type { PopularResponse, PopularProductsParams, NewestResponse, NewestProductsParams, ProductDetail, SwipeLooksParams, SwipeLooksResponse, PutLookReactionRequest, LookDetailResponse } from "./types";
 
 // 인기 상품 목록 API
 export async function getPopularProducts(params: PopularProductsParams = {}): Promise<PopularResponse> {
@@ -79,4 +79,13 @@ export async function putLookReaction(lookId: number, body: PutLookReactionReque
 // DELETE /looks/{lookId}/reaction
 export async function deleteLookReaction(lookId: number): Promise<void> {
   await credentialApi.delete(`/looks/${encodeURIComponent(String(lookId))}/reaction`);
+}
+
+// 룩 상세 조회
+// GET /looks/{lookId}
+export async function getLookDetail(lookId: number): Promise<LookDetailResponse> {
+  const res = await credentialApi.get<LookDetailResponse>(
+    `/looks/${encodeURIComponent(String(lookId))}`
+  );
+  return res.data;
 }

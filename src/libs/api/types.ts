@@ -117,3 +117,27 @@ export type ReactionType = "LIKE" | "DISLIKE";
 export interface PutLookReactionRequest {
   reactionType: ReactionType;
 }
+
+// 룩 상세 타입 정의
+export interface LookImageItem {
+  imageUrl: string;
+  displayOrder: number;
+}
+
+export interface LookProductItem {
+  productId: number;
+  name: string;
+  price: number;
+  thumbnailUrl: string;
+  displayOrder: number;
+}
+
+export interface LookDetailResponse {
+  lookId: number;
+  title: string;
+  description: string;
+  thumbnailUrl: string;
+  likesCount: number;
+  images: LookImageItem[];
+  products: LookProductItem[];
+}

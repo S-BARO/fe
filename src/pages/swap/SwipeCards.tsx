@@ -3,8 +3,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useSpring, animated as a } from "@react-spring/web";
 import { useGesture } from "@use-gesture/react";
 import "./SwipeCards.css";
-import { getSwipeLooks, putLookReaction, deleteLookReaction } from "../../libs/api";
-import type { SwipeLookItem, ReactionType } from "../../libs/api";
+import { getSwipeLooks, putLookReaction, deleteLookReaction, getLookDetail } from "../../libs/api";
+import type { SwipeLookItem, ReactionType, LookDetailResponse } from "../../libs/api";
 
 const PAGE_SIZE = 10; // 한 번에 가져올 카드 수
 const PREFETCH_THRESHOLD = 3; // 이 수 이하로 남으면 추가 로드
@@ -24,6 +24,10 @@ function SwipeCards() {
   const [hasNext, setHasNext] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+
+  // 현재 카드 상세 정보
+  const [lookDetail, setLookDetail] = useState<LookDetailResponse | null>(null);
+  const [isDetailLoading, setIsDetailLoading] = useState(false);
 
   // 반응 요청 중복/연타 방지 및 낙관적 업데이트 관리
   const reactionInFlightRef = useRef<Set<number>>(new Set());
@@ -84,6 +88,34 @@ function SwipeCards() {
   useEffect(() => {
     setIsImageLoaded(false);
   }, [index]);
+
+  // 현재 보이는 카드 상세 불러오기
+  const visibleCard = useMemo(() => cards[index], [cards, index]);
+  useEffect(() => {
+    let cancelled = false;
+    const loadDetail = async () => {
+      if (!visibleCard) {
+        setLookDetail(null);
+        return;
+      }
+      setIsDetailLoading(true);
+      try {
+        const detail = await getLookDetail(visibleCard.lookId);
+        if (cancelled) return;
+        setLookDetail(detail);
+        // 상세 이미지도 프리페치
+        prefetchImages(detail.images.map((img) => img.imageUrl));
+      } catch (e) {
+        if (!cancelled) console.error(e);
+      } finally {
+        if (!cancelled) setIsDetailLoading(false);
+      }
+    };
+    void loadDetail();
+    return () => {
+      cancelled = true;
+    };
+  }, [visibleCard]);
 
   // 언마운트 시 타이머 정리
   useEffect(() => {
@@ -233,161 +265,196 @@ function SwipeCards() {
     },
   });
 
-  const visibleCard = useMemo(() => cards[index], [cards, index]);
-
   return (
-    <div className="card-container">
-      {visibleCard ? (
-        <a.div
-          key={visibleCard.lookId}
-          className="card"
-          style={{ x, rotateZ: rot, scale, backgroundColor: "#fcfcfc" }}
-          {...bind()}
-        >
-          {/* 스켈레톤 */}
+    <>
+      <div className="card-container">
+        {visibleCard ? (
+          <a.div
+            key={visibleCard.lookId}
+            className="card"
+            style={{ x, rotateZ: rot, scale, backgroundColor: "#fcfcfc" }}
+            {...bind()}
+          >
+            {/* 스켈레톤 */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background: "#e5e7eb",
+                borderRadius: 20,
+                opacity: isImageLoaded ? 0 : 1,
+                transition: `opacity ${OVERLAY_FADE_MS}ms ease-in-out`,
+              }}
+            />
+
+            {/* 썸네일 이미지 (페이드 인 + 폴백) */}
+            <img
+              src={visibleCard.thumbnailUrl}
+              alt={visibleCard.title}
+              onLoad={() => setIsImageLoaded(true)}
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = "/shirt.png";
+                setIsImageLoaded(true);
+              }}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                borderRadius: 20,
+                opacity: isImageLoaded ? 1 : 0,
+                transition: `opacity ${OVERLAY_FADE_MS}ms ease-in-out`,
+              }}
+            />
+
+            {/* 좋아요 카운트 표시 (있을 때만) */}
+            {typeof visibleCard.likesCount === "number" && (
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: 12,
+                  right: 12,
+                  background: "rgba(0,0,0,0.6)",
+                  color: "#fff",
+                  padding: "4px 8px",
+                  borderRadius: 12,
+                  fontSize: 12,
+                }}
+              >
+                ❤️ {visibleCard.likesCount}
+              </div>
+            )}
+          </a.div>
+        ) : (
+          <div
+            className="card"
+            style={{
+              backgroundColor: "#f3f4f6",
+              color: "#6b7280",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {isLoading
+              ? "불러오는 중..."
+              : hasNext
+                ? "더 불러오는 중..."
+                : "더 이상 항목이 없습니다"}
+          </div>
+        )}
+
+        {/* 반응 오버레이 (카드와 독립적으로 화면 중앙에 표시) */}
+        {reactionOverlay && (
           <div
             style={{
               position: "absolute",
               inset: 0,
-              background: "#e5e7eb",
-              borderRadius: 20,
-              opacity: isImageLoaded ? 0 : 1,
-              transition: `opacity ${OVERLAY_FADE_MS}ms ease-in-out`,
-            }}
-          />
-
-          {/* 썸네일 이미지 (페이드 인 + 폴백) */}
-          <img
-            src={visibleCard.thumbnailUrl}
-            alt={visibleCard.title}
-            onLoad={() => setIsImageLoaded(true)}
-            onError={(e) => {
-              e.currentTarget.onerror = null;
-              e.currentTarget.src = "/shirt.png";
-              setIsImageLoaded(true);
-            }}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              borderRadius: 20,
-              opacity: isImageLoaded ? 1 : 0,
-              transition: `opacity ${OVERLAY_FADE_MS}ms ease-in-out`,
-            }}
-          />
-
-          {/* 좋아요 카운트 표시 (있을 때만) */}
-          {typeof visibleCard.likesCount === "number" && (
-            <div
-              style={{
-                position: "absolute",
-                bottom: 12,
-                right: 12,
-                background: "rgba(0,0,0,0.6)",
-                color: "#fff",
-                padding: "4px 8px",
-                borderRadius: 12,
-                fontSize: 12,
-              }}
-            >
-              ❤️ {visibleCard.likesCount}
-            </div>
-          )}
-        </a.div>
-      ) : (
-        <div
-          className="card"
-          style={{
-            backgroundColor: "#f3f4f6",
-            color: "#6b7280",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {isLoading
-            ? "불러오는 중..."
-            : hasNext
-              ? "더 불러오는 중..."
-              : "더 이상 항목이 없습니다"}
-        </div>
-      )}
-
-      {/* 반응 오버레이 (카드와 독립적으로 화면 중앙에 표시) */}
-      {reactionOverlay && (
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            pointerEvents: "none",
-          }}
-        >
-          <div
-            style={{
-              padding: "8px 14px",
-              borderRadius: 12,
-              fontWeight: 700,
-              fontSize: 18,
-              color: "#fff",
-              background:
-                reactionOverlay === "LIKE" ? "rgba(16, 185, 129, 0.8)" : "rgba(239, 68, 68, 0.85)",
-              opacity: 1,
-              transform: "scale(1)",
-              transition: `opacity ${OVERLAY_FADE_MS}ms ease-in-out`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              pointerEvents: "none",
             }}
           >
-            {reactionOverlay === "LIKE" ? "좋아요" : "싫어요"}
+            <div
+              style={{
+                padding: "8px 14px",
+                borderRadius: 12,
+                fontWeight: 700,
+                fontSize: 18,
+                color: "#fff",
+                background:
+                  reactionOverlay === "LIKE" ? "rgba(16, 185, 129, 0.8)" : "rgba(239, 68, 68, 0.85)",
+                opacity: 1,
+                transform: "scale(1)",
+                transition: `opacity ${OVERLAY_FADE_MS}ms ease-in-out`,
+              }}
+            >
+              {reactionOverlay === "LIKE" ? "좋아요" : "싫어요"}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* 되돌리기 버튼 */}
-      {history.length > 0 && (
-        <button
-          type="button"
-          onClick={() => void handleUndo()}
-          style={{
-            position: "fixed",
-            left: 16,
-            bottom: 20,
-            background: "#111827",
-            color: "#fff",
-            padding: "10px 12px",
-            borderRadius: 12,
-            fontSize: 13,
-            boxShadow: "0 6px 20px rgba(0,0,0,0.25)",
-            zIndex: 51,
-            border: "none",
-          }}
-        >
-          되돌리기
-        </button>
-      )}
+        {/* 되돌리기 버튼 */}
+        {history.length > 0 && (
+          <button
+            type="button"
+            onClick={() => void handleUndo()}
+            style={{
+              position: "fixed",
+              left: 16,
+              bottom: 20,
+              background: "#111827",
+              color: "#fff",
+              padding: "10px 12px",
+              borderRadius: 12,
+              fontSize: 13,
+              boxShadow: "0 6px 20px rgba(0,0,0,0.25)",
+              zIndex: 51,
+              border: "none",
+            }}
+          >
+            되돌리기
+          </button>
+        )}
 
-      {/* 토스트 */}
-      {toastMessage && (
-        <div
-          style={{
-            position: "fixed",
-            left: "50%",
-            bottom: 24,
-            transform: "translateX(-50%)",
-            background: "rgba(31, 41, 55, 0.92)",
-            color: "#fff",
-            padding: "10px 14px",
-            borderRadius: 12,
-            fontSize: 13,
-            boxShadow: "0 6px 20px rgba(0,0,0,0.25)",
-            zIndex: 50,
-          }}
-        >
-          {toastMessage}
-        </div>
-      )}
-    </div>
+        {/* 토스트 */}
+        {toastMessage && (
+          <div
+            style={{
+              position: "fixed",
+              left: "50%",
+              bottom: 24,
+              transform: "translateX(-50%)",
+              background: "rgba(31, 41, 55, 0.92)",
+              color: "#fff",
+              padding: "10px 14px",
+              borderRadius: 12,
+              fontSize: 13,
+              boxShadow: "0 6px 20px rgba(0,0,0,0.25)",
+              zIndex: 50,
+            }}
+          >
+            {toastMessage}
+          </div>
+        )}
+      </div>
+
+      {/* 구성 상품 리스트 */}
+      <div style={{ padding: "12px 16px" }}>
+        <h3 style={{ margin: "0 0 8px", fontSize: 16, fontWeight: 600 }}>구성 상품</h3>
+        {isDetailLoading ? (
+          <div style={{ color: "#6b7280", fontSize: 13 }}>불러오는 중...</div>
+        ) : lookDetail && lookDetail.products && lookDetail.products.length > 0 ? (
+          <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: 12 }}>
+            {lookDetail.products
+              .slice()
+              .sort((a, b) => a.displayOrder - b.displayOrder)
+              .map((p) => (
+                <li key={p.productId} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <img
+                    src={p.thumbnailUrl}
+                    alt={p.name}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = "/shirt.png";
+                    }}
+                    style={{ width: 60, height: 60, borderRadius: 8, objectFit: "cover", background: "#f3f4f6" }}
+                  />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 14, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p.name}</div>
+                    <div style={{ fontSize: 13, color: "#6b7280", marginTop: 2 }}>
+                      {p.price.toLocaleString()}원
+                    </div>
+                  </div>
+                </li>
+              ))}
+          </ul>
+        ) : (
+          <div style={{ color: "#6b7280", fontSize: 13 }}>구성 상품이 없습니다</div>
+        )}
+      </div>
+    </>
   );
 }
 
