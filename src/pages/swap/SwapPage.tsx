@@ -14,7 +14,7 @@ const SwapTitle = styled.h1`
 function SwapPage() {
   return (
     <SwapContainer>
-      <SwapTitle>스왑</SwapTitle>=
+      <SwapTitle>스왑</SwapTitle>
       <SwipeCards />
     </SwapContainer>
   );
