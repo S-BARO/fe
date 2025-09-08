@@ -16,6 +16,9 @@ export type {
   AddCartItemRequest,
   CartItemDto,
   CartResponse,
+  SwipeLookItem,
+  SwipeLooksResponse,
+  SwipeLooksParams,
 } from "./types";
 
 // 인증 관련 API
@@ -32,6 +35,7 @@ export {
   getPopularProducts,
   getNewestProducts,
   getProductDetail,
+  getSwipeLooks,
 } from "./products";
 
 // 장바구니 관련 API

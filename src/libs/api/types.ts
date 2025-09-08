@@ -90,3 +90,23 @@ export interface CartResponse {
   items: CartItemDto[];
   totalPrice: number;
 }
+
+// 스와이프 룩 타입 정의
+export interface SwipeLookItem {
+  lookId: number;
+  title: string;
+  thumbnailUrl: string;
+}
+
+export interface SwipeLooksResponse {
+  content: SwipeLookItem[];
+  hasNext: boolean;
+  nextCursor: {
+    id: number;
+  };
+}
+
+export interface SwipeLooksParams {
+  cursorId?: number;
+  size?: number; // 기본 10
+}

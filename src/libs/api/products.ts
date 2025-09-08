@@ -1,5 +1,5 @@
-import { publicApi } from "./axios";
-import type { PopularResponse, PopularProductsParams, NewestResponse, NewestProductsParams, ProductDetail } from "./types";
+import { publicApi, credentialApi } from "./axios";
+import type { PopularResponse, PopularProductsParams, NewestResponse, NewestProductsParams, ProductDetail, SwipeLooksParams, SwipeLooksResponse } from "./types";
 
 // 인기 상품 목록 API
 export async function getPopularProducts(params: PopularProductsParams = {}): Promise<PopularResponse> {
@@ -49,5 +49,22 @@ export async function getProductDetail(productId: string | number): Promise<Prod
   const response = await publicApi.get<ProductDetail>(
     `/products/${encodeURIComponent(String(productId))}`
   );
+  return response.data;
+}
+
+// 스와이프 룩 목록 API (무한 스크롤)
+// GET /looks/swipe?cursorId=...&size=...
+export async function getSwipeLooks(params: SwipeLooksParams = {}): Promise<SwipeLooksResponse> {
+  const queryParams = new URLSearchParams();
+
+  if (params.cursorId) {
+    queryParams.append('cursorId', params.cursorId.toString());
+  }
+  if (params.size) {
+    queryParams.append('size', params.size.toString());
+  }
+
+  const url = `/looks/swipe${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+  const response = await credentialApi.get<SwipeLooksResponse>(url);
   return response.data;
 }

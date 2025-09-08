@@ -1,17 +1,22 @@
 // SwipeCards.tsx
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSpring, animated as a } from "@react-spring/web";
 import { useGesture } from "@use-gesture/react";
 import "./SwipeCards.css";
+import { getSwipeLooks } from "../../libs/api";
+import type { SwipeLookItem } from "../../libs/api";
 
-const cards = [
-  { id: 1, text: "Card 1", bg: "#ff6b6b" },
-  { id: 2, text: "Card 2", bg: "#feca57" },
-  { id: 3, text: "Card 3", bg: "#1dd1a1" },
-];
+const PAGE_SIZE = 10; // 한 번에 가져올 카드 수
+const PREFETCH_THRESHOLD = 3; // 이 수 이하로 남으면 추가 로드
+const SWIPE_VELOCITY_THRESHOLD = 0.2; // 속도 기준
+const SWIPE_DISTANCE_THRESHOLD_PX = 200; // 거리 기준(픽셀)
 
 function SwipeCards() {
+  const [cards, setCards] = useState<SwipeLookItem[]>([]);
   const [index, setIndex] = useState(0);
+  const [nextCursor, setNextCursor] = useState<number | undefined>(undefined);
+  const [hasNext, setHasNext] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [{ x, rot, scale }, api] = useSpring(() => ({
     x: 0,
@@ -20,46 +25,63 @@ function SwipeCards() {
     config: { tension: 300, friction: 30 },
   }));
 
-  // 왼쪽 스와이프 시 실행할 함수
-  const onSwipeLeft = (cardId: number) => {
-    console.log(`카드 ${cardId}를 싫어요 버튼을 눌렀습니다!`);
-    // 여기에 왼쪽 스와이프 시 실행할 로직 추가
-    // 예: 좋아요, 관심 있음 등
+  const fetchMore = async () => {
+    if (isLoading) return;
+    setIsLoading(true);
+    try {
+      const data = await getSwipeLooks({
+        cursorId: nextCursor,
+        size: PAGE_SIZE,
+      });
+      setCards((prev) => [...prev, ...data.content]);
+      setHasNext(data.hasNext);
+      setNextCursor(data.nextCursor?.id);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // 오른쪽 스와이프 시 실행할 함수
-  const onSwipeRight = (cardId: number) => {
-    console.log(`카드 ${cardId}를 좋아요 버튼을 눌렀습니다!`);
-    // 여기에 오른쪽 스와이프 시 실행할 로직 추가
-    // 예: 관심 없음, 건너뛰기 등
+  useEffect(() => {
+    // 초기 로드
+    fetchMore();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const onSwipeLeft = (lookId: number) => {
+    console.log(`룩 ${lookId} 싫어요`);
+  };
+
+  const onSwipeRight = (lookId: number) => {
+    console.log(`룩 ${lookId} 좋아요`);
   };
 
   const bind = useGesture({
     onDrag: ({ down, movement: [mx], direction: [xDir], velocity }) => {
-      // 스와이프 판정 기준
-      const velocityThreshold = 0.2; // 속도 기준
-      const distanceThreshold = 200; // 거리 기준 (픽셀)
-
-      // 속도 또는 거리 중 하나라도 기준을 만족하면 스와이프 완료
-      const velocityTrigger = Math.abs(velocity[0]) > velocityThreshold;
-      const distanceTrigger = Math.abs(mx) > distanceThreshold;
+      const velocityTrigger = Math.abs(velocity[0]) > SWIPE_VELOCITY_THRESHOLD;
+      const distanceTrigger = Math.abs(mx) > SWIPE_DISTANCE_THRESHOLD_PX;
       const trigger = velocityTrigger || distanceTrigger;
 
       const dir = xDir < 0 ? -1 : 1;
 
       if (!down && trigger) {
-        // 스와이프 방향에 따라 다른 함수 실행
         const currentCard = cards[index];
-        if (dir === -1) {
-          // 왼쪽으로 스와이프
-          onSwipeLeft(currentCard.id);
-        } else {
-          // 오른쪽으로 스와이프
-          onSwipeRight(currentCard.id);
+        if (currentCard) {
+          if (dir === -1) {
+            onSwipeLeft(currentCard.lookId);
+          } else {
+            onSwipeRight(currentCard.lookId);
+          }
         }
 
-        // 다음 카드로 이동
-        setIndex((prev) => (prev + 1 < cards.length ? prev + 1 : 0));
+        const nextIndex = index + 1;
+        setIndex(nextIndex);
+
+        // 잔량이 임계치 이하면 다음 페이지 미리 로드
+        if (cards.length - nextIndex <= PREFETCH_THRESHOLD && hasNext) {
+          void fetchMore();
+        }
       }
 
       api.start({
@@ -70,23 +92,46 @@ function SwipeCards() {
     },
   });
 
+  const visibleCard = useMemo(() => cards[index], [cards, index]);
+
   return (
     <div className="card-container">
-      {cards.slice(index, index + 1).map(({ id, text, bg }) => (
+      {visibleCard ? (
         <a.div
-          key={id}
+          key={visibleCard.lookId}
           className="card"
-          style={{
-            backgroundColor: bg,
-            x,
-            rotateZ: rot,
-            scale,
-          }}
+          style={{ x, rotateZ: rot, scale, backgroundColor: "#111827" }}
           {...bind()}
         >
-          {text}
+          <img
+            src={visibleCard.thumbnailUrl}
+            alt={visibleCard.title}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              borderRadius: 20,
+            }}
+          />
         </a.div>
-      ))}
+      ) : (
+        <div
+          className="card"
+          style={{
+            backgroundColor: "#f3f4f6",
+            color: "#6b7280",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {isLoading
+            ? "불러오는 중..."
+            : hasNext
+              ? "더 불러오는 중..."
+              : "더 이상 항목이 없습니다"}
+        </div>
+      )}
     </div>
   );
 }
