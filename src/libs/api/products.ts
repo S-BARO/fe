@@ -1,5 +1,5 @@
 import { publicApi, credentialApi } from "./axios";
-import type { PopularResponse, PopularProductsParams, NewestResponse, NewestProductsParams, ProductDetail, SwipeLooksParams, SwipeLooksResponse } from "./types";
+import type { PopularResponse, PopularProductsParams, NewestResponse, NewestProductsParams, ProductDetail, SwipeLooksParams, SwipeLooksResponse, PutLookReactionRequest } from "./types";
 
 // 인기 상품 목록 API
 export async function getPopularProducts(params: PopularProductsParams = {}): Promise<PopularResponse> {
@@ -67,4 +67,10 @@ export async function getSwipeLooks(params: SwipeLooksParams = {}): Promise<Swip
   const url = `/looks/swipe${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
   const response = await credentialApi.get<SwipeLooksResponse>(url);
   return response.data;
+}
+
+// 룩 반응 등록 (멱등)
+// PUT /looks/{lookId}/reaction  body: { reactionType: "LIKE" | "DISLIKE" }
+export async function putLookReaction(lookId: number, body: PutLookReactionRequest): Promise<void> {
+  await credentialApi.put(`/looks/${encodeURIComponent(String(lookId))}/reaction`, body);
 }

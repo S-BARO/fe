@@ -110,3 +110,9 @@ export interface SwipeLooksParams {
   cursorId?: number;
   size?: number; // 기본 10
 }
+
+// 룩 반응 타입 정의
+export type ReactionType = "LIKE" | "DISLIKE";
+export interface PutLookReactionRequest {
+  reactionType: ReactionType;
+}

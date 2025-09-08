@@ -3,8 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useSpring, animated as a } from "@react-spring/web";
 import { useGesture } from "@use-gesture/react";
 import "./SwipeCards.css";
-import { getSwipeLooks } from "../../libs/api";
-import type { SwipeLookItem } from "../../libs/api";
+import { getSwipeLooks, putLookReaction } from "../../libs/api";
+import type { SwipeLookItem, ReactionType } from "../../libs/api";
 
 const PAGE_SIZE = 10; // 한 번에 가져올 카드 수
 const PREFETCH_THRESHOLD = 3; // 이 수 이하로 남으면 추가 로드
@@ -49,12 +49,21 @@ function SwipeCards() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const sendReaction = async (lookId: number, reactionType: ReactionType) => {
+    try {
+      await putLookReaction(lookId, { reactionType });
+    } catch (e) {
+      // 멱등 API이므로 실패해도 UX 끊김 없이 진행
+      console.error("putLookReaction error", e);
+    }
+  };
+
   const onSwipeLeft = (lookId: number) => {
-    console.log(`룩 ${lookId} 싫어요`);
+    void sendReaction(lookId, "DISLIKE");
   };
 
   const onSwipeRight = (lookId: number) => {
-    console.log(`룩 ${lookId} 좋아요`);
+    void sendReaction(lookId, "LIKE");
   };
 
   const bind = useGesture({
@@ -100,7 +109,7 @@ function SwipeCards() {
         <a.div
           key={visibleCard.lookId}
           className="card"
-          style={{ x, rotateZ: rot, scale, backgroundColor: "#111827" }}
+          style={{ x, rotateZ: rot, scale, backgroundColor: "#fcfcfc" }}
           {...bind()}
         >
           <img
