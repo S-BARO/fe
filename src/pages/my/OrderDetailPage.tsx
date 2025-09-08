@@ -42,7 +42,7 @@ export default function OrderDetailPage() {
       setLoading(true);
       setError(null);
       try {
-        const res = await getOrderDetail(Number(orderId));
+        const res = await getOrderDetail(orderId ?? "");
         setData(res);
       } catch (e) {
         setError("주문 정보를 불러오지 못했습니다.");

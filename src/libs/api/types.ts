@@ -154,7 +154,7 @@ export interface OrderCreateRequest {
   orderItems: OrderCreateItem[];
 }
 
-export type OrderStatus = "ORDERED" | "PAID" | "SHIPPED" | "DELIVERED" | "CANCELLED";
+export type OrderStatus = "ORDERED" | "PAID" | "SHIPPED" | "DELIVERED" | "CANCELLED" | "PENDING";
 
 export interface OrderItemDetail {
   productId: number;
@@ -165,7 +165,7 @@ export interface OrderItemDetail {
 }
 
 export interface OrderDetailResponse {
-  orderId: number;
+  orderId: string; // 서버에서 문자열로 수신
   orderStatus: OrderStatus;
   shippingAddress: string;
   totalPrice: number;
@@ -174,7 +174,7 @@ export interface OrderDetailResponse {
 }
 
 export interface OrdersSliceItem {
-  orderId: number;
+  orderId: string; // 문자열 ID
   totalPrice: number;
   orderStatus: OrderStatus;
   orderedAt: string;
@@ -183,10 +183,10 @@ export interface OrdersSliceItem {
 export interface OrdersSliceResponse {
   content: OrdersSliceItem[];
   hasNext: boolean;
-  nextCursor?: { id: number };
+  nextCursor?: { id: string };
 }
 
 export interface OrdersSliceParams {
-  cursorId?: number;
+  cursorId?: string; // 문자열 커서
   size?: number;
 }

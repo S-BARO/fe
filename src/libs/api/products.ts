@@ -101,7 +101,7 @@ export async function createOrder(body: OrderCreateRequest): Promise<OrderDetail
 // GET /orders?cursorId=&size=
 export async function getOrders(params: OrdersSliceParams = {}): Promise<OrdersSliceResponse> {
   const qs = new URLSearchParams();
-  if (typeof params.cursorId === "number") qs.append("cursorId", String(params.cursorId));
+  if (typeof params.cursorId === "string") qs.append("cursorId", params.cursorId);
   if (typeof params.size === "number") qs.append("size", String(params.size));
   const url = `/orders${qs.toString() ? `?${qs.toString()}` : ""}`;
   const res = await credentialApi.get<OrdersSliceResponse>(url);
