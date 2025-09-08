@@ -1,5 +1,5 @@
 import { publicApi, credentialApi } from "./axios";
-import type { PopularResponse, PopularProductsParams, NewestResponse, NewestProductsParams, ProductDetail, SwipeLooksParams, SwipeLooksResponse, PutLookReactionRequest, LookDetailResponse } from "./types";
+import type { PopularResponse, PopularProductsParams, NewestResponse, NewestProductsParams, ProductDetail, SwipeLooksParams, SwipeLooksResponse, PutLookReactionRequest, LookDetailResponse, OrderCreateRequest, OrderDetailResponse, OrdersSliceParams, OrdersSliceResponse } from "./types";
 
 // 인기 상품 목록 API
 export async function getPopularProducts(params: PopularProductsParams = {}): Promise<PopularResponse> {
@@ -87,5 +87,30 @@ export async function getLookDetail(lookId: number): Promise<LookDetailResponse>
   const res = await credentialApi.get<LookDetailResponse>(
     `/looks/${encodeURIComponent(String(lookId))}`
   );
+  return res.data;
+}
+
+// 주문 생성
+// POST /orders
+export async function createOrder(body: OrderCreateRequest): Promise<OrderDetailResponse> {
+  const res = await credentialApi.post<OrderDetailResponse>("/orders", body);
+  return res.data;
+}
+
+// 주문 목록 조회 (무한 스크롤)
+// GET /orders?cursorId=&size=
+export async function getOrders(params: OrdersSliceParams = {}): Promise<OrdersSliceResponse> {
+  const qs = new URLSearchParams();
+  if (typeof params.cursorId === "number") qs.append("cursorId", String(params.cursorId));
+  if (typeof params.size === "number") qs.append("size", String(params.size));
+  const url = `/orders${qs.toString() ? `?${qs.toString()}` : ""}`;
+  const res = await credentialApi.get<OrdersSliceResponse>(url);
+  return res.data;
+}
+
+// 주문 상세 조회
+// GET /orders/{orderId}
+export async function getOrderDetail(orderId: number | string): Promise<OrderDetailResponse> {
+  const res = await credentialApi.get<OrderDetailResponse>(`/orders/${encodeURIComponent(String(orderId))}`);
   return res.data;
 }

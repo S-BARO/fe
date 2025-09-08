@@ -142,3 +142,51 @@ export interface LookDetailResponse {
   images: LookImageItem[];
   products: LookProductItem[];
 }
+
+// 주문 타입 정의
+export interface OrderCreateItem {
+  productId: number;
+  quantity: number;
+}
+
+export interface OrderCreateRequest {
+  shippingAddress: string;
+  orderItems: OrderCreateItem[];
+}
+
+export type OrderStatus = "ORDERED" | "PAID" | "SHIPPED" | "DELIVERED" | "CANCELLED";
+
+export interface OrderItemDetail {
+  productId: number;
+  productName: string;
+  thumbnailUrl: string;
+  quantity: number;
+  priceAtPurchase: number;
+}
+
+export interface OrderDetailResponse {
+  orderId: number;
+  orderStatus: OrderStatus;
+  shippingAddress: string;
+  totalPrice: number;
+  orderedAt: string; // ISO8601
+  items: OrderItemDetail[];
+}
+
+export interface OrdersSliceItem {
+  orderId: number;
+  totalPrice: number;
+  orderStatus: OrderStatus;
+  orderedAt: string;
+}
+
+export interface OrdersSliceResponse {
+  content: OrdersSliceItem[];
+  hasNext: boolean;
+  nextCursor?: { id: number };
+}
+
+export interface OrdersSliceParams {
+  cursorId?: number;
+  size?: number;
+}

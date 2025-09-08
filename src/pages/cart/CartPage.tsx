@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router";
 import {
   deleteCartItem,
   updateCartItemQuantity,
@@ -104,6 +105,7 @@ const SelectAll = styled.label`
 function CartPage() {
   const [items, setItems] = useState<CartItemDto[]>([]);
   const [selected, setSelected] = useState<Record<string, boolean>>({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     const run = async () => {
@@ -175,6 +177,12 @@ function CartPage() {
 
   const shippingFee = 0;
   const totalAmount = Math.max(0, itemsAmount + shippingFee);
+
+  const handleProceedToOrder = () => {
+    const payload = selectedItems.map((it) => ({ productId: Number(it.productId), quantity: it.quantity }));
+    const encoded = encodeURIComponent(JSON.stringify(payload));
+    navigate(`/order/confirm?items=${encoded}`);
+  };
 
   return (
     <Page>
@@ -248,7 +256,7 @@ function CartPage() {
       <Footer>
         <BuyButton
           disabled={selectedItems.length === 0}
-          onClick={() => alert("구매하기 진행")}
+          onClick={handleProceedToOrder}
         >
           구매하기
         </BuyButton>

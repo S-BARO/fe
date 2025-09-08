@@ -24,6 +24,13 @@ export type {
   LookImageItem,
   LookProductItem,
   LookDetailResponse,
+  OrderCreateItem,
+  OrderCreateRequest,
+  OrderDetailResponse,
+  OrderStatus,
+  OrdersSliceItem,
+  OrdersSliceResponse,
+  OrdersSliceParams,
 } from "./types";
 
 // 인증 관련 API
@@ -44,6 +51,9 @@ export {
   putLookReaction,
   deleteLookReaction,
   getLookDetail,
+  createOrder,
+  getOrders,
+  getOrderDetail,
 } from "./products";
 
 // 장바구니 관련 API

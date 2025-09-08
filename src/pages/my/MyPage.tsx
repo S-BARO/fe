@@ -131,6 +131,19 @@ const LogoutButton = styled.button`
   }
 `;
 
+const LinkButton = styled.button`
+  width: 100%;
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: #111827;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+`;
+
 function MyPage() {
   const navigate = useNavigate();
   
@@ -253,6 +266,8 @@ function MyPage() {
           <InfoValue>{getRoleText(userProfile.role)}</InfoValue>
         </InfoItem>
       </InfoSection>
+
+      <LinkButton onClick={() => navigate("/my/orders")}>주문 내역 보기</LinkButton>
 
       <LogoutButton onClick={handleLogout}>
         로그아웃

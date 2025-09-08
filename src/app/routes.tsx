@@ -7,6 +7,10 @@ import KakaoCallbackPage from "../pages/login/KakaoCallbackPage";
 import MyPage from "../pages/my/MyPage";
 import LikePage from "../pages/like/LikePage";
 import CartPage from "../pages/cart/CartPage";
+import OrderConfirmPage from "../pages/cart/OrderConfirmPage";
+import OrderSuccessPage from "../pages/cart/OrderSuccessPage";
+import MyOrdersPage from "../pages/my/MyOrdersPage";
+import OrderDetailPage from "../pages/my/OrderDetailPage";
 import RootLayout from "./Layout/RootLayout";
 import { AuthGuard } from "../components/AuthGuard/AuthGuard";
 
@@ -44,6 +48,38 @@ const router = createBrowserRouter([
         element: (
           <AuthGuard>
             <CartPage />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: "order/confirm",
+        element: (
+          <AuthGuard>
+            <OrderConfirmPage />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: "order/success",
+        element: (
+          <AuthGuard>
+            <OrderSuccessPage />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: "my/orders",
+        element: (
+          <AuthGuard>
+            <MyOrdersPage />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: "my/orders/:orderId",
+        element: (
+          <AuthGuard>
+            <OrderDetailPage />
           </AuthGuard>
         ),
       },
