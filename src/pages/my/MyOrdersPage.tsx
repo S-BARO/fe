@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { getOrders, type OrdersSliceItem } from "../../libs/api";
 import { useNavigate } from "react-router";
 
@@ -64,14 +64,27 @@ export default function MyOrdersPage() {
         <div style={{ color: "#6b7280" }}>주문 내역이 없습니다.</div>
       ) : (
         items.map((o) => (
-          <OrderCard key={o.orderId} onClick={() => navigate(`/my/orders/${o.orderId}`)}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+          <OrderCard
+            key={o.orderId}
+            onClick={() => navigate(`/my/orders/${o.orderId}`)}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginBottom: 6,
+              }}
+            >
               <div style={{ fontWeight: 700 }}>주문번호 {o.orderId}</div>
-              <div style={{ color: "#6b7280", fontSize: 12 }}>{new Date(o.orderedAt).toLocaleString()}</div>
+              <div style={{ color: "#6b7280", fontSize: 12 }}>
+                {new Date(o.orderedAt).toLocaleString()}
+              </div>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <div style={{ color: "#374151" }}>{o.orderStatus}</div>
-              <div style={{ fontWeight: 800 }}>{o.totalPrice.toLocaleString()}원</div>
+              <div style={{ fontWeight: 800 }}>
+                {o.totalPrice.toLocaleString()}원
+              </div>
             </div>
           </OrderCard>
         ))
@@ -85,5 +98,3 @@ export default function MyOrdersPage() {
     </Page>
   );
 }
-
-
