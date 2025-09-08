@@ -29,8 +29,8 @@ function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   
   // productId 유효성 검사
-  const parsedId = parseInt(id || "", 10);
-  const productId = Number.isInteger(parsedId) && parsedId > 0 ? parsedId : null;
+  const parsedId = id || "";
+  const productId = parsedId.length > 0 ? parsedId : null;
 
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
   const [isLiked, setIsLiked] = useState(false);
@@ -47,7 +47,7 @@ function ProductDetailPage() {
     error,
   } = useQuery({
     queryKey: productId != null ? ["product", productId] : ["product"],
-    queryFn: () => getProductDetail(productId!),
+    queryFn: () => getProductDetail(String(productId!)),
     enabled: productId != null,
   });
 
@@ -122,7 +122,7 @@ function ProductDetailPage() {
   const handleAddToCart = async () => {
     try {
       if (productId == null) return;
-      await addCartItem({ productId, quantity: 1 });
+      await addCartItem({ productId: String(productId), quantity: 1 });
       alert("장바구니에 담았어요.");
     } catch (err) {
       const anyErr = err as { status?: number; message?: string };

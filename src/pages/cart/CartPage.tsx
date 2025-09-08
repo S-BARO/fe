@@ -130,7 +130,7 @@ function CartPage() {
     setSelected(next);
   };
 
-  const handleQtyChangeByProduct = async (productId: number, nextQty: number) => {
+  const handleQtyChangeByProduct = async (productId: string, nextQty: number) => {
     if (nextQty < 1) return;
     const target = items.find((it) => it.productId === productId);
     if (!target) return;

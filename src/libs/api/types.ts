@@ -72,13 +72,13 @@ export interface NewestProductsParams {
 }
 
 export interface AddCartItemRequest {
-  productId: number;
+  productId: string; // 서버 변경에 따라 문자열로 전송
   quantity: number;
 }
 
 export interface CartItemDto {
   itemId: string; // 64-bit 정수 안전 처리: 문자열로 보관
-  productId: number;
+  productId: string; // 서버 변경에 따라 문자열로 수신
   productName: string;
   productThumbnailUrl: string;
   price: number;

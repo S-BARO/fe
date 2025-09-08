@@ -45,7 +45,9 @@ export async function getNewestProducts(params: NewestProductsParams = {}): Prom
 }
 
 // 상품 상세 API
-export async function getProductDetail(productId: number): Promise<ProductDetail> {
-  const response = await publicApi.get<ProductDetail>(`/products/${productId}`);
+export async function getProductDetail(productId: string | number): Promise<ProductDetail> {
+  const response = await publicApi.get<ProductDetail>(
+    `/products/${encodeURIComponent(String(productId))}`
+  );
   return response.data;
 }
