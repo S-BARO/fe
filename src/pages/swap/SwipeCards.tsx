@@ -2,18 +2,24 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSpring, animated as a } from "@react-spring/web";
 import { useGesture } from "@use-gesture/react";
+import { useNavigate } from "react-router";
 import "./SwipeCards.css";
 import { getSwipeLooks, putLookReaction, deleteLookReaction, getLookDetail } from "../../libs/api";
 import type { SwipeLookItem, ReactionType, LookDetailResponse } from "../../libs/api";
 
 const PAGE_SIZE = 10; // 한 번에 가져올 카드 수
 const PREFETCH_THRESHOLD = 3; // 이 수 이하로 남으면 추가 로드
+const PREFETCH_AHEAD_COUNT = 6; // 인덱스 변경 시 앞부분 선행 프리페치 개수 (느린 네트워크 대비)
 const SWIPE_VELOCITY_THRESHOLD = 0.2; // 속도 기준
 const SWIPE_DISTANCE_THRESHOLD_PX = 200; // 거리 기준(픽셀)
 
 const OVERLAY_VISIBLE_MS = 500; // 반응 오버레이 표시 시간
 const OVERLAY_FADE_MS = 250; // 반응 오버레이 페이드 시간
-const TOAST_DURATION_MS = 1600; // 토스트 표시 시간
+const IMAGE_FADE_MS = 150; // 메인 카드 이미지/스켈레톤 페이드 시간
+const ROW_IMAGE_FADE_MS = 150; // 하단 리스트 이미지 페이드 시간
+
+const SKELETON_BG = "#eceff3"; // 메인 카드 스켈레톤 색상
+const ROW_SKELETON_BG = "#eef2f7"; // 리스트 썸네일 스켈레톤 색상
 
 type HistoryItem = { lookId: number; reactionType: ReactionType; prevIndex: number };
 
@@ -89,6 +95,15 @@ function SwipeCards() {
     setIsImageLoaded(false);
   }, [index]);
 
+  // 인덱스 변경 시 다음 카드 썸네일을 선행 프리페치 (느린 네트워크 대비)
+  useEffect(() => {
+    if (cards.length === 0) return;
+    const ahead = cards.slice(index + 1, index + 1 + PREFETCH_AHEAD_COUNT);
+    if (ahead.length > 0) {
+      prefetchImages(ahead.map((c) => c.thumbnailUrl));
+    }
+  }, [cards, index]);
+
   // 현재 보이는 카드 상세 불러오기
   const visibleCard = useMemo(() => cards[index], [cards, index]);
   useEffect(() => {
@@ -138,7 +153,7 @@ function SwipeCards() {
     if (toastTimerRef.current) window.clearTimeout(toastTimerRef.current);
     toastTimerRef.current = window.setTimeout(() => {
       setToastMessage(null);
-    }, TOAST_DURATION_MS);
+    }, 1600);
   };
 
   const sendReaction = async (lookId: number, reactionType: ReactionType) => {
@@ -280,10 +295,10 @@ function SwipeCards() {
               style={{
                 position: "absolute",
                 inset: 0,
-                background: "#e5e7eb",
+                background: SKELETON_BG,
                 borderRadius: 20,
                 opacity: isImageLoaded ? 0 : 1,
-                transition: `opacity ${OVERLAY_FADE_MS}ms ease-in-out`,
+                transition: `opacity ${IMAGE_FADE_MS}ms ease-in-out`,
               }}
             />
 
@@ -303,7 +318,7 @@ function SwipeCards() {
                 objectFit: "cover",
                 borderRadius: 20,
                 opacity: isImageLoaded ? 1 : 0,
-                transition: `opacity ${OVERLAY_FADE_MS}ms ease-in-out`,
+                transition: `opacity ${IMAGE_FADE_MS}ms ease-in-out`,
               }}
             />
 
@@ -431,23 +446,7 @@ function SwipeCards() {
               .slice()
               .sort((a, b) => a.displayOrder - b.displayOrder)
               .map((p) => (
-                <li key={p.productId} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <img
-                    src={p.thumbnailUrl}
-                    alt={p.name}
-                    onError={(e) => {
-                      e.currentTarget.onerror = null;
-                      e.currentTarget.src = "/shirt.png";
-                    }}
-                    style={{ width: 60, height: 60, borderRadius: 8, objectFit: "cover", background: "#f3f4f6" }}
-                  />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 14, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p.name}</div>
-                    <div style={{ fontSize: 13, color: "#6b7280", marginTop: 2 }}>
-                      {p.price.toLocaleString()}원
-                    </div>
-                  </div>
-                </li>
+                <ProductRow key={p.productId} product={p} />
               ))}
           </ul>
         ) : (
@@ -455,6 +454,68 @@ function SwipeCards() {
         )}
       </div>
     </>
+  );
+}
+
+function ProductRow({ product }: { product: { productId: number; name: string; price: number; thumbnailUrl: string; storeName?: string } }) {
+  const [loaded, setLoaded] = useState(false);
+  const navigate = useNavigate();
+
+  return (
+    <li
+      onClick={() => navigate(`/product/${product.productId}`)}
+      style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }}
+      role="button"
+      aria-label={`${product.name} 상세로 이동`}
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          navigate(`/product/${product.productId}`);
+        }
+      }}
+    >
+      <div style={{ position: "relative", width: 60, height: 60 }}>
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: ROW_SKELETON_BG,
+            borderRadius: 10,
+            opacity: loaded ? 0 : 1,
+            transition: `opacity ${ROW_IMAGE_FADE_MS}ms ease-in-out`,
+          }}
+        />
+        <img
+          src={product.thumbnailUrl}
+          alt={product.name}
+          onLoad={() => setLoaded(true)}
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = "/shirt.png";
+            setLoaded(true);
+          }}
+          style={{
+            width: 60,
+            height: 60,
+            borderRadius: 10,
+            objectFit: "cover",
+            opacity: loaded ? 1 : 0,
+            transition: `opacity ${ROW_IMAGE_FADE_MS}ms ease-in-out`,
+          }}
+        />
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 2 }}>
+          ID: {product.productId}
+          {product.storeName ? ` · ${product.storeName}` : ""}
+        </div>
+        <div style={{ fontSize: 14, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{product.name}</div>
+        <div style={{ fontSize: 13, color: "#6b7280", marginTop: 2 }}>
+          {product.price.toLocaleString()}원
+        </div>
+      </div>
+    </li>
   );
 }
 

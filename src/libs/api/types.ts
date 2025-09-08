@@ -130,6 +130,7 @@ export interface LookProductItem {
   price: number;
   thumbnailUrl: string;
   displayOrder: number;
+  storeName?: string; // 브랜드/스토어명 (서버가 제공 시 표시)
 }
 
 export interface LookDetailResponse {
