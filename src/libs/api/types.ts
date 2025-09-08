@@ -96,6 +96,7 @@ export interface SwipeLookItem {
   lookId: number;
   title: string;
   thumbnailUrl: string;
+  likesCount?: number;
 }
 
 export interface SwipeLooksResponse {
