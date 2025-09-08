@@ -39,6 +39,7 @@ export {
   getProductDetail,
   getSwipeLooks,
   putLookReaction,
+  deleteLookReaction,
 } from "./products";
 
 // 장바구니 관련 API

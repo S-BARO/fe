@@ -74,3 +74,9 @@ export async function getSwipeLooks(params: SwipeLooksParams = {}): Promise<Swip
 export async function putLookReaction(lookId: number, body: PutLookReactionRequest): Promise<void> {
   await credentialApi.put(`/looks/${encodeURIComponent(String(lookId))}/reaction`, body);
 }
+
+// 룩 반응 취소 (멱등)
+// DELETE /looks/{lookId}/reaction
+export async function deleteLookReaction(lookId: number): Promise<void> {
+  await credentialApi.delete(`/looks/${encodeURIComponent(String(lookId))}/reaction`);
+}

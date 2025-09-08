@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useSpring, animated as a } from "@react-spring/web";
 import { useGesture } from "@use-gesture/react";
 import "./SwipeCards.css";
-import { getSwipeLooks, putLookReaction } from "../../libs/api";
+import { getSwipeLooks, putLookReaction, deleteLookReaction } from "../../libs/api";
 import type { SwipeLookItem, ReactionType } from "../../libs/api";
 
 const PAGE_SIZE = 10; // 한 번에 가져올 카드 수
@@ -14,6 +14,8 @@ const SWIPE_DISTANCE_THRESHOLD_PX = 200; // 거리 기준(픽셀)
 const OVERLAY_VISIBLE_MS = 500; // 반응 오버레이 표시 시간
 const OVERLAY_FADE_MS = 250; // 반응 오버레이 페이드 시간
 const TOAST_DURATION_MS = 1600; // 토스트 표시 시간
+
+type HistoryItem = { lookId: number; reactionType: ReactionType; prevIndex: number };
 
 function SwipeCards() {
   const [cards, setCards] = useState<SwipeLookItem[]>([]);
@@ -33,6 +35,9 @@ function SwipeCards() {
   const overlayTimerRef = useRef<number | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const toastTimerRef = useRef<number | null>(null);
+
+  // 스와이프 되돌리기 히스토리
+  const [history, setHistory] = useState<HistoryItem[]>([]);
 
   const [{ x, rot, scale }, api] = useSpring(() => ({
     x: 0,
@@ -148,6 +153,42 @@ function SwipeCards() {
     void sendReaction(lookId, "LIKE");
   };
 
+  const handleUndo = async () => {
+    const last = history[history.length - 1];
+    if (!last) return;
+
+    // 진행 중인 요청이면 잠시 후 재시도 안내
+    if (reactionInFlightRef.current.has(last.lookId)) {
+      showToast("이전 반응 처리 중입니다. 잠시 후 다시 시도해주세요.");
+      return;
+    }
+
+    // UI 먼저 되돌리고 서버에 취소 요청 (낙관적 롤백)
+    setHistory((prev) => prev.slice(0, -1));
+    setIndex(last.prevIndex);
+
+    if (last.reactionType === "LIKE") {
+      setCards((prev) =>
+        prev.map((item) =>
+          item.lookId === last.lookId
+            ? { ...item, likesCount: Math.max(0, (item.likesCount ?? 0) - 1) }
+            : item
+        )
+      );
+      optimisticLikedIdsRef.current.delete(last.lookId);
+    }
+
+    reactedLookIdsRef.current.delete(last.lookId);
+
+    try {
+      await deleteLookReaction(last.lookId);
+      showToast("이전 반응을 취소했어요");
+    } catch (e) {
+      console.error("deleteLookReaction error", e);
+      showToast("반응 취소에 실패했어요");
+    }
+  };
+
   const bind = useGesture({
     onDrag: ({ down, movement: [mx], direction: [xDir], velocity }) => {
       const velocityTrigger = Math.abs(velocity[0]) > SWIPE_VELOCITY_THRESHOLD;
@@ -164,6 +205,15 @@ function SwipeCards() {
           } else {
             onSwipeRight(currentCard.lookId);
           }
+          // 히스토리 저장 (되돌리기)
+          setHistory((prev) => [
+            ...prev,
+            {
+              lookId: currentCard.lookId,
+              reactionType: dir === -1 ? "DISLIKE" : "LIKE",
+              prevIndex: index,
+            },
+          ]);
         }
 
         const nextIndex = index + 1;
@@ -292,6 +342,29 @@ function SwipeCards() {
             {reactionOverlay === "LIKE" ? "좋아요" : "싫어요"}
           </div>
         </div>
+      )}
+
+      {/* 되돌리기 버튼 */}
+      {history.length > 0 && (
+        <button
+          type="button"
+          onClick={() => void handleUndo()}
+          style={{
+            position: "fixed",
+            left: 16,
+            bottom: 20,
+            background: "#111827",
+            color: "#fff",
+            padding: "10px 12px",
+            borderRadius: 12,
+            fontSize: 13,
+            boxShadow: "0 6px 20px rgba(0,0,0,0.25)",
+            zIndex: 51,
+            border: "none",
+          }}
+        >
+          되돌리기
+        </button>
       )}
 
       {/* 토스트 */}
