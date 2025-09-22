@@ -237,7 +237,12 @@ function SwipeCards() {
   };
 
   const bind = useGesture({
-    onDrag: ({ down, movement: [mx], direction: [xDir], velocity }) => {
+    onDrag: ({ down, movement: [mx], direction: [xDir], velocity, event }) => {
+      // 브라우저의 기본 터치 동작 방지 (화면 스크롤/스와이프 방지)
+      if (event && event.type.startsWith('touch')) {
+        event.preventDefault();
+      }
+
       const velocityTrigger = Math.abs(velocity[0]) > SWIPE_VELOCITY_THRESHOLD;
       const distanceTrigger = Math.abs(mx) > SWIPE_DISTANCE_THRESHOLD_PX;
       const trigger = velocityTrigger || distanceTrigger;

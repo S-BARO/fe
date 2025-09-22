@@ -19,6 +19,6 @@
   justify-content: center;
   box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
   position: absolute;
-  touch-action: pan-y;
+  touch-action: none;
   will-change: transform;
 }
