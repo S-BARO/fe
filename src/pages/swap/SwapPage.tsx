@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import SwipeCards from "./SwipeCards";
 
 const SwapContainer = styled.div`
-  padding: 20px 16px;
+  padding: 12px;
 `;
 
 const SwapTitle = styled.h1`

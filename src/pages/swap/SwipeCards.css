@@ -1,5 +1,5 @@
 .card-container {
-  width: 100vw;
+  width: calc(100vw - 24px);
   height: 450px;
   display: flex;
   align-items: center;
