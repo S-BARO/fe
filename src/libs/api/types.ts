@@ -190,3 +190,29 @@ export interface OrdersSliceParams {
   cursorId?: string; // 문자열 커서
   size?: number;
 }
+
+// 피팅 소스 이미지 타입 정의
+export interface FittingSourceImage {
+  id: number;
+  imageUrl: string;
+  createdAt: string;
+}
+
+export interface FittingSourceImagesResponse {
+  images: FittingSourceImage[];
+}
+
+// 피팅 소스 이미지 업로드 관련 타입 정의
+export interface UploadUrlResponse {
+  imageId: number;
+  presignedUrl: string;
+  expiresAt: string;
+  maxFileSize: number;
+  allowedTypes: string[];
+}
+
+// AI 피팅 관련 타입 정의
+export interface AiFittingRequest {
+  sourceImageUrl: string;
+  clothingImageUrl: string;
+}

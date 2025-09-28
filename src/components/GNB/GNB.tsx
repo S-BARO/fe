@@ -13,13 +13,13 @@ function GNB() {
   // 현재 경로에 따라 active 상태를 결정
   const isHome = location.pathname === "/";
   const isSwap = location.pathname.startsWith("/swap");
-  const isLike = location.pathname.startsWith("/like");
+  const isLike = location.pathname.startsWith("/baro-fitting");
   const isCart = location.pathname.startsWith("/cart");
   const isMypage = location.pathname.startsWith("/my");
 
   return (
     <GNBWrapper>
-      <IconButton onClick={() => navigate("/like")}>
+      <IconButton onClick={() => navigate("/baro-fitting")}>
         <LikeTabIcon active={isLike} />
       </IconButton>
       <IconButton onClick={() => navigate("/swap")}>

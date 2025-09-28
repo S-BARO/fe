@@ -5,7 +5,7 @@ import SwapPage from "../pages/swap/SwapPage";
 import LoginPage from "../pages/login/LoginPage";
 import KakaoCallbackPage from "../pages/login/KakaoCallbackPage";
 import MyPage from "../pages/my/MyPage";
-import LikePage from "../pages/like/LikePage";
+import BaroFittingPage from "../pages/baroFitting/BaroFittingPage";
 import CartPage from "../pages/cart/CartPage";
 import OrderConfirmPage from "../pages/cart/OrderConfirmPage";
 import OrderSuccessPage from "../pages/cart/OrderSuccessPage";
@@ -36,10 +36,10 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "like",
+        path: "baro-fitting",
         element: (
           <AuthGuard>
-            <LikePage />
+            <BaroFittingPage />
           </AuthGuard>
         ),
       },

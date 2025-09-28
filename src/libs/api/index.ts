@@ -31,6 +31,10 @@ export type {
   OrdersSliceItem,
   OrdersSliceResponse,
   OrdersSliceParams,
+  FittingSourceImage,
+  FittingSourceImagesResponse,
+  UploadUrlResponse,
+  AiFittingRequest,
 } from "./types";
 
 // 인증 관련 API
@@ -58,3 +62,6 @@ export {
 
 // 장바구니 관련 API
 export { addCartItem, deleteCartItem, updateCartItemQuantity, getCart } from "./cart";
+
+// 피팅 관련 API
+export { getFittingSourceImages, createUploadUrl, completeImageUpload, createAiFitting } from "./fitting";
