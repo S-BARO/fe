@@ -14,8 +14,10 @@ export const getFittingSourceImages = async (): Promise<FittingSourceImagesRespo
  * 피팅 소스 이미지 업로드 URL 생성
  * 사용자가 피팅 소스 이미지를 S3에 직접 업로드할 수 있는 presigned URL을 생성합니다.
  */
-export const createUploadUrl = async (): Promise<UploadUrlResponse> => {
-  const response = await credentialApi.post<UploadUrlResponse>("/fit/source-images/upload-url");
+export const createUploadUrl = async (params: { contentType: string }): Promise<UploadUrlResponse> => {
+  const response = await credentialApi.post<UploadUrlResponse>("/fit/source-images/upload-url", {
+    contentType: params.contentType
+  });
   return response.data;
 };
 

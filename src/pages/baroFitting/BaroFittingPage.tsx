@@ -368,6 +368,20 @@ function BaroFittingPage() {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    // 파일 유효성 검사
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    
+    if (file.size > maxSize) {
+      setUploadError('파일 크기가 너무 큽니다. 10MB 이하의 파일을 선택해주세요.');
+      return;
+    }
+    
+    if (!allowedTypes.includes(file.type)) {
+      setUploadError('지원하지 않는 파일 형식입니다. JPG, PNG, WEBP 파일만 업로드 가능합니다.');
+      return;
+    }
+
     try {
       setIsUploading(true);
       setUploadError(null);
@@ -381,19 +395,54 @@ function BaroFittingPage() {
       reader.readAsDataURL(file);
 
       // 1. Presigned URL 요청
-      const uploadUrlResponse = await createUploadUrl();
-      
-      // 2. S3에 직접 업로드
-      const uploadResponse = await fetch(uploadUrlResponse.presignedUrl, {
-        method: 'PUT',
-        body: file,
-        headers: {
-          'Content-Type': file.type,
-        },
+      const uploadUrlResponse = await createUploadUrl({
+        contentType: file.type  // "image/jpeg", "image/png" 등
       });
+      
+      // 2. S3에 직접 업로드 (재시도 로직 포함)
+      let uploadResponse;
+      let retryCount = 0;
+      const maxRetries = 3;
+      
+      while (retryCount < maxRetries) {
+        try {
+          uploadResponse = await fetch(uploadUrlResponse.presignedUrl, {
+            method: 'PUT',
+            body: file,
+            headers: {
+              'Content-Type': file.type,
+            },
+          });
 
-      if (!uploadResponse.ok) {
-        throw new Error('S3 업로드 실패');
+          if (uploadResponse.ok) {
+            break; // 성공하면 루프 종료
+          }
+          
+          const errorText = await uploadResponse.text();
+          console.error(`S3 업로드 실패 (시도 ${retryCount + 1}/${maxRetries}):`, {
+            status: uploadResponse.status,
+            statusText: uploadResponse.statusText,
+            errorText,
+            fileSize: file.size,
+            fileType: file.type,
+            presignedUrl: uploadUrlResponse.presignedUrl
+          });
+          
+          if (retryCount === maxRetries - 1) {
+            throw new Error(`S3 업로드 실패 (${uploadResponse.status}): ${uploadResponse.statusText}`);
+          }
+          
+          // 재시도 전 잠시 대기
+          await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1)));
+          retryCount++;
+          
+        } catch (error) {
+          if (retryCount === maxRetries - 1) {
+            throw error;
+          }
+          retryCount++;
+          await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+        }
       }
 
       // 3. 업로드 완료 API 호출
