@@ -395,9 +395,7 @@ function BaroFittingPage() {
       reader.readAsDataURL(file);
 
       // 1. Presigned URL 요청
-      const uploadUrlResponse = await createUploadUrl({
-        contentType: file.type  // "image/jpeg", "image/png" 등
-      });
+      const uploadUrlResponse = await createUploadUrl();
       
       // 2. S3에 직접 업로드 (재시도 로직 포함)
       let uploadResponse;
