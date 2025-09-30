@@ -1,6 +1,12 @@
 import styled from "@emotion/styled";
 import { useState, useRef, useEffect } from "react";
-import { getFittingSourceImages, createUploadUrl, completeImageUpload, createAiFitting, getCart } from "../../libs/api";
+import {
+  getFittingSourceImages,
+  createUploadUrl,
+  completeImageUpload,
+  createAiFitting,
+  getCart,
+} from "../../libs/api";
 import type { FittingSourceImage, CartItemDto } from "../../libs/api";
 
 const Container = styled.div`
@@ -46,9 +52,11 @@ const SectionTitle = styled.h1`
   margin: 0 0 24px 0;
 `;
 
-const Card = styled.div<{ variant?: 'primary' | 'secondary' }>`
-  background-color: ${props => props.variant === 'primary' ? '#f0f4ff' : '#ffffff'};
-  border: 1px solid ${props => props.variant === 'primary' ? '#e0e7ff' : '#e5e7eb'};
+const Card = styled.div<{ variant?: "primary" | "secondary" }>`
+  background-color: ${(props) =>
+    props.variant === "primary" ? "#f0f4ff" : "#ffffff"};
+  border: 1px solid
+    ${(props) => (props.variant === "primary" ? "#e0e7ff" : "#e5e7eb")};
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 16px;
@@ -64,10 +72,11 @@ const Card = styled.div<{ variant?: 'primary' | 'secondary' }>`
   }
 `;
 
-const CardIcon = styled.div<{ variant?: 'primary' | 'secondary' }>`
+const CardIcon = styled.div<{ variant?: "primary" | "secondary" }>`
   width: 48px;
   height: 48px;
-  background-color: ${props => props.variant === 'primary' ? '#667eea' : '#667eea'};
+  background-color: ${(props) =>
+    props.variant === "primary" ? "#667eea" : "#667eea"};
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -174,12 +183,12 @@ const ProductGrid = styled.div`
 `;
 
 const ProductCard = styled.div<{ selected?: boolean }>`
-  border: 2px solid ${props => props.selected ? '#667eea' : '#e5e7eb'};
+  border: 2px solid ${(props) => (props.selected ? "#667eea" : "#e5e7eb")};
   border-radius: 8px;
   padding: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
-  background-color: ${props => props.selected ? '#f0f4ff' : 'white'};
+  background-color: ${(props) => (props.selected ? "#f0f4ff" : "white")};
 
   &:hover {
     border-color: #667eea;
@@ -321,16 +330,22 @@ const LightningIcon = styled.div`
 
 function BaroFittingPage() {
   const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
-  const [selectedOutfit, setSelectedOutfit] = useState<CartItemDto | null>(null);
+  const [selectedOutfit, setSelectedOutfit] = useState<CartItemDto | null>(
+    null
+  );
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-  const [existingImages, setExistingImages] = useState<FittingSourceImage[]>([]);
+  const [existingImages, setExistingImages] = useState<FittingSourceImage[]>(
+    []
+  );
   const [isLoadingImages, setIsLoadingImages] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [showProductModal, setShowProductModal] = useState(false);
   const [cartItems, setCartItems] = useState<CartItemDto[]>([]);
   const [isLoadingCart, setIsLoadingCart] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<CartItemDto | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<CartItemDto | null>(
+    null
+  );
   const [showResultModal, setShowResultModal] = useState(false);
   const [resultImage, setResultImage] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -343,7 +358,7 @@ function BaroFittingPage() {
         setIsLoadingImages(true);
         const response = await getFittingSourceImages();
         setExistingImages(response.images);
-        
+
         // 최신 이미지가 있으면 미리보기로 설정
         if (response.images.length > 0) {
           const latestImage = response.images[0]; // 업로드 일시 기준 내림차순 정렬
@@ -364,21 +379,27 @@ function BaroFittingPage() {
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     // 파일 유효성 검사
     const maxSize = 10 * 1024 * 1024; // 10MB
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-    
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+
     if (file.size > maxSize) {
-      setUploadError('파일 크기가 너무 큽니다. 10MB 이하의 파일을 선택해주세요.');
+      setUploadError(
+        "파일 크기가 너무 큽니다. 10MB 이하의 파일을 선택해주세요."
+      );
       return;
     }
-    
+
     if (!allowedTypes.includes(file.type)) {
-      setUploadError('지원하지 않는 파일 형식입니다. JPG, PNG, WEBP 파일만 업로드 가능합니다.');
+      setUploadError(
+        "지원하지 않는 파일 형식입니다. JPG, PNG, WEBP 파일만 업로드 가능합니다."
+      );
       return;
     }
 
@@ -396,50 +417,55 @@ function BaroFittingPage() {
 
       // 1. Presigned URL 요청
       const uploadUrlResponse = await createUploadUrl();
-      
+
       // 2. S3에 직접 업로드 (재시도 로직 포함)
       let uploadResponse;
       let retryCount = 0;
       const maxRetries = 3;
-      
+
       while (retryCount < maxRetries) {
         try {
           uploadResponse = await fetch(uploadUrlResponse.presignedUrl, {
-            method: 'PUT',
+            method: "PUT",
             body: file,
-            headers: {
-              'Content-Type': file.type,
-            },
           });
 
           if (uploadResponse.ok) {
             break; // 성공하면 루프 종료
           }
-          
+
           const errorText = await uploadResponse.text();
-          console.error(`S3 업로드 실패 (시도 ${retryCount + 1}/${maxRetries}):`, {
-            status: uploadResponse.status,
-            statusText: uploadResponse.statusText,
-            errorText,
-            fileSize: file.size,
-            fileType: file.type,
-            presignedUrl: uploadUrlResponse.presignedUrl
-          });
-          
+          console.error(
+            `S3 업로드 실패 (시도 ${retryCount + 1}/${maxRetries}):`,
+            {
+              status: uploadResponse.status,
+              statusText: uploadResponse.statusText,
+              errorText,
+              fileSize: file.size,
+              fileType: file.type,
+              presignedUrl: uploadUrlResponse.presignedUrl,
+            }
+          );
+
           if (retryCount === maxRetries - 1) {
-            throw new Error(`S3 업로드 실패 (${uploadResponse.status}): ${uploadResponse.statusText}`);
+            throw new Error(
+              `S3 업로드 실패 (${uploadResponse.status}): ${uploadResponse.statusText}`
+            );
           }
-          
+
           // 재시도 전 잠시 대기
-          await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1)));
+          await new Promise((resolve) =>
+            setTimeout(resolve, 1000 * (retryCount + 1))
+          );
           retryCount++;
-          
         } catch (error) {
           if (retryCount === maxRetries - 1) {
             throw error;
           }
           retryCount++;
-          await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+          await new Promise((resolve) =>
+            setTimeout(resolve, 1000 * retryCount)
+          );
         }
       }
 
@@ -449,15 +475,14 @@ function BaroFittingPage() {
       // 4. 이미지 목록 새로고침
       const updatedImages = await getFittingSourceImages();
       setExistingImages(updatedImages.images);
-      
+
       // 5. 최신 이미지로 미리보기 업데이트
       if (updatedImages.images.length > 0) {
         setPhotoPreview(updatedImages.images[0].imageUrl);
       }
-
     } catch (error) {
-      console.error('업로드 실패:', error);
-      setUploadError('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
+      console.error("업로드 실패:", error);
+      setUploadError("이미지 업로드에 실패했습니다. 다시 시도해주세요.");
       setSelectedPhoto(null);
       setPhotoPreview(null);
     } finally {
@@ -473,7 +498,9 @@ function BaroFittingPage() {
       setShowProductModal(true);
     } catch (error) {
       console.error("장바구니 조회 실패:", error);
-      alert("장바구니를 불러올 수 없습니다. 장바구니에 상품이 있는지 확인해주세요.");
+      alert(
+        "장바구니를 불러올 수 없습니다. 장바구니에 상품이 있는지 확인해주세요."
+      );
     } finally {
       setIsLoadingCart(false);
     }
@@ -499,9 +526,9 @@ function BaroFittingPage() {
     if ((selectedPhoto || existingImages.length > 0) && selectedOutfit) {
       try {
         setIsGenerating(true);
-        
+
         // 소스 이미지 URL 결정
-        const sourceImageUrl = selectedPhoto 
+        const sourceImageUrl = selectedPhoto
           ? photoPreview // 새로 선택한 이미지의 미리보기 URL
           : existingImages[0]?.imageUrl; // 기존 이미지 URL
 
@@ -564,7 +591,13 @@ function BaroFittingPage() {
               {existingImages.length > 0 && !selectedPhoto ? (
                 <ExistingImageText>기존에 업로드된 사진</ExistingImageText>
               ) : (
-                <span style={{ fontSize: '12px', color: '#667eea', fontWeight: '500' }}>
+                <span
+                  style={{
+                    fontSize: "12px",
+                    color: "#667eea",
+                    fontWeight: "500",
+                  }}
+                >
                   사진이 선택되었습니다
                 </span>
               )}
@@ -573,7 +606,7 @@ function BaroFittingPage() {
         </CardContent>
         <ArrowIcon>›</ArrowIcon>
       </Card>
-      
+
       <HiddenFileInput
         ref={fileInputRef}
         type="file"
@@ -588,8 +621,17 @@ function BaroFittingPage() {
           <CardDescription>쇼핑물에서 입어볼 옷을 선택해주세요</CardDescription>
           {selectedOutfit && (
             <ImagePreview>
-              <SelectedImage src={selectedOutfit.productThumbnailUrl} alt="선택된 옷" />
-              <span style={{ fontSize: '12px', color: '#667eea', fontWeight: '500' }}>
+              <SelectedImage
+                src={selectedOutfit.productThumbnailUrl}
+                alt="선택된 옷"
+              />
+              <span
+                style={{
+                  fontSize: "12px",
+                  color: "#667eea",
+                  fontWeight: "500",
+                }}
+              >
                 {selectedOutfit.productName}
               </span>
             </ImagePreview>
@@ -598,12 +640,29 @@ function BaroFittingPage() {
         <ArrowIcon>›</ArrowIcon>
       </Card>
 
-      <StartButton 
+      <StartButton
         onClick={handleStartFitting}
-        disabled={(!selectedPhoto && existingImages.length === 0) || !selectedOutfit || isUploading || isGenerating}
+        disabled={
+          (!selectedPhoto && existingImages.length === 0) ||
+          !selectedOutfit ||
+          isUploading ||
+          isGenerating
+        }
         style={{
-          opacity: ((selectedPhoto || existingImages.length > 0) && selectedOutfit && !isUploading && !isGenerating) ? 1 : 0.5,
-          cursor: ((selectedPhoto || existingImages.length > 0) && selectedOutfit && !isUploading && !isGenerating) ? 'pointer' : 'not-allowed'
+          opacity:
+            (selectedPhoto || existingImages.length > 0) &&
+            selectedOutfit &&
+            !isUploading &&
+            !isGenerating
+              ? 1
+              : 0.5,
+          cursor:
+            (selectedPhoto || existingImages.length > 0) &&
+            selectedOutfit &&
+            !isUploading &&
+            !isGenerating
+              ? "pointer"
+              : "not-allowed",
         }}
       >
         <LightningIcon>⚡</LightningIcon>
@@ -618,12 +677,19 @@ function BaroFittingPage() {
               <ModalTitle>옷 선택</ModalTitle>
               <CloseButton onClick={handleCloseProductModal}>×</CloseButton>
             </ModalHeader>
-            
+
             {isLoadingCart ? (
               <div>장바구니를 불러오는 중...</div>
             ) : cartItems.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '40px 20px', color: '#6b7280' }}>
-                장바구니가 비어있습니다.<br />
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "40px 20px",
+                  color: "#6b7280",
+                }}
+              >
+                장바구니가 비어있습니다.
+                <br />
                 먼저 장바구니에 상품을 추가해주세요.
               </div>
             ) : (
@@ -635,18 +701,24 @@ function BaroFittingPage() {
                       selected={selectedProduct?.itemId === cartItem.itemId}
                       onClick={() => handleProductSelect(cartItem)}
                     >
-                      <ProductImage src={cartItem.productThumbnailUrl} alt={cartItem.productName} />
+                      <ProductImage
+                        src={cartItem.productThumbnailUrl}
+                        alt={cartItem.productName}
+                      />
                       <ProductName>{cartItem.productName}</ProductName>
-                      <ProductPrice>{cartItem.price.toLocaleString()}원 (수량: {cartItem.quantity})</ProductPrice>
+                      <ProductPrice>
+                        {cartItem.price.toLocaleString()}원 (수량:{" "}
+                        {cartItem.quantity})
+                      </ProductPrice>
                     </ProductCard>
                   ))}
                 </ProductGrid>
-                <ConfirmButton 
+                <ConfirmButton
                   onClick={handleConfirmProduct}
                   disabled={!selectedProduct}
                   style={{
                     opacity: selectedProduct ? 1 : 0.5,
-                    cursor: selectedProduct ? 'pointer' : 'not-allowed'
+                    cursor: selectedProduct ? "pointer" : "not-allowed",
                   }}
                 >
                   선택 완료
