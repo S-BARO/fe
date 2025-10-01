@@ -16,7 +16,7 @@ const createCredentialInstance = (): AxiosInstance => {
       "Content-Type": "application/json",
     },
     withCredentials: true,
-    timeout: 10000,
+    timeout: 20000,
   });
 
   // 요청 인터셉터
@@ -82,7 +82,7 @@ const createPublicInstance = (): AxiosInstance => {
       "Content-Type": "application/json",
     },
     withCredentials: false, // 쿠키 미포함
-    timeout: 10000,
+    timeout: 20000,
   });
 
   // 요청 인터셉터
