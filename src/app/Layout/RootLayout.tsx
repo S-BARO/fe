@@ -24,9 +24,10 @@
     const isLoginPage = location.pathname === "/login";
     const isMyPage = location.pathname === "/my";
     const isBaroFittingPage = location.pathname === "/baro-fitting";
+    const isCartPage = location.pathname === "/cart";
 
     const getFilterComponent = () => {
-      if (isProductDetailPage || isLoginPage || isMyPage || isBaroFittingPage) return null;
+      if (isProductDetailPage || isLoginPage || isMyPage || isBaroFittingPage || isCartPage) return null;
 
       switch (location.pathname) {
         case "/":
@@ -64,7 +65,7 @@
           }}
         >
           <Header
-            showFilter={!isProductDetailPage && !isLoginPage && !isMyPage && !isBaroFittingPage}
+            showFilter={!isProductDetailPage && !isLoginPage && !isMyPage && !isBaroFittingPage && !isCartPage}
             filterComponent={filterComponent}
           />
           <ScrollArea>
