@@ -6,21 +6,16 @@ interface CartTabIconProps {
 
 const CartTabIcon: React.FC<CartTabIconProps> = ({ active = false }) => (
   <svg
-    width="21"
-    height="64"
-    viewBox="0 0 21 64"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
-      d="M2.5 20.5H5.2L7.1 29.8C7.2712 30.6417 8.0011 31.25 8.86 31.25H16.2C17.0589 31.25 17.7888 30.6417 17.96 29.8L19 24.75C19.1712 23.9083 18.4411 23.3 17.5822 23.3H7.9"
-      stroke={active ? "#111" : "#9CA3AF"}
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      d="M7 4V2a1 1 0 0 1 2 0v2h6V2a1 1 0 0 1 2 0v2h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2zm-2 4v10h14V8H5zm3 3a1 1 0 0 0 0 2h8a1 1 0 0 0 0-2H8z"
+      fill={active ? "#111" : "#9CA3AF"}
     />
-    <circle cx="8.8" cy="34.5" r="1.7" fill={active ? "#111" : "#9CA3AF"} />
-    <circle cx="16.2" cy="34.5" r="1.7" fill={active ? "#111" : "#9CA3AF"} />
   </svg>
 );
 
