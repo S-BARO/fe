@@ -123,11 +123,6 @@ const SelectedImage = styled.img`
   border: 2px solid #667eea;
 `;
 
-const ImagePreview = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-`;
 
 const LoadingText = styled.div`
   font-size: 12px;
@@ -280,6 +275,28 @@ const ResultImage = styled.img`
   max-height: 70vh;
   border-radius: 8px;
   margin-bottom: 16px;
+`;
+
+const SaveButton = styled.button`
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 12px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #059669;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
 `;
 
 const ResultTitle = styled.h2`
@@ -563,6 +580,40 @@ function BaroFittingPage() {
     }
   };
 
+  const handleSaveImage = async () => {
+    if (!resultImage) return;
+
+    try {
+      // 이미지를 Blob으로 변환
+      const response = await fetch(resultImage);
+      const blob = await response.blob();
+      
+      // 다운로드 링크 생성
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      
+      // 파일명 생성 (현재 시간 기반)
+      const now = new Date();
+      const timestamp = now.toISOString().replace(/[:.]/g, '-');
+      link.download = `ai-fitting-${timestamp}.jpg`;
+      
+      // 다운로드 실행
+      document.body.appendChild(link);
+      link.click();
+      
+      // 정리
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      // 성공 메시지 (선택사항)
+      alert('사진이 저장되었습니다!');
+    } catch (error) {
+      console.error('이미지 저장 실패:', error);
+      alert('사진 저장에 실패했습니다.');
+    }
+  };
+
   return (
     <Container>
       <InfoBanner>
@@ -618,16 +669,19 @@ function BaroFittingPage() {
       />
 
       <Card variant="secondary" onClick={handleOutfitSelect}>
-        <CardIcon variant="secondary">👕</CardIcon>
+        {selectedOutfit ? (
+          <SelectedImage
+            src={selectedOutfit.productThumbnailUrl}
+            alt="선택된 옷"
+          />
+        ) : (
+          <CardIcon variant="secondary">👕</CardIcon>
+        )}
         <CardContent>
           <CardTitle>옷 선택</CardTitle>
           <CardDescription>장바구니에서 입어볼 옷을 선택해주세요</CardDescription>
           {selectedOutfit && (
-            <ImagePreview>
-              <SelectedImage
-                src={selectedOutfit.productThumbnailUrl}
-                alt="선택된 옷"
-              />
+            <div>
               <span
                 style={{
                   fontSize: "12px",
@@ -637,7 +691,7 @@ function BaroFittingPage() {
               >
                 {selectedOutfit.productName}
               </span>
-            </ImagePreview>
+            </div>
           )}
         </CardContent>
         <ArrowIcon>›</ArrowIcon>
@@ -669,7 +723,7 @@ function BaroFittingPage() {
         }}
       >
         <LightningIcon>⚡</LightningIcon>
-        {isGenerating ? "AI 피팅 생성 중..." : "AI 피팅 시작"}
+        {isGenerating ? "옷을 입고 있어요..." : "AI 피팅 시작"}
       </StartButton>
 
       {/* 상품 선택 모달 */}
@@ -738,7 +792,10 @@ function BaroFittingPage() {
           <ResultModalContent onClick={(e) => e.stopPropagation()}>
             <ResultTitle>AI 피팅 결과</ResultTitle>
             <ResultImage src={resultImage} alt="AI 피팅 결과" />
-            <CloseButton onClick={handleCloseResultModal}>닫기</CloseButton>
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+              <SaveButton onClick={handleSaveImage}>저장하기</SaveButton>
+              <CloseButton onClick={handleCloseResultModal}>닫기</CloseButton>
+            </div>
           </ResultModalContent>
         </ResultModal>
       )}
