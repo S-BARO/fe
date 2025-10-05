@@ -37,7 +37,7 @@ const underlineStyle = css`
 /**
  * TabMenu에서 사용할 탭 이름 목록입니다.
  */
-const tabs = ["스왑", "룩 공유하기", "나의 룩"];
+const tabs = ["스왑", "나의 룩 보기"];
 
 export default function SwapFilter() {
   const [activeTab, handleTabClick] = useTabFilter(tabs, "tab");

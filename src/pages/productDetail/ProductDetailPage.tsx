@@ -32,7 +32,10 @@ function ProductDetailPage() {
   const parsedId = id || "";
   const productId = parsedId.length > 0 ? parsedId : null;
 
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    product: true,
+    categories: true,
+  });
   const [isLiked, setIsLiked] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   

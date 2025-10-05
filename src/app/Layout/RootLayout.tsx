@@ -4,7 +4,6 @@
   import styled from "@emotion/styled";
   import HomeFilter from "../../components/Filter/HomeFilter";
   import SwapFilter from "../../components/Filter/SwapFilter";
-  import LikeFilter from "../../components/Filter/LikeFilter";
 
   const ScrollArea = styled.div`
     max-width: 390px;
@@ -29,18 +28,16 @@
     const getFilterComponent = () => {
       if (isProductDetailPage || isLoginPage || isMyPage || isBaroFittingPage || isCartPage) return null;
 
-      switch (location.pathname) {
-        case "/":
-          return <HomeFilter />;
-        case "/swap":
-          return <SwapFilter />;
-        case "/categories":
-          return <HomeFilter />; // 임시로 HomeFilter 사용
-        case "/like":
-          return <LikeFilter />; // 임시로 HomeFilter 사용
-        default:
-          return null;
+      // 홈페이지와 스왑페이지에서 필터 표시
+      if (location.pathname === "/") {
+        return <HomeFilter />;
       }
+      
+      if (location.pathname === "/swap") {
+        return <SwapFilter />;
+      }
+      
+      return null;
     };
 
     const filterComponent = getFilterComponent();
@@ -65,7 +62,7 @@
           }}
         >
           <Header
-            showFilter={!isProductDetailPage && !isLoginPage && !isMyPage && !isBaroFittingPage && !isCartPage}
+            showFilter={location.pathname === "/" || location.pathname === "/swap"}
             filterComponent={filterComponent}
           />
           <ScrollArea>
