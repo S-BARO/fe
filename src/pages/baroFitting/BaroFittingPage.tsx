@@ -575,7 +575,11 @@ function BaroFittingPage() {
       <SectionTitle>AI 피팅</SectionTitle>
 
       <Card variant="primary" onClick={handlePhotoSelect}>
-        <CardIcon variant="primary">📷</CardIcon>
+        {photoPreview ? (
+          <SelectedImage src={photoPreview} alt="선택된 사진" />
+        ) : (
+          <CardIcon variant="primary">📷</CardIcon>
+        )}
         <CardContent>
           <CardTitle>내 사진 선택</CardTitle>
           <CardDescription>앨범에서 전신 사진을 선택해주세요</CardDescription>
@@ -586,8 +590,7 @@ function BaroFittingPage() {
           ) : uploadError ? (
             <ErrorText>{uploadError}</ErrorText>
           ) : photoPreview ? (
-            <ImagePreview>
-              <SelectedImage src={photoPreview} alt="선택된 사진" />
+            <div>
               {existingImages.length > 0 && !selectedPhoto ? (
                 <ExistingImageText>기존에 업로드된 사진</ExistingImageText>
               ) : (
@@ -601,7 +604,7 @@ function BaroFittingPage() {
                   사진이 선택되었습니다
                 </span>
               )}
-            </ImagePreview>
+            </div>
           ) : null}
         </CardContent>
         <ArrowIcon>›</ArrowIcon>
@@ -618,7 +621,7 @@ function BaroFittingPage() {
         <CardIcon variant="secondary">👕</CardIcon>
         <CardContent>
           <CardTitle>옷 선택</CardTitle>
-          <CardDescription>쇼핑물에서 입어볼 옷을 선택해주세요</CardDescription>
+          <CardDescription>장바구니에서 입어볼 옷을 선택해주세요</CardDescription>
           {selectedOutfit && (
             <ImagePreview>
               <SelectedImage

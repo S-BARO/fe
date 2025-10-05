@@ -395,6 +395,77 @@ function SwipeCards() {
           </div>
         )}
 
+        {/* 스와이프 가이드 */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: -60,
+            left: 0,
+            right: 0,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "0 20px",
+            pointerEvents: "none",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: "50%",
+                background: "rgba(239, 68, 68, 0.1)",
+                border: "2px solid rgba(239, 68, 68, 0.3)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 20,
+              }}
+            >
+              👎
+            </div>
+            <span style={{ fontSize: 12, color: "#6b7280", fontWeight: 500 }}>
+              싫어요
+            </span>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: "50%",
+                background: "rgba(16, 185, 129, 0.1)",
+                border: "2px solid rgba(16, 185, 129, 0.3)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 20,
+              }}
+            >
+              👍
+            </div>
+            <span style={{ fontSize: 12, color: "#6b7280", fontWeight: 500 }}>
+              좋아요
+            </span>
+          </div>
+        </div>
+
         {/* 되돌리기 버튼 */}
         {history.length > 0 && (
           <button
@@ -512,11 +583,10 @@ function ProductRow({ product }: { product: { productId: number; name: string; p
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 2 }}>
-          ID: {product.productId}
-          {product.storeName ? ` · ${product.storeName}` : ""}
+          {product.storeName || "브랜드명"}
         </div>
-        <div style={{ fontSize: 14, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{product.name}</div>
-        <div style={{ fontSize: 13, color: "#6b7280", marginTop: 2 }}>
+        <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 2, lineHeight: 1.3, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{product.name}</div>
+        <div style={{ fontSize: 13, fontWeight: 600, color: "#111827" }}>
           {product.price.toLocaleString()}원
         </div>
       </div>
