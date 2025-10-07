@@ -12,8 +12,20 @@ const LikeTabIcon: React.FC<LikeTabIconProps> = ({ active = false }) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
+    {/** Shirt silhouette */}
     <path
-      d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+      d="M15.5 4.5l-3.5 1.8L8.5 4.5 5 7.5l2.5 2.3V20c0 .55.45 1 1 1h7c.55 0 1-.45 1-1v-10.2L19 7.5l-3.5-3z"
+      fill={active ? "#111" : "#9CA3AF"}
+    />
+    {/** Magic wand (diagonal) */}
+    <path
+      d="M13.8 6.2l4 4-6.9 6.9-4-4 6.9-6.9z"
+      fill={active ? "#111" : "#9CA3AF"}
+      opacity="0.9"
+    />
+    {/** Sparkles near wand tip */}
+    <path
+      d="M18.75 4.5l.4 1.1 1.1.4-1.1.4-.4 1.1-.4-1.1-1.1-.4 1.1-.4.4-1.1zM20.2 8.7l.3.8.8.3-.8.3-.3.8-.3-.8-.8-.3.8-.3.3-.8z"
       fill={active ? "#111" : "#9CA3AF"}
     />
   </svg>

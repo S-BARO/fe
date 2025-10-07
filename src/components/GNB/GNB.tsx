@@ -30,7 +30,7 @@ function GNB() {
     <GNBWrapper>
       <IconButton onClick={() => navigate("/baro-fitting")}>
         <LikeTabIcon active={isLike} />
-        <TabLabel active={isLike}>바로핏팅</TabLabel>
+        <TabLabel active={isLike}>AI 피팅</TabLabel>
       </IconButton>
       <IconButton onClick={() => navigate("/swap")}>
         <SwapTabIcon active={isSwap} />
