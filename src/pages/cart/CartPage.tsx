@@ -39,22 +39,25 @@ const ItemThumb = styled.img`
 const QtyStepper = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 6px 8px;
+  border-radius: 6px;
+  padding: 4px 6px;
+  margin-top: 4px;
 `;
 
 const StepBtn = styled.button`
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
   background: #f3f4f6;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
 `;
 
 const DeleteBtn = styled.button`
@@ -210,8 +213,11 @@ function CartPage() {
               />
               <ItemThumb src={it.productThumbnailUrl} alt={it.productName} />
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 14 }}>{it.productName}</div>
-                <div style={{ fontSize: 14, fontWeight: 600 }}>
+                <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 2 }}>
+                  {it.storeName || "브랜드명"}
+                </div>
+                <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 2, lineHeight: 1.3, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{it.productName}</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#111827" }}>
                   {it.price.toLocaleString()}원
                 </div>
                 <QtyStepper>
@@ -222,7 +228,7 @@ function CartPage() {
                   >
                     -
                   </StepBtn>
-                  <span style={{ minWidth: 16, textAlign: "center" }}>
+                  <span style={{ minWidth: 20, textAlign: "center", fontSize: 12, fontWeight: 500 }}>
                     {it.quantity}
                   </span>
                   <StepBtn

@@ -84,6 +84,7 @@ export interface CartItemDto {
   price: number;
   quantity: number;
   subtotal: number;
+  storeName?: string; // 브랜드/스토어명
 }
 
 export interface CartResponse {
