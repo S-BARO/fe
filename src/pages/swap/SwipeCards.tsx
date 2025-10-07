@@ -379,77 +379,7 @@ function SwipeCards() {
           </div>
         )}
 
-        {/* 스와이프 가이드 (컨테이너 안쪽에 고정) */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 10,
-            left: 0,
-            right: 0,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "0 20px",
-            pointerEvents: "none",
-            zIndex: 2,
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            <div
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: "50%",
-                background: "rgba(239, 68, 68, 0.1)",
-                border: "2px solid rgba(239, 68, 68, 0.3)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 20,
-              }}
-            >
-              👎
-            </div>
-            <span style={{ fontSize: 12, color: "#6b7280", fontWeight: 500 }}>
-              싫어요
-            </span>
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            <div
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: "50%",
-                background: "rgba(16, 185, 129, 0.1)",
-                border: "2px solid rgba(16, 185, 129, 0.3)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 20,
-              }}
-            >
-              👍
-            </div>
-            <span style={{ fontSize: 12, color: "#6b7280", fontWeight: 500 }}>
-              좋아요
-            </span>
-          </div>
-        </div>
+        {/* 가이드는 컨테이너 외부로 이동 */}
 
         {/* 되돌리기 버튼 */}
         {history.length > 0 && (
@@ -494,6 +424,75 @@ function SwipeCards() {
             {toastMessage}
           </div>
         )}
+      </div>
+
+      {/* 스와이프 가이드 (컨테이너와 구성 상품 사이) */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "6px 20px",
+          marginTop: 6,
+          marginBottom: 10,
+          pointerEvents: "none",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              background: "rgba(239, 68, 68, 0.1)",
+              border: "2px solid rgba(239, 68, 68, 0.3)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 20,
+            }}
+          >
+            👎
+          </div>
+          <span style={{ fontSize: 12, color: "#6b7280", fontWeight: 500 }}>
+            싫어요
+          </span>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              background: "rgba(16, 185, 129, 0.1)",
+              border: "2px solid rgba(16, 185, 129, 0.3)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 20,
+            }}
+          >
+            👍
+          </div>
+          <span style={{ fontSize: 12, color: "#6b7280", fontWeight: 500 }}>
+            좋아요
+          </span>
+        </div>
       </div>
 
       {/* 구성 상품 리스트 */}
