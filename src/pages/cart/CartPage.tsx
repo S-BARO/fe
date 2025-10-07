@@ -40,6 +40,7 @@ const QtyStepper = styled.div`
   display: flex;
   align-items: center;
   gap: 6px;
+  width: 74px;
   border: 1px solid #e5e7eb;
   border-radius: 6px;
   padding: 4px 6px;
