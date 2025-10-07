@@ -533,16 +533,17 @@ function SwipeCards() {
   );
 }
 
-function ProductRow({ product }: { product: { productId: number; name: string; price: number; thumbnailUrl: string; storeName?: string } }) {
+function ProductRow({ product }: { product: { productId: number; name: string; price: number; thumbnailUrl: string; storeName?: string; productName?: string } }) {
   const [loaded, setLoaded] = useState(false);
   const navigate = useNavigate();
+  const displayName = product.productName || product.name || "";
 
   return (
     <li
       onClick={() => navigate(`/product/${product.productId}`)}
       style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }}
       role="button"
-      aria-label={`${product.name} 상세로 이동`}
+      aria-label={`${displayName} 상세로 이동`}
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -564,7 +565,7 @@ function ProductRow({ product }: { product: { productId: number; name: string; p
         />
         <img
           src={product.thumbnailUrl}
-          alt={product.name}
+          alt={displayName}
           onLoad={() => setLoaded(true)}
           onError={(e) => {
             e.currentTarget.onerror = null;
@@ -585,7 +586,7 @@ function ProductRow({ product }: { product: { productId: number; name: string; p
         <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 2 }}>
           {product.storeName || "브랜드명"}
         </div>
-        <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 2, lineHeight: 1.3, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{product.name}</div>
+        <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 2, lineHeight: 1.3, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{displayName}</div>
         <div style={{ fontSize: 13, fontWeight: 600, color: "#111827" }}>
           {product.price.toLocaleString()}원
         </div>
