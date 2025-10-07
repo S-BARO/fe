@@ -389,7 +389,7 @@ function SwipeCards() {
             style={{
               position: "fixed",
               left: 16,
-              bottom: 20,
+              bottom: "calc(64px + env(safe-area-inset-bottom, 0px) + 12px)",
               background: "#111827",
               color: "#fff",
               padding: "10px 12px",
