@@ -327,23 +327,7 @@ function SwipeCards() {
               }}
             />
 
-            {/* 좋아요 카운트 표시 (있을 때만) */}
-            {typeof visibleCard.likesCount === "number" && (
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: 12,
-                  right: 12,
-                  background: "rgba(0,0,0,0.6)",
-                  color: "#fff",
-                  padding: "4px 8px",
-                  borderRadius: 12,
-                  fontSize: 12,
-                }}
-              >
-                ❤️ {visibleCard.likesCount}
-              </div>
-            )}
+            {/* 좋아요 카운트 표시는 숨김 */}
           </a.div>
         ) : (
           <div
@@ -395,11 +379,11 @@ function SwipeCards() {
           </div>
         )}
 
-        {/* 스와이프 가이드 */}
+        {/* 스와이프 가이드 (컨테이너 안쪽에 고정) */}
         <div
           style={{
             position: "absolute",
-            bottom: -60,
+            bottom: 10,
             left: 0,
             right: 0,
             display: "flex",
@@ -407,6 +391,7 @@ function SwipeCards() {
             alignItems: "center",
             padding: "0 20px",
             pointerEvents: "none",
+            zIndex: 2,
           }}
         >
           <div
