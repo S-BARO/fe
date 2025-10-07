@@ -9,6 +9,9 @@ export const ProductImageSection = styled.div`
   position: relative;
   background: #fff;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const ProductImage = styled.img`
