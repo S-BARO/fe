@@ -45,7 +45,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const initializeAuth = useCallback(async () => {
     setIsLoading(true);
     try {
-      await initializeKakao();
+      await initKakaoSDK();
 
       // 서버 세션 상태 확인
       const hasValidSession = await checkServerSession();
@@ -73,7 +73,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setIsLoading(true);
 
       // SDK 초기화 보장 (네트워크 지연 등으로 초기 마운트 시점에 실패한 경우 대비)
-      await initializeKakao();
+      await initKakaoSDK();
 
       // 카카오 로그인 실행
       const authResponse = await loginWithKakao();
