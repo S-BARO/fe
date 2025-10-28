@@ -4,7 +4,7 @@ import { useSpring, animated as a } from "@react-spring/web";
 import { useGesture } from "@use-gesture/react";
 import { useNavigate } from "react-router";
 import "./SwipeCards.css";
-import { getSwipeLooks, putLookReaction, deleteLookReaction, getLookDetail } from "../../libs/api";
+import { getSwipeLooks, putLookReaction, deleteLookReaction, getLookDetail, addCartItem } from "../../libs/api";
 import type { SwipeLookItem, ReactionType, LookDetailResponse } from "../../libs/api";
 
 const PAGE_SIZE = 10; // 한 번에 가져올 카드 수
@@ -497,7 +497,12 @@ function SwipeCards() {
 
       {/* 구성 상품 리스트 */}
       <div style={{ padding: "12px 16px" }}>
-        <h3 style={{ margin: "0 0 8px", fontSize: 16, fontWeight: 600 }}>구성 상품</h3>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+          <h3 style={{ margin: 0, fontSize: 16, fontWeight: 600 }}>구성 상품</h3>
+          {lookDetail && lookDetail.products && lookDetail.products.length > 0 && (
+            <BatchAddButton products={lookDetail.products} />
+          )}
+        </div>
         {isDetailLoading ? (
           <div style={{ color: "#6b7280", fontSize: 13 }}>불러오는 중...</div>
         ) : lookDetail && lookDetail.products && lookDetail.products.length > 0 ? (
@@ -517,10 +522,82 @@ function SwipeCards() {
   );
 }
 
+function BatchAddButton({ products }: { products: { productId: number; name: string; price: number; thumbnailUrl: string; storeName?: string; productName?: string }[] }) {
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+
+  const handleBatchAddToCart = async () => {
+    if (isAddingToCart) return;
+    
+    try {
+      setIsAddingToCart(true);
+      
+      // 모든 상품을 순차적으로 장바구니에 추가
+      const addPromises = products.map(product => 
+        addCartItem({ productId: String(product.productId), quantity: 1 })
+      );
+      
+      await Promise.all(addPromises);
+      alert(`${products.length}개 상품을 장바구니에 담았어요.`);
+    } catch (err) {
+      const anyErr = err as { status?: number; message?: string };
+      if (anyErr?.status === 401 || anyErr?.status === 403) {
+        alert("로그인이 필요합니다.");
+        return;
+      }
+      alert(anyErr?.message ?? "일괄 담기에 실패했어요.");
+    } finally {
+      setIsAddingToCart(false);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleBatchAddToCart}
+      disabled={isAddingToCart}
+      style={{
+        background: isAddingToCart ? "#e5e7eb" : "#10b981",
+        color: "#fff",
+        border: "none",
+        borderRadius: 6,
+        padding: "6px 12px",
+        fontSize: 12,
+        fontWeight: 500,
+        cursor: isAddingToCart ? "not-allowed" : "pointer",
+        opacity: isAddingToCart ? 0.6 : 1,
+        transition: "all 0.2s ease",
+      }}
+    >
+      {isAddingToCart ? "담는 중..." : "일괄 담기"}
+    </button>
+  );
+}
+
 function ProductRow({ product }: { product: { productId: number; name: string; price: number; thumbnailUrl: string; storeName?: string; productName?: string } }) {
   const [loaded, setLoaded] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
   const navigate = useNavigate();
   const displayName = product.productName || product.name || "";
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.stopPropagation(); // 상품 상세 페이지로 이동하는 것을 방지
+    
+    if (isAddingToCart) return;
+    
+    try {
+      setIsAddingToCart(true);
+      await addCartItem({ productId: String(product.productId), quantity: 1 });
+      alert("장바구니에 담았어요.");
+    } catch (err) {
+      const anyErr = err as { status?: number; message?: string };
+      if (anyErr?.status === 401 || anyErr?.status === 403) {
+        alert("로그인이 필요합니다.");
+        return;
+      }
+      alert(anyErr?.message ?? "장바구니 담기에 실패했어요.");
+    } finally {
+      setIsAddingToCart(false);
+    }
+  };
 
   return (
     <li
@@ -575,6 +652,24 @@ function ProductRow({ product }: { product: { productId: number; name: string; p
           {product.price.toLocaleString()}원
         </div>
       </div>
+      <button
+        onClick={handleAddToCart}
+        disabled={isAddingToCart}
+        style={{
+          background: isAddingToCart ? "#e5e7eb" : "#0b57d0",
+          color: "#fff",
+          border: "none",
+          borderRadius: 6,
+          padding: "6px 12px",
+          fontSize: 12,
+          fontWeight: 500,
+          cursor: isAddingToCart ? "not-allowed" : "pointer",
+          opacity: isAddingToCart ? 0.6 : 1,
+          transition: "all 0.2s ease",
+        }}
+      >
+        {isAddingToCart ? "담는 중..." : "담기"}
+      </button>
     </li>
   );
 }
