@@ -499,9 +499,21 @@ function SwipeCards() {
       <div style={{ padding: "12px 16px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
           <h3 style={{ margin: 0, fontSize: 16, fontWeight: 600 }}>구성 상품</h3>
-          {lookDetail && lookDetail.products && lookDetail.products.length > 0 && (
-            <BatchAddButton products={lookDetail.products} />
-          )}
+          <button
+            onClick={() => alert('일괄 담기 테스트')}
+            style={{
+              background: "#10b981",
+              color: "#fff",
+              border: "none",
+              borderRadius: 6,
+              padding: "6px 12px",
+              fontSize: 12,
+              fontWeight: 500,
+              cursor: "pointer",
+            }}
+          >
+            일괄 담기
+          </button>
         </div>
         {isDetailLoading ? (
           <div style={{ color: "#6b7280", fontSize: 13 }}>불러오는 중...</div>
@@ -522,7 +534,7 @@ function SwipeCards() {
   );
 }
 
-function BatchAddButton({ products }: { products: { productId: number; name: string; price: number; thumbnailUrl: string; storeName?: string; productName?: string }[] }) {
+function BatchAddButton({ products }: { products: { productId: number; name: string; price: number; thumbnailUrl: string; storeName?: string }[] }) {
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   const handleBatchAddToCart = async () => {
@@ -572,11 +584,11 @@ function BatchAddButton({ products }: { products: { productId: number; name: str
   );
 }
 
-function ProductRow({ product }: { product: { productId: number; name: string; price: number; thumbnailUrl: string; storeName?: string; productName?: string } }) {
+function ProductRow({ product }: { product: { productId: number; name: string; price: number; thumbnailUrl: string; storeName?: string } }) {
   const [loaded, setLoaded] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const navigate = useNavigate();
-  const displayName = product.productName || product.name || "";
+  const displayName = product.name || "";
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.stopPropagation(); // 상품 상세 페이지로 이동하는 것을 방지
@@ -653,22 +665,22 @@ function ProductRow({ product }: { product: { productId: number; name: string; p
         </div>
       </div>
       <button
-        onClick={handleAddToCart}
-        disabled={isAddingToCart}
+        onClick={(e) => {
+          e.stopPropagation();
+          alert(`${displayName} 담기 테스트`);
+        }}
         style={{
-          background: isAddingToCart ? "#e5e7eb" : "#0b57d0",
+          background: "#0b57d0",
           color: "#fff",
           border: "none",
           borderRadius: 6,
           padding: "6px 12px",
           fontSize: 12,
           fontWeight: 500,
-          cursor: isAddingToCart ? "not-allowed" : "pointer",
-          opacity: isAddingToCart ? 0.6 : 1,
-          transition: "all 0.2s ease",
+          cursor: "pointer",
         }}
       >
-        {isAddingToCart ? "담는 중..." : "담기"}
+        담기
       </button>
     </li>
   );
