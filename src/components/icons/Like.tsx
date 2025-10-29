@@ -9,10 +9,16 @@ import React from "react";
 interface LikeIconProps {
   /** 선택(활성) 상태 여부 */
   selected?: boolean;
+  /** 채워진 상태 여부 (filled와 selected는 동일한 기능) */
+  filled?: boolean;
 }
 
-const LikeIcon: React.FC<LikeIconProps> = ({ selected = false }) =>
-  selected ? (
+const LikeIcon: React.FC<LikeIconProps> = ({
+  selected = false,
+  filled = false,
+}) => {
+  const isActive = selected || filled;
+  return isActive ? (
     <svg
       width="24"
       height="24"
@@ -41,5 +47,6 @@ const LikeIcon: React.FC<LikeIconProps> = ({ selected = false }) =>
       />
     </svg>
   );
+};
 
 export default LikeIcon;

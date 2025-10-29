@@ -122,6 +122,18 @@ export async function getLookDetail(
   return res.data;
 }
 
+// 상품 좋아요
+// POST /products/{productId}/likes
+export async function likeProduct(productId: number): Promise<void> {
+  await credentialApi.post(`/products/${productId}/likes`);
+}
+
+// 상품 좋아요 취소
+// DELETE /products/{productId}/likes
+export async function unlikeProduct(productId: number): Promise<void> {
+  await credentialApi.delete(`/products/${productId}/likes`);
+}
+
 // 주문 생성
 // POST /orders
 export async function createOrder(

@@ -55,13 +55,25 @@ export {
   putLookReaction,
   deleteLookReaction,
   getLookDetail,
+  likeProduct,
+  unlikeProduct,
   createOrder,
   getOrders,
   getOrderDetail,
 } from "./products";
 
 // 장바구니 관련 API
-export { addCartItem, deleteCartItem, updateCartItemQuantity, getCart } from "./cart";
+export {
+  addCartItem,
+  deleteCartItem,
+  updateCartItemQuantity,
+  getCart,
+} from "./cart";
 
 // 피팅 관련 API
-export { getFittingSourceImages, createUploadUrl, completeImageUpload, createAiFitting } from "./fitting";
+export {
+  getFittingSourceImages,
+  createUploadUrl,
+  completeImageUpload,
+  createAiFitting,
+} from "./fitting";
