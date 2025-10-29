@@ -213,12 +213,6 @@ export default function LikedLooks() {
         </div>
       )}
 
-      {!hasNextPage && allLooks.length > 0 && (
-        <div className="flex items-center justify-center p-4 mt-4">
-          <div className="text-gray-400">모든 룩을 불러왔습니다.</div>
-        </div>
-      )}
-
       {import.meta.env.DEV && (
         <div className="fixed bottom-4 right-4 bg-black/80 text-white p-2 rounded text-xs">
           <div>총 룩: {allLooks.length}</div>

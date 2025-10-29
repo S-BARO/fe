@@ -189,6 +189,7 @@ export default function ProductList() {
             title={product.productName}
             price={product.price}
             image={product.thumbnailUrl}
+            isLiked={!!product.isLiked}
           />
         ))}
       </div>
