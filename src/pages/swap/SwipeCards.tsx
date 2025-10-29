@@ -4,8 +4,18 @@ import { useSpring, animated as a } from "@react-spring/web";
 import { useGesture } from "@use-gesture/react";
 import { useNavigate } from "react-router";
 import "./SwipeCards.css";
-import { getSwipeLooks, putLookReaction, deleteLookReaction, getLookDetail, addCartItem } from "../../libs/api";
-import type { SwipeLookItem, ReactionType, LookDetailResponse } from "../../libs/api";
+import {
+  getSwipeLooks,
+  putLookReaction,
+  deleteLookReaction,
+  getLookDetail,
+  addCartItem,
+} from "../../libs/api";
+import type {
+  SwipeLookItem,
+  ReactionType,
+  LookDetailResponse,
+} from "../../libs/api";
 
 const PAGE_SIZE = 10; // 한 번에 가져올 카드 수
 const PREFETCH_THRESHOLD = 3; // 이 수 이하로 남으면 추가 로드
@@ -21,7 +31,11 @@ const ROW_IMAGE_FADE_MS = 150; // 하단 리스트 이미지 페이드 시간
 const SKELETON_BG = "#eceff3"; // 메인 카드 스켈레톤 색상
 const ROW_SKELETON_BG = "#eef2f7"; // 리스트 썸네일 스켈레톤 색상
 
-type HistoryItem = { lookId: number; reactionType: ReactionType; prevIndex: number };
+type HistoryItem = {
+  lookId: number;
+  reactionType: ReactionType;
+  prevIndex: number;
+};
 
 function SwipeCards() {
   const [cards, setCards] = useState<SwipeLookItem[]>([]);
@@ -41,7 +55,9 @@ function SwipeCards() {
   const optimisticLikedIdsRef = useRef<Set<number>>(new Set());
 
   // 반응 오버레이/토스트 상태
-  const [reactionOverlay, setReactionOverlay] = useState<null | "LIKE" | "DISLIKE">(null);
+  const [reactionOverlay, setReactionOverlay] = useState<
+    null | "LIKE" | "DISLIKE"
+  >(null);
   const overlayTimerRef = useRef<number | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const toastTimerRef = useRef<number | null>(null);
@@ -181,7 +197,11 @@ function SwipeCards() {
     try {
       await putLookReaction(lookId, { reactionType });
       reactedLookIdsRef.current.add(lookId);
-      showToast(reactionType === "LIKE" ? "좋아요가 반영되었어요" : "싫어요가 반영되었어요");
+      showToast(
+        reactionType === "LIKE"
+          ? "좋아요가 반영되었어요"
+          : "싫어요가 반영되었어요"
+      );
     } catch (e) {
       console.error("putLookReaction error", e);
       showToast("반응 처리에 실패했어요");
@@ -239,7 +259,7 @@ function SwipeCards() {
   const bind = useGesture({
     onDrag: ({ down, movement: [mx], direction: [xDir], velocity, event }) => {
       // 브라우저의 기본 터치 동작 방지 (화면 스크롤/스와이프 방지)
-      if (event && event.type.startsWith('touch')) {
+      if (event && event.type.startsWith("touch")) {
         event.preventDefault();
       }
 
@@ -368,7 +388,9 @@ function SwipeCards() {
                 fontSize: 18,
                 color: "#fff",
                 background:
-                  reactionOverlay === "LIKE" ? "rgba(16, 185, 129, 0.8)" : "rgba(239, 68, 68, 0.85)",
+                  reactionOverlay === "LIKE"
+                    ? "rgba(16, 185, 129, 0.8)"
+                    : "rgba(239, 68, 68, 0.85)",
                 opacity: 1,
                 transform: "scale(1)",
                 transition: `opacity ${OVERLAY_FADE_MS}ms ease-in-out`,
@@ -466,6 +488,40 @@ function SwipeCards() {
           </span>
         </div>
 
+        {/* 중앙 안내 문구 */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 4,
+            flex: 1,
+            maxWidth: 120,
+          }}
+        >
+          <div
+            style={{
+              fontSize: 12,
+              color: "#9ca3af",
+              fontWeight: 500,
+              textAlign: "center",
+              lineHeight: 1.4,
+            }}
+          >
+            사진을 넘겨보세요
+          </div>
+          <div
+            style={{
+              fontSize: 10,
+              color: "#d1d5db",
+              textAlign: "center",
+              lineHeight: 1.3,
+            }}
+          >
+            좌우로 스와이프
+          </div>
+        </div>
+
         <div
           style={{
             display: "flex",
@@ -497,10 +553,19 @@ function SwipeCards() {
 
       {/* 구성 상품 리스트 */}
       <div style={{ padding: "12px 16px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-          <h3 style={{ margin: 0, fontSize: 16, fontWeight: 600 }}>구성 상품</h3>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 8,
+          }}
+        >
+          <h3 style={{ margin: 0, fontSize: 16, fontWeight: 600 }}>
+            구성 상품
+          </h3>
           <button
-            onClick={() => alert('일괄 담기 테스트')}
+            onClick={() => alert("일괄 담기 테스트")}
             style={{
               background: "#10b981",
               color: "#fff",
@@ -517,8 +582,18 @@ function SwipeCards() {
         </div>
         {isDetailLoading ? (
           <div style={{ color: "#6b7280", fontSize: 13 }}>불러오는 중...</div>
-        ) : lookDetail && lookDetail.products && lookDetail.products.length > 0 ? (
-          <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: 12 }}>
+        ) : lookDetail &&
+          lookDetail.products &&
+          lookDetail.products.length > 0 ? (
+          <ul
+            style={{
+              listStyle: "none",
+              padding: 0,
+              margin: 0,
+              display: "grid",
+              gap: 12,
+            }}
+          >
             {lookDetail.products
               .slice()
               .sort((a, b) => a.displayOrder - b.displayOrder)
@@ -527,27 +602,39 @@ function SwipeCards() {
               ))}
           </ul>
         ) : (
-          <div style={{ color: "#6b7280", fontSize: 13 }}>구성 상품이 없습니다</div>
+          <div style={{ color: "#6b7280", fontSize: 13 }}>
+            구성 상품이 없습니다
+          </div>
         )}
       </div>
     </>
   );
 }
 
-function BatchAddButton({ products }: { products: { productId: number; name: string; price: number; thumbnailUrl: string; storeName?: string }[] }) {
+function BatchAddButton({
+  products,
+}: {
+  products: {
+    productId: number;
+    name: string;
+    price: number;
+    thumbnailUrl: string;
+    storeName?: string;
+  }[];
+}) {
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   const handleBatchAddToCart = async () => {
     if (isAddingToCart) return;
-    
+
     try {
       setIsAddingToCart(true);
-      
+
       // 모든 상품을 순차적으로 장바구니에 추가
-      const addPromises = products.map(product => 
+      const addPromises = products.map((product) =>
         addCartItem({ productId: String(product.productId), quantity: 1 })
       );
-      
+
       await Promise.all(addPromises);
       alert(`${products.length}개 상품을 장바구니에 담았어요.`);
     } catch (err) {
@@ -584,7 +671,17 @@ function BatchAddButton({ products }: { products: { productId: number; name: str
   );
 }
 
-function ProductRow({ product }: { product: { productId: number; name: string; price: number; thumbnailUrl: string; storeName?: string } }) {
+function ProductRow({
+  product,
+}: {
+  product: {
+    productId: number;
+    name: string;
+    price: number;
+    thumbnailUrl: string;
+    storeName?: string;
+  };
+}) {
   const [loaded, setLoaded] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const navigate = useNavigate();
@@ -592,9 +689,9 @@ function ProductRow({ product }: { product: { productId: number; name: string; p
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.stopPropagation(); // 상품 상세 페이지로 이동하는 것을 방지
-    
+
     if (isAddingToCart) return;
-    
+
     try {
       setIsAddingToCart(true);
       await addCartItem({ productId: String(product.productId), quantity: 1 });
@@ -614,7 +711,12 @@ function ProductRow({ product }: { product: { productId: number; name: string; p
   return (
     <li
       onClick={() => navigate(`/product/${product.productId}`)}
-      style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        cursor: "pointer",
+      }}
       role="button"
       aria-label={`${displayName} 상세로 이동`}
       tabIndex={0}
@@ -659,7 +761,21 @@ function ProductRow({ product }: { product: { productId: number; name: string; p
         <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 2 }}>
           {product.storeName || "브랜드명"}
         </div>
-        <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 2, lineHeight: 1.3, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{displayName}</div>
+        <div
+          style={{
+            fontSize: 14,
+            fontWeight: 500,
+            marginBottom: 2,
+            lineHeight: 1.3,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+          }}
+        >
+          {displayName}
+        </div>
         <div style={{ fontSize: 13, fontWeight: 600, color: "#111827" }}>
           {product.price.toLocaleString()}원
         </div>
