@@ -17,19 +17,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // 카카오 SDK 초기화
-  const initializeKakao = async () => {
-    try {
-      const appKey = import.meta.env.VITE_KAKAO_APP_KEY;
-      if (!appKey) {
-        throw new Error("Kakao app key not found");
-      }
-      await initKakaoSDK(appKey);
-    } catch (error) {
-      console.error("Failed to initialize Kakao SDK:", error);
-    }
-  };
-
   // 서버 세션 상태 확인
   const checkServerSession = async (): Promise<boolean> => {
     try {

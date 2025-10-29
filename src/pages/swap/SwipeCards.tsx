@@ -564,21 +564,9 @@ function SwipeCards() {
           <h3 style={{ margin: 0, fontSize: 16, fontWeight: 600 }}>
             구성 상품
           </h3>
-          <button
-            onClick={() => alert("일괄 담기 테스트")}
-            style={{
-              background: "#10b981",
-              color: "#fff",
-              border: "none",
-              borderRadius: 6,
-              padding: "6px 12px",
-              fontSize: 12,
-              fontWeight: 500,
-              cursor: "pointer",
-            }}
-          >
-            일괄 담기
-          </button>
+          {lookDetail && lookDetail.products && lookDetail.products.length > 0 && (
+            <BatchAddButton products={lookDetail.products} />
+          )}
         </div>
         {isDetailLoading ? (
           <div style={{ color: "#6b7280", fontSize: 13 }}>불러오는 중...</div>
@@ -781,10 +769,7 @@ function ProductRow({
         </div>
       </div>
       <button
-        onClick={(e) => {
-          e.stopPropagation();
-          alert(`${displayName} 담기 테스트`);
-        }}
+        onClick={handleAddToCart}
         style={{
           background: "#0b57d0",
           color: "#fff",
