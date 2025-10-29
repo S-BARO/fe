@@ -564,9 +564,11 @@ function SwipeCards() {
           <h3 style={{ margin: 0, fontSize: 16, fontWeight: 600 }}>
             구성 상품
           </h3>
-          {lookDetail && lookDetail.products && lookDetail.products.length > 0 && (
-            <BatchAddButton products={lookDetail.products} />
-          )}
+          {lookDetail &&
+            lookDetail.products &&
+            lookDetail.products.length > 0 && (
+              <BatchAddButton products={lookDetail.products} />
+            )}
         </div>
         {isDetailLoading ? (
           <div style={{ color: "#6b7280", fontSize: 13 }}>불러오는 중...</div>
@@ -583,9 +585,9 @@ function SwipeCards() {
             }}
           >
             {lookDetail.products
-              .slice()
-              .sort((a, b) => a.displayOrder - b.displayOrder)
-              .map((p) => (
+              ?.slice()
+              ?.sort((a, b) => a.displayOrder - b.displayOrder)
+              ?.map((p) => (
                 <ProductRow key={p.productId} product={p} />
               ))}
           </ul>
@@ -619,6 +621,11 @@ function BatchAddButton({
       setIsAddingToCart(true);
 
       // 모든 상품을 순차적으로 장바구니에 추가
+      if (!products || products.length === 0) {
+        alert("담을 상품이 없습니다.");
+        return;
+      }
+
       const addPromises = products.map((product) =>
         addCartItem({ productId: String(product.productId), quantity: 1 })
       );
