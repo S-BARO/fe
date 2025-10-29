@@ -144,6 +144,24 @@ export interface LookDetailResponse {
   products: LookProductItem[];
 }
 
+// 좋아요한 룩 타입 정의
+export interface LikedLookItem {
+  lookId: number;
+  title: string;
+  thumbnailUrl: string;
+}
+
+export interface LikedLooksResponse {
+  content: LikedLookItem[];
+  hasNext: boolean;
+  nextCursor: { id: number };
+}
+
+export interface LikedLooksParams {
+  cursorId?: number;
+  size?: number;
+}
+
 // 주문 타입 정의
 export interface OrderCreateItem {
   productId: number;
@@ -155,7 +173,13 @@ export interface OrderCreateRequest {
   orderItems: OrderCreateItem[];
 }
 
-export type OrderStatus = "ORDERED" | "PAID" | "SHIPPED" | "DELIVERED" | "CANCELLED" | "PENDING";
+export type OrderStatus =
+  | "ORDERED"
+  | "PAID"
+  | "SHIPPED"
+  | "DELIVERED"
+  | "CANCELLED"
+  | "PENDING";
 
 export interface OrderItemDetail {
   productId: number;

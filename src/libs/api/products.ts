@@ -9,6 +9,8 @@ import type {
   SwipeLooksResponse,
   PutLookReactionRequest,
   LookDetailResponse,
+  LikedLooksResponse,
+  LikedLooksParams,
   OrderCreateRequest,
   OrderDetailResponse,
   OrdersSliceParams,
@@ -132,6 +134,25 @@ export async function likeProduct(productId: number): Promise<void> {
 // DELETE /products/{productId}/likes
 export async function unlikeProduct(productId: number): Promise<void> {
   await credentialApi.delete(`/products/${productId}/likes`);
+}
+
+// 좋아요한 룩 목록 조회 (무한 스크롤)
+// GET /looks/liked
+export async function getLikedLooks(
+  params: LikedLooksParams = {}
+): Promise<LikedLooksResponse> {
+  const qs = new URLSearchParams();
+
+  if (params.cursorId) {
+    qs.append("cursorId", params.cursorId.toString());
+  }
+  if (params.size) {
+    qs.append("size", params.size.toString());
+  }
+
+  const url = `/looks/liked${qs.toString() ? `?${qs.toString()}` : ""}`;
+  const res = await credentialApi.get<LikedLooksResponse>(url);
+  return res.data;
 }
 
 // 주문 생성
