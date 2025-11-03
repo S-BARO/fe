@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 export const GNBWrapper = styled.div`
   width: 100%;
   height: 81px;
+  flex-shrink: 0; /* 축소 방지 - 하단 메뉴바가 잘리지 않도록 */
   display: flex;
   align-items: center;
   border-top: 1px solid #f3f4f6;

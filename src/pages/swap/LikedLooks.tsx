@@ -9,7 +9,7 @@ function LookSkeleton() {
     <div
       style={{
         animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        aspectRatio: "1",
+        aspectRatio: "9/16",
         backgroundColor: "#e5e7eb",
         borderRadius: "12px",
         width: "100%",
@@ -46,7 +46,7 @@ function LookItem({ look }: { look: LikedLookItem }) {
     <div
       onClick={handleClick}
       style={{
-        aspectRatio: "1",
+        aspectRatio: "9/16",
         borderRadius: "12px",
         overflow: "hidden",
         cursor: "pointer",

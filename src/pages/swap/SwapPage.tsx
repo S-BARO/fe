@@ -20,7 +20,7 @@ function SwapPage() {
 
   return (
     <SwapContainer>
-      <SwapTitle>스왑</SwapTitle>
+      <SwapTitle>{activeTab === "스왑" ? "스왑" : "나의 룩 보기"}</SwapTitle>
       {activeTab === "스왑" ? <SwipeCards /> : <LikedLooks />}
     </SwapContainer>
   );

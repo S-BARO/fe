@@ -9,6 +9,7 @@
     max-width: 390px;
     margin: 0 auto;
     flex: 1;
+    min-height: 0; /* flex 축소 문제 해결 */
     overflow-y: auto;
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE, Edge */
@@ -57,8 +58,10 @@
             width: "100%",
             maxWidth: "450px",
             height: "100vh",
+            minHeight: "100vh",
             display: "flex",
             flexDirection: "column",
+            overflow: "hidden", /* 전체 컨테이너 스크롤 방지 */
           }}
         >
           <Header
