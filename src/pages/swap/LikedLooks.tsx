@@ -1,4 +1,5 @@
 import { useRef, useEffect } from "react";
+import { useNavigate } from "react-router";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getLikedLooks } from "../../libs/api";
 import type { LikedLookItem } from "../../libs/api";
@@ -37,9 +38,10 @@ function LookSkeletonGrid({ count = 6 }: { count?: number }) {
 
 // 룩 아이템 컴포넌트
 function LookItem({ look }: { look: LikedLookItem }) {
+  const navigate = useNavigate();
+  
   const handleClick = () => {
-    // 룩 상세 페이지로 이동 (필요시 구현)
-    console.log("Navigate to look detail:", look.lookId);
+    navigate(`/product/${look.lookId}`);
   };
 
   return (
@@ -122,22 +124,29 @@ export default function LikedLooks() {
 
   // Intersection Observer를 사용한 무한 스크롤
   useEffect(() => {
+    const currentTarget = observerRef.current;
+    if (!currentTarget) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+        const entry = entries[0];
+        if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
           console.log("Loading next page...");
           fetchNextPage();
         }
       },
-      { threshold: 0.1 }
+      {
+        threshold: 0.1,
+        rootMargin: "100px", // 100px 전에 미리 로드
+      }
     );
 
-    if (observerRef.current) {
-      observer.observe(observerRef.current);
-    }
+    observer.observe(currentTarget);
 
-    return () => observer.disconnect();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+    return () => {
+      observer.disconnect();
+    };
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage, allLooks.length]);
 
   // 로딩 상태
   if (isLoading) {
@@ -191,12 +200,13 @@ export default function LikedLooks() {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto">
+    <>
       <div
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(3, 1fr)",
           gap: "12px",
+          padding: "0 12px 12px 12px",
         }}
       >
         {allLooks.map((look: LikedLookItem, index: number) => (
@@ -208,19 +218,34 @@ export default function LikedLooks() {
       <div ref={observerRef} style={{ height: "20px", marginTop: "20px" }} />
 
       {isFetchingNextPage && (
-        <div className="mt-4">
+        <div style={{ padding: "0 12px 12px 12px" }}>
           <LookSkeletonGrid count={6} />
         </div>
       )}
 
+      {!hasNextPage && allLooks.length > 0 && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: "20px",
+            color: "#9ca3af",
+            fontSize: "14px",
+          }}
+        >
+          모든 룩을 불러왔습니다.
+        </div>
+      )}
+
       {import.meta.env.DEV && (
-        <div className="fixed bottom-4 right-4 bg-black/80 text-white p-2 rounded text-xs">
+        <div className="fixed bottom-4 right-4 bg-black/80 text-white p-2 rounded text-xs z-50">
           <div>총 룩: {allLooks.length}</div>
           <div>다음 페이지: {hasNextPage ? "있음" : "없음"}</div>
           <div>로딩 중: {isFetchingNextPage ? "예" : "아니오"}</div>
           <div>초기 로딩: {isLoading ? "예" : "아니오"}</div>
         </div>
       )}
-    </div>
+    </>
   );
 }
