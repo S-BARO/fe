@@ -86,6 +86,7 @@ export default function LikedLooks() {
     isFetchingNextPage,
     isLoading,
     error,
+    refetch,
   } = useInfiniteQuery({
     queryKey: ["likedLooks"],
     queryFn: ({ pageParam }) => {
@@ -105,6 +106,12 @@ export default function LikedLooks() {
 
   const allLooks = data?.pages.flatMap((page) => page.content) ?? [];
   const observerRef = useRef<HTMLDivElement>(null);
+
+  // 컴포넌트가 마운트될 때마다 데이터 새로 페칭
+  useEffect(() => {
+    refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Intersection Observer를 사용한 무한 스크롤
   useEffect(() => {

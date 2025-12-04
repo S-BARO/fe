@@ -21,7 +21,11 @@ function SwapPage() {
   return (
     <SwapContainer>
       <SwapTitle>{activeTab === "스왑" ? "스왑" : "나의 룩 보기"}</SwapTitle>
-      {activeTab === "스왑" ? <SwipeCards /> : <LikedLooks />}
+      {activeTab === "스왑" ? (
+        <SwipeCards />
+      ) : (
+        <LikedLooks key={activeTab} />
+      )}
     </SwapContainer>
   );
 }
