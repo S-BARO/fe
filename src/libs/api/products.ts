@@ -18,6 +18,7 @@ import type {
 } from "./types";
 
 // 인기 상품 목록 API
+// 로그인 시 쿠키를 포함하여 isLiked 정보를 받을 수 있도록 credentialApi 사용
 export async function getPopularProducts(
   params: PopularProductsParams = {}
 ): Promise<PopularResponse> {
@@ -37,12 +38,14 @@ export async function getPopularProducts(
   }
 
   const url = `/products/popular${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
-  const response = await publicApi.get<PopularResponse>(url);
+  // credentialApi 사용: 로그인 시 쿠키 자동 전송, 비로그인 시에도 정상 작동
+  const response = await credentialApi.get<PopularResponse>(url);
 
   return response.data;
 }
 
 // 최신 상품 목록 API
+// 로그인 시 쿠키를 포함하여 isLiked 정보를 받을 수 있도록 credentialApi 사용
 export async function getNewestProducts(
   params: NewestProductsParams = {}
 ): Promise<NewestResponse> {
@@ -59,7 +62,8 @@ export async function getNewestProducts(
   }
 
   const url = `/products/newest${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
-  const response = await publicApi.get<NewestResponse>(url);
+  // credentialApi 사용: 로그인 시 쿠키 자동 전송, 비로그인 시에도 정상 작동
+  const response = await credentialApi.get<NewestResponse>(url);
 
   return response.data;
 }
