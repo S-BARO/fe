@@ -39,7 +39,7 @@ function LookSkeletonGrid({ count = 6 }: { count?: number }) {
 // 룩 아이템 컴포넌트
 function LookItem({ look }: { look: LikedLookItem }) {
   const navigate = useNavigate();
-  
+
   const handleClick = () => {
     navigate(`/product/${look.lookId}`);
   };
@@ -74,22 +74,6 @@ function LookItem({ look }: { look: LikedLookItem }) {
           e.currentTarget.src = "/shirt.png";
         }}
       />
-      {/* 오버레이 */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          background: "linear-gradient(transparent, rgba(0,0,0,0.7))",
-          padding: "8px",
-          color: "white",
-          fontSize: "12px",
-          fontWeight: "500",
-        }}
-      >
-        {look.title}
-      </div>
     </div>
   );
 }
