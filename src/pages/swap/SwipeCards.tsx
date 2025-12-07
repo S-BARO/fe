@@ -753,9 +753,6 @@ function ProductRow({
         />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 2 }}>
-          {product.storeName || "브랜드명"}
-        </div>
         <div
           style={{
             fontSize: 14,
@@ -770,6 +767,9 @@ function ProductRow({
           }}
         >
           {displayName}
+        </div>
+        <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 2 }}>
+          {product.storeName || "브랜드명"}
         </div>
         <div style={{ fontSize: 13, fontWeight: 600, color: "#111827" }}>
           {product.price.toLocaleString()}원
