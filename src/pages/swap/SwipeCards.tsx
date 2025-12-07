@@ -606,7 +606,7 @@ function BatchAddButton({
 }: {
   products: {
     productId: number;
-    name: string;
+    productName: string;
     price: number;
     thumbnailUrl: string;
     storeName?: string;
@@ -671,7 +671,7 @@ function ProductRow({
 }: {
   product: {
     productId: number;
-    name: string;
+    productName: string;
     price: number;
     thumbnailUrl: string;
     storeName?: string;
@@ -680,7 +680,7 @@ function ProductRow({
   const [loaded, setLoaded] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const navigate = useNavigate();
-  const displayName = product.name || "";
+  const displayName = product.productName || "";
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.stopPropagation(); // 상품 상세 페이지로 이동하는 것을 방지

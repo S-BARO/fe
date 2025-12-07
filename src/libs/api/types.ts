@@ -129,7 +129,7 @@ export interface LookImageItem {
 
 export interface LookProductItem {
   productId: number;
-  name: string;
+  productName: string;
   price: number;
   thumbnailUrl: string;
   displayOrder: number;
