@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router";
 import HomePage from "../pages/home/HomePage";
 import ProductDetailPage from "../pages/productDetail/ProductDetailPage";
 import SwapPage from "../pages/swap/SwapPage";
+import LookDetailPage from "../pages/swap/LookDetailPage";
 import LoginPage from "../pages/login/LoginPage";
 import KakaoCallbackPage from "../pages/login/KakaoCallbackPage";
 import MyPage from "../pages/my/MyPage";
@@ -26,6 +27,14 @@ const router = createBrowserRouter([
       {
         path: "product/:id",
         element: <ProductDetailPage />,
+      },
+      {
+        path: "look/:id",
+        element: (
+          <AuthGuard>
+            <LookDetailPage />
+          </AuthGuard>
+        ),
       },
       {
         path: "swap",
