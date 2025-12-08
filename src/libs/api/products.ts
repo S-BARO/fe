@@ -1,4 +1,4 @@
-import { publicApi, credentialApi } from "./axios";
+import { credentialApi } from "./axios";
 import type {
   PopularResponse,
   PopularProductsParams,
@@ -69,10 +69,11 @@ export async function getNewestProducts(
 }
 
 // 상품 상세 API
+// 로그인 시 쿠키를 포함하여 isLiked 정보를 받을 수 있도록 credentialApi 사용
 export async function getProductDetail(
   productId: string | number
 ): Promise<ProductDetail> {
-  const response = await publicApi.get<ProductDetail>(
+  const response = await credentialApi.get<ProductDetail>(
     `/products/${encodeURIComponent(String(productId))}`
   );
   return response.data;

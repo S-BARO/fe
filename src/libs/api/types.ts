@@ -41,6 +41,8 @@ export interface ProductDetail {
   description: string;
   images: string[];
   categories: string[];
+  /** 로그인 사용자의 좋아요 여부. 비로그인 시 null */
+  isLiked?: boolean | null;
 }
 
 export interface PopularResponse {

@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { getProductDetail, addCartItem } from "../../libs/api";
+import { getProductDetail, addCartItem, likeProduct, unlikeProduct } from "../../libs/api";
+import { useAuth } from "../../contexts/auth";
 import ChevronIcon from "../../components/icons/ChevronIcon";
 import HeartIcon from "../../components/icons/HeartIcon";
 import {
@@ -27,7 +28,9 @@ import {
 
 function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
-  
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+
   // productId 유효성 검사
   const parsedId = id || "";
   const productId = parsedId.length > 0 ? parsedId : null;
@@ -37,8 +40,9 @@ function ProductDetailPage() {
     categories: true,
   });
   const [isLiked, setIsLiked] = useState(false);
+  const [isLikeLoading, setIsLikeLoading] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  
+
   // 터치 슬라이드 관련 상태
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
@@ -62,7 +66,7 @@ function ProductDetailPage() {
     }
 
     const imagesLength = product.images?.length ?? 0;
-    
+
     if (imagesLength === 0) {
       setCurrentImageIndex(0);
     } else {
@@ -71,6 +75,15 @@ function ProductDetailPage() {
     }
   }, [product, product?.images?.length]);
 
+  // product 데이터 로드 시 isLiked 상태 동기화
+  useEffect(() => {
+    if (product?.isLiked != null) {
+      setIsLiked(product.isLiked);
+    } else {
+      setIsLiked(false);
+    }
+  }, [product?.isLiked]);
+
   const toggleSection = (sectionName: string) => {
     setOpenSections((prev) => ({
       ...prev,
@@ -78,8 +91,58 @@ function ProductDetailPage() {
     }));
   };
 
-  const handleLikeClick = () => {
-    setIsLiked(!isLiked);
+  const handleLikeClick = async () => {
+    // 중복 요청 방지
+    if (isLikeLoading) return;
+
+    // 로그인 체크
+    if (!isAuthenticated) {
+      alert("로그인이 필요해요");
+      navigate("/login");
+      return;
+    }
+
+    // productId 유효성 검사
+    if (productId == null) {
+      alert("상품 정보를 찾을 수 없습니다.");
+      return;
+    }
+
+    try {
+      setIsLikeLoading(true);
+
+      const numericProductId = Number(productId);
+      if (isNaN(numericProductId)) {
+        throw new Error("Invalid product ID");
+      }
+
+      if (isLiked) {
+        // 좋아요 취소
+        await unlikeProduct(numericProductId);
+        setIsLiked(false);
+      } else {
+        // 좋아요 추가
+        await likeProduct(numericProductId);
+        setIsLiked(true);
+      }
+    } catch (err) {
+      const anyErr = err as { status?: number; message?: string };
+
+      // 401 에러 시 로그인 페이지로 이동
+      if (anyErr?.status === 401 || anyErr?.status === 403) {
+        alert("로그인이 필요해요");
+        navigate("/login");
+        return;
+      }
+
+      // 좋아요 상태 롤백
+      setIsLiked((prev: boolean) => !prev);
+
+      // 에러 메시지 표시
+      alert(anyErr?.message ?? "좋아요 처리에 실패했습니다.");
+    } finally {
+      setIsLikeLoading(false);
+    }
   };
 
   const handleImageDotClick = (index: number) => {
