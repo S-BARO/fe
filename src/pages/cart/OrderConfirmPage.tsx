@@ -78,12 +78,6 @@ export default function OrderConfirmPage() {
     void loadProfile();
   }, []);
 
-  const handleEditAddress = () => {
-    const newAddress = prompt("배송지를 입력하세요", shippingAddress);
-    if (newAddress !== null && newAddress.trim() !== "") {
-      setShippingAddress(newAddress.trim());
-    }
-  };
 
   const handleCreate = async () => {
     if (items.length === 0) {
@@ -120,24 +114,29 @@ export default function OrderConfirmPage() {
         {isLoadingProfile ? (
           <div style={{ color: "#6b7280", fontSize: 14 }}>배송지 정보를 불러오는 중...</div>
         ) : (
-          <div
-            onClick={handleEditAddress}
+          <input
+            type="text"
+            value={shippingAddress}
+            onChange={(e) => setShippingAddress(e.target.value)}
+            placeholder="배송지를 입력하세요"
             style={{
+              width: "100%",
+              padding: "10px 12px",
+              border: "1px solid #e5e7eb",
+              borderRadius: "8px",
+              fontSize: "14px",
               color: "#374151",
-              cursor: "pointer",
-              padding: "8px 0",
-              borderRadius: "4px",
-              transition: "background-color 0.2s",
+              outline: "none",
+              transition: "border-color 0.2s",
+              boxSizing: "border-box",
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#f3f4f6";
+            onFocus={(e) => {
+              e.currentTarget.style.borderColor = "#0b57d0";
             }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "transparent";
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = "#e5e7eb";
             }}
-          >
-            {shippingAddress || "배송지를 입력하려면 클릭하세요"}
-          </div>
+          />
         )}
       </Section>
 
@@ -150,6 +149,7 @@ export default function OrderConfirmPage() {
             {items.map((it) => (
               <li key={`${it.productId}`} style={{ fontSize: 14, color: "#374151" }}>
                 <span>{it.productName}</span>
+                <span>x {it.quantity}</span>
               </li>
             ))}
           </ul>
