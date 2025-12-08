@@ -185,12 +185,12 @@ function MyPage() {
     try {
       // AuthContext의 logout 메서드 호출 (상태 초기화 + API 호출)
       await logout();
-      // 로그아웃 성공 시 홈으로 이동
-      navigate("/", { replace: true });
     } catch (error) {
-      console.error("로그아웃 실패:", error);
-      alert("로그아웃에 실패했습니다. 다시 시도해주세요.");
-      setIsLoggingOut(false);
+      console.error("로그아웃 중 일부 오류:", error);
+      // 일부 오류가 발생해도 계속 진행 (클라이언트 상태는 이미 초기화됨)
+    } finally {
+      // 성공/실패 관계없이 항상 홈으로 이동
+      navigate("/", { replace: true });
     }
   };
 

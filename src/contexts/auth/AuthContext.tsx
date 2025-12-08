@@ -99,7 +99,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setIsLoading(true);
 
       // 카카오 로그아웃
-      await logoutFromKakao();
+      try {
+        await logoutFromKakao();
+      } catch (err) {
+        // 카카오 로그아웃 실패해도 계속 진행
+        console.debug("Kakao logout ignored:", err);
+      }
 
       // 서버 세션 만료
       try {
@@ -109,11 +114,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
         console.debug("Server logout ignored:", err);
       }
 
-      // 상태 초기화
+      // 상태 초기화 (항상 실행)
       setUser(null);
       setIsAuthenticated(false);
     } catch (error) {
-      console.error("Logout failed:", error);
+      // 예상치 못한 에러도 상태는 초기화
+      console.error("Logout error:", error);
+      setUser(null);
+      setIsAuthenticated(false);
       throw error;
     } finally {
       setIsLoading(false);
