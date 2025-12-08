@@ -190,7 +190,8 @@ function MyPage() {
       // 일부 오류가 발생해도 계속 진행 (클라이언트 상태는 이미 초기화됨)
     } finally {
       // 성공/실패 관계없이 항상 홈으로 이동
-      navigate("/", { replace: true });
+      // window.location을 사용하여 즉시 페이지 전환 (React Router 경쟁 조건 회피)
+      window.location.href = "/";
     }
   };
 
