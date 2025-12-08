@@ -108,7 +108,7 @@ export default function OrderConfirmPage() {
       </Section>
 
       <Footer>
-        <PrimaryBtn onClick={handleCreate}>주문 생성하기</PrimaryBtn>
+        <PrimaryBtn onClick={handleCreate}>주문하기</PrimaryBtn>
       </Footer>
     </Page>
   );

@@ -239,7 +239,7 @@ function MyPage() {
   const getRoleText = (role: string) => {
     switch (role) {
       case "BUYER":
-        return "구매자";
+        return "일반 회원";
       case "SELLER":
         return "판매자";
       case "ADMIN":
