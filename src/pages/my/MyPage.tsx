@@ -2,7 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { isAxiosError } from "axios";
-import { getUserProfile, logout } from "../../libs/api";
+import { getUserProfile } from "../../libs/api";
+import { useAuth } from "../../contexts/auth";
 import styled from "@emotion/styled";
 
 // HTTP 상태 코드 추출 헬퍼 함수
@@ -152,6 +153,7 @@ const LinkButton = styled.button`
 
 function MyPage() {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const {
@@ -181,6 +183,7 @@ function MyPage() {
 
     setIsLoggingOut(true);
     try {
+      // AuthContext의 logout 메서드 호출 (상태 초기화 + API 호출)
       await logout();
       // 로그아웃 성공 시 홈으로 이동
       navigate("/", { replace: true });
