@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { isAxiosError } from "axios";
-import { getUserProfile } from "../../libs/api";
+import { getUserProfile, logout } from "../../libs/api";
 import styled from "@emotion/styled";
 
 // HTTP 상태 코드 추출 헬퍼 함수
@@ -125,9 +125,15 @@ const LogoutButton = styled.button`
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  
-  &:hover {
+
+  &:hover:not(:disabled) {
     background: #dc2626;
+  }
+
+  &:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+    opacity: 0.7;
   }
 `;
 
@@ -146,7 +152,8 @@ const LinkButton = styled.button`
 
 function MyPage() {
   const navigate = useNavigate();
-  
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
   const {
     data: userProfile,
     isLoading,
@@ -169,9 +176,19 @@ function MyPage() {
     }
   }, [error, navigate]);
 
-  const handleLogout = () => {
-    // 로그아웃 로직 구현
-    console.log("로그아웃");
+  const handleLogout = async () => {
+    if (isLoggingOut) return;
+
+    setIsLoggingOut(true);
+    try {
+      await logout();
+      // 로그아웃 성공 시 홈으로 이동
+      navigate("/", { replace: true });
+    } catch (error) {
+      console.error("로그아웃 실패:", error);
+      alert("로그아웃에 실패했습니다. 다시 시도해주세요.");
+      setIsLoggingOut(false);
+    }
   };
 
   if (isLoading) {
@@ -269,8 +286,8 @@ function MyPage() {
 
       <LinkButton onClick={() => navigate("/my/orders")}>주문 내역 보기</LinkButton>
 
-      <LogoutButton onClick={handleLogout}>
-        로그아웃
+      <LogoutButton onClick={handleLogout} disabled={isLoggingOut}>
+        {isLoggingOut ? "로그아웃 중..." : "로그아웃"}
       </LogoutButton>
     </MyPageContainer>
   );
