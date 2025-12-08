@@ -53,7 +53,7 @@ function ProductDetailPage() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: productId != null ? ["product", productId] : ["product"],
+    queryKey: productId != null ? ["product", productId, isAuthenticated] : ["product", isAuthenticated],
     queryFn: () => getProductDetail(String(productId!)),
     enabled: productId != null,
   });

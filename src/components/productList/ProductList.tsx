@@ -4,6 +4,7 @@ import { getPopularProducts, getNewestProducts } from "../../libs/api";
 import ProductItem from "../productItem/ProductItem";
 import type { Product } from "../../libs/api/types";
 import { useTabFilter } from "../../libs/useTabFilter";
+import { useAuth } from "../../contexts/auth";
 
 // 스켈레톤 UI 컴포넌트
 function ProductSkeleton() {
@@ -72,6 +73,7 @@ function ProductSkeletonGrid({ count = 6 }: { count?: number }) {
 export default function ProductList() {
   const tabs = ["인기순", "최신순"];
   const [activeTab] = useTabFilter(tabs, "tab");
+  const { isAuthenticated } = useAuth();
 
   const {
     data,
@@ -82,7 +84,7 @@ export default function ProductList() {
     isFetching,
     error,
   } = useInfiniteQuery({
-    queryKey: ["products", activeTab],
+    queryKey: ["products", activeTab, isAuthenticated],
     queryFn: ({ pageParam }) => {
       console.log(
         "Fetching page with param:",
