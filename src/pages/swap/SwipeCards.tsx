@@ -466,24 +466,11 @@ function SwipeCards() {
             alignItems: "center",
           }}
         >
-          <div
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: "50%",
-              background: "rgba(239, 68, 68, 0.1)",
-              border: "2px solid rgba(239, 68, 68, 0.3)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <img
-              src="/dislike_icon.png"
-              alt="싫어요"
-              style={{ width: 24, height: 24 }}
-            />
-          </div>
+          <img
+            src="/dislike_icon.png"
+            alt="싫어요"
+            style={{ width: 40, height: 40 }}
+          />
         </div>
 
         {/* 중앙 안내 문구 */}
@@ -526,24 +513,11 @@ function SwipeCards() {
             alignItems: "center",
           }}
         >
-          <div
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: "50%",
-              background: "rgba(16, 185, 129, 0.1)",
-              border: "2px solid rgba(16, 185, 129, 0.3)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <img
-              src="/like_icon.png"
-              alt="좋아요"
-              style={{ width: 24, height: 24 }}
-            />
-          </div>
+          <img
+            src="/like_icon.png"
+            alt="좋아요"
+            style={{ width: 40, height: 40 }}
+          />
         </div>
       </div>
 
