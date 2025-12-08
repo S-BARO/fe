@@ -183,7 +183,11 @@ function CartPage() {
   const totalAmount = Math.max(0, itemsAmount + shippingFee);
 
   const handleProceedToOrder = () => {
-    const payload = selectedItems.map((it) => ({ productId: Number(it.productId), quantity: it.quantity }));
+    const payload = selectedItems.map((it) => ({
+      productId: Number(it.productId),
+      quantity: it.quantity,
+      productName: it.productName
+    }));
     const encoded = encodeURIComponent(JSON.stringify(payload));
     navigate(`/order/confirm?items=${encoded}`);
   };

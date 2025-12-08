@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { createOrder, type OrderCreateRequest, type OrderDetailResponse } from "../../libs/api";
+import { createOrder, getUserProfile, type OrderCreateRequest, type OrderDetailResponse } from "../../libs/api";
 
 const Page = styled.div`
   display: flex;
@@ -43,10 +43,10 @@ function useOrderItemsFromQuery() {
   return useMemo(() => {
     const params = new URLSearchParams(loc.search);
     const itemsStr = params.get("items");
-    if (!itemsStr) return [] as { productId: number; quantity: number }[];
+    if (!itemsStr) return [] as { productId: number; quantity: number; productName: string }[];
     try {
       const parsed = JSON.parse(decodeURIComponent(itemsStr));
-      if (Array.isArray(parsed)) return parsed as { productId: number; quantity: number }[];
+      if (Array.isArray(parsed)) return parsed as { productId: number; quantity: number; productName: string }[];
       return [];
     } catch {
       return [];
@@ -57,8 +57,33 @@ function useOrderItemsFromQuery() {
 export default function OrderConfirmPage() {
   const navigate = useNavigate();
   const items = useOrderItemsFromQuery();
+  const [shippingAddress, setShippingAddress] = useState<string>("");
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
 
   const totalQty = items.reduce((sum, it) => sum + it.quantity, 0);
+
+  // userProfile에서 배송지 가져오기
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const profile = await getUserProfile();
+        setShippingAddress(profile.address);
+      } catch (err) {
+        console.error("프로필 조회 실패:", err);
+        setShippingAddress("");
+      } finally {
+        setIsLoadingProfile(false);
+      }
+    };
+    void loadProfile();
+  }, []);
+
+  const handleEditAddress = () => {
+    const newAddress = prompt("배송지를 입력하세요", shippingAddress);
+    if (newAddress !== null && newAddress.trim() !== "") {
+      setShippingAddress(newAddress.trim());
+    }
+  };
 
   const handleCreate = async () => {
     if (items.length === 0) {
@@ -66,8 +91,12 @@ export default function OrderConfirmPage() {
       navigate("/cart", { replace: true });
       return;
     }
+    if (!shippingAddress || shippingAddress.trim() === "") {
+      alert("배송지를 입력해주세요.");
+      return;
+    }
     const body: OrderCreateRequest = {
-      shippingAddress: "서울특별시 강남구 테헤란로 123",
+      shippingAddress: shippingAddress,
       orderItems: items,
     };
     try {
@@ -88,7 +117,28 @@ export default function OrderConfirmPage() {
 
       <Section>
         <div style={{ fontWeight: 600, marginBottom: 6 }}>배송지</div>
-        <div style={{ color: "#374151" }}>서울특별시 강남구 테헤란로 123</div>
+        {isLoadingProfile ? (
+          <div style={{ color: "#6b7280", fontSize: 14 }}>배송지 정보를 불러오는 중...</div>
+        ) : (
+          <div
+            onClick={handleEditAddress}
+            style={{
+              color: "#374151",
+              cursor: "pointer",
+              padding: "8px 0",
+              borderRadius: "4px",
+              transition: "background-color 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#f3f4f6";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+            }}
+          >
+            {shippingAddress || "배송지를 입력하려면 클릭하세요"}
+          </div>
+        )}
       </Section>
 
       <Section>
@@ -98,9 +148,8 @@ export default function OrderConfirmPage() {
         ) : (
           <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: 8 }}>
             {items.map((it) => (
-              <li key={`${it.productId}`} style={{ display: "flex", justifyContent: "space-between", fontSize: 14 }}>
-                <span>상품 {it.productId}</span>
-                <span>x {it.quantity}</span>
+              <li key={`${it.productId}`} style={{ fontSize: 14, color: "#374151" }}>
+                <span>{it.productName}</span>
               </li>
             ))}
           </ul>
