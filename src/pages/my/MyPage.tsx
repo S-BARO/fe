@@ -290,7 +290,7 @@ function MyPage() {
 
       <LinkButton onClick={() => navigate("/my/orders")}>주문 내역 보기</LinkButton>
 
-      <LogoutButton onClick={handleLogout} disabled={isLoggingOut}>
+      <LogoutButton onClick={handleLogout} disabled={isLoggingOut} style={{ marginTop: 24 }}>
         {isLoggingOut ? "로그아웃 중..." : "로그아웃"}
       </LogoutButton>
     </MyPageContainer>
