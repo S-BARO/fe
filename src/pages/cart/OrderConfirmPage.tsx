@@ -138,6 +138,14 @@ export default function OrderConfirmPage() {
           <div style={{ color: "#6b7280", fontSize: 14 }}>배송지 정보를 불러오는 중...</div>
         ) : (
           <>
+            <CheckboxLabel>
+              <input
+                type="checkbox"
+                checked={saveAsDefault}
+                onChange={(e) => setSaveAsDefault(e.target.checked)}
+              />
+              기본 배송지로 설정
+            </CheckboxLabel>
             <input
               type="text"
               value={shippingAddress}
@@ -161,14 +169,6 @@ export default function OrderConfirmPage() {
                 e.currentTarget.style.borderColor = "#e5e7eb";
               }}
             />
-            <CheckboxLabel>
-              <input
-                type="checkbox"
-                checked={saveAsDefault}
-                onChange={(e) => setSaveAsDefault(e.target.checked)}
-              />
-              기본 배송지로 설정
-            </CheckboxLabel>
           </>
         )}
       </Section>
