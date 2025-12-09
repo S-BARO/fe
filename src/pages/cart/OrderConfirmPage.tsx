@@ -7,7 +7,7 @@ const Page = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 390px;
+  max-width: 500px;
   margin: 0 auto;
   color: #111827;
 `;
@@ -147,9 +147,9 @@ export default function OrderConfirmPage() {
         ) : (
           <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: 8 }}>
             {items.map((it) => (
-              <li key={`${it.productId}`} style={{ fontSize: 14, color: "#374151" }}>
+              <li key={`${it.productId}`} style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: "#374151" }}>
                 <span>{it.productName}</span>
-                <span>x {it.quantity}</span>
+                <span style={{ marginLeft: 8, flexShrink: 0 }}>x {it.quantity}</span>
               </li>
             ))}
           </ul>
