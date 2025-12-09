@@ -38,6 +38,7 @@ export type {
   FittingSourceImagesResponse,
   UploadUrlResponse,
   AiFittingRequest,
+  UpdateAddressRequest,
 } from "./types";
 
 // 인증 관련 API
@@ -46,6 +47,7 @@ export {
   loginWithOAuthCode,
   checkAuthStatus,
   getUserProfile,
+  updateUserAddress,
   logout,
 } from "./auth";
 

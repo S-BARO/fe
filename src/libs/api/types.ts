@@ -245,3 +245,8 @@ export interface AiFittingRequest {
   sourceImageUrl: string;
   clothingImageUrl: string;
 }
+
+// 사용자 주소 업데이트 타입 정의
+export interface UpdateAddressRequest {
+  address: string;
+}

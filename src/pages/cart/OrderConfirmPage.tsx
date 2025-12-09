@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { useMemo, useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { createOrder, getUserProfile, type OrderCreateRequest, type OrderDetailResponse } from "../../libs/api";
+import { createOrder, getUserProfile, updateUserAddress, type OrderCreateRequest, type OrderDetailResponse } from "../../libs/api";
 
 const Page = styled.div`
   display: flex;
@@ -38,6 +38,16 @@ const PrimaryBtn = styled.button`
   cursor: pointer;
 `;
 
+const CheckboxLabel = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  margin-top: 10px;
+  color: #374151;
+  cursor: pointer;
+`;
+
 function useOrderItemsFromQuery() {
   const loc = useLocation();
   return useMemo(() => {
@@ -59,6 +69,7 @@ export default function OrderConfirmPage() {
   const items = useOrderItemsFromQuery();
   const [shippingAddress, setShippingAddress] = useState<string>("");
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+  const [saveAsDefault, setSaveAsDefault] = useState<boolean>(false);
 
   const totalQty = items.reduce((sum, it) => sum + it.quantity, 0);
 
@@ -89,11 +100,23 @@ export default function OrderConfirmPage() {
       alert("배송지를 입력해주세요.");
       return;
     }
-    const body: OrderCreateRequest = {
-      shippingAddress: shippingAddress,
-      orderItems: items,
-    };
+
     try {
+      // 1단계: 체크박스 선택 시 주소 업데이트
+      if (saveAsDefault) {
+        try {
+          await updateUserAddress(shippingAddress);
+        } catch (addressError) {
+          console.error("주소 업데이트 중 오류:", addressError);
+          // 주문은 계속 진행
+        }
+      }
+
+      // 2단계: 주문 생성
+      const body: OrderCreateRequest = {
+        shippingAddress: shippingAddress,
+        orderItems: items,
+      };
       const res: OrderDetailResponse = await createOrder(body);
       navigate(`/order/success?orderId=${encodeURIComponent(String(res.orderId))}`);
     } catch (err) {
@@ -114,29 +137,39 @@ export default function OrderConfirmPage() {
         {isLoadingProfile ? (
           <div style={{ color: "#6b7280", fontSize: 14 }}>배송지 정보를 불러오는 중...</div>
         ) : (
-          <input
-            type="text"
-            value={shippingAddress}
-            onChange={(e) => setShippingAddress(e.target.value)}
-            placeholder="배송지를 입력하세요"
-            style={{
-              width: "100%",
-              padding: "10px 12px",
-              border: "1px solid #e5e7eb",
-              borderRadius: "8px",
-              fontSize: "14px",
-              color: "#374151",
-              outline: "none",
-              transition: "border-color 0.2s",
-              boxSizing: "border-box",
-            }}
-            onFocus={(e) => {
-              e.currentTarget.style.borderColor = "#0b57d0";
-            }}
-            onBlur={(e) => {
-              e.currentTarget.style.borderColor = "#e5e7eb";
-            }}
-          />
+          <>
+            <input
+              type="text"
+              value={shippingAddress}
+              onChange={(e) => setShippingAddress(e.target.value)}
+              placeholder="배송지를 입력하세요"
+              style={{
+                width: "100%",
+                padding: "10px 12px",
+                border: "1px solid #e5e7eb",
+                borderRadius: "8px",
+                fontSize: "14px",
+                color: "#374151",
+                outline: "none",
+                transition: "border-color 0.2s",
+                boxSizing: "border-box",
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = "#0b57d0";
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = "#e5e7eb";
+              }}
+            />
+            <CheckboxLabel>
+              <input
+                type="checkbox"
+                checked={saveAsDefault}
+                onChange={(e) => setSaveAsDefault(e.target.checked)}
+              />
+              기본 배송지로 설정
+            </CheckboxLabel>
+          </>
         )}
       </Section>
 
