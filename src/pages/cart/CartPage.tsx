@@ -205,7 +205,7 @@ function CartPage() {
   };
 
   return (
-    <CartPageContainer>
+    <CartPageContainer data-label="CartPage-Container">
       <Section>
         <SelectAll>
           <input

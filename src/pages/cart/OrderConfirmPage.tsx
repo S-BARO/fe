@@ -144,7 +144,7 @@ export default function OrderConfirmPage() {
   };
 
   return (
-    <OrderConfirmPageContainer>
+    <OrderConfirmPageContainer data-label="OrderConfirmPage-Container">
       <Section>
         <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>주문 확인</h3>
         <div style={{ marginTop: 8, color: "#6b7280", fontSize: 14 }}>

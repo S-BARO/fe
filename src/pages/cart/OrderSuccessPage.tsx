@@ -35,7 +35,7 @@ export default function OrderSuccessPage() {
   );
 
   return (
-    <OrderSuccessPageContainer>
+    <OrderSuccessPageContainer data-label="OrderSuccessPage-Container">
       <h2 style={{ margin: 0, fontSize: 20, fontWeight: 800 }}>주문 완료</h2>
       <p style={{ color: "#6b7280", marginTop: 8, fontSize: 14 }}>
         주문이 정상적으로 접수되었습니다.
