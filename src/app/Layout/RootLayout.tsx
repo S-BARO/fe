@@ -5,8 +5,10 @@ import styled from "@emotion/styled";
 import HomeFilter from "../../components/Filter/HomeFilter";
 import SwapFilter from "../../components/Filter/SwapFilter";
 
+// 라벨: RootLayout-ScrollArea (css-19qyp3z로 생성되는 외부 컨테이너)
 const ScrollArea = styled.div`
   max-width: 390px;
+  width: 100%;
   margin: 0 auto;
   flex: 1;
   min-height: 0; /* flex 축소 문제 해결 */
@@ -82,7 +84,10 @@ function RootLayout() {
           }
           filterComponent={filterComponent}
         />
-        <ScrollArea hasGNB={!isProductDetailPage}>
+        <ScrollArea
+          hasGNB={!isProductDetailPage}
+          data-label="RootLayout-ScrollArea"
+        >
           <Outlet />
         </ScrollArea>
         {!isProductDetailPage && <GNB />}
