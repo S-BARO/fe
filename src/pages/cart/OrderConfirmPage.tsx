@@ -17,6 +17,7 @@ const OrderConfirmPageContainer = styled.div`
   max-width: 500px;
   margin: 0 auto;
   color: #111827;
+  box-sizing: border-box;
 `;
 
 const Section = styled.div`

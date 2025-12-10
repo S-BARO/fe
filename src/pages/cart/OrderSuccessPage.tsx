@@ -11,6 +11,7 @@ const OrderSuccessPageContainer = styled.div`
   margin: 0 auto;
   color: #111827;
   padding: 24px 16px;
+  box-sizing: border-box;
 `;
 
 const PrimaryBtn = styled.button`

@@ -14,6 +14,7 @@ const CartPageContainer = styled.div`
   flex-direction: column;
   width: 100%;
   color: #111827;
+  box-sizing: border-box;
 `;
 
 const Section = styled.div`
