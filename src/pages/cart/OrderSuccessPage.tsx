@@ -7,7 +7,7 @@ const OrderSuccessPageContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 500px;
+  max-width: 390px;
   margin: 0 auto;
   color: #111827;
   padding: 24px 16px;
