@@ -12,8 +12,6 @@ const Page = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 390px;
-  margin: 0 auto;
   color: #111827;
 `;
 
@@ -120,15 +118,23 @@ function CartPage() {
         const nextSel: Record<string, boolean> = {};
         for (const it of res.items) nextSel[String(it.itemId)] = true;
         setSelected(nextSel);
-      } catch {
-        // noop
+      } catch (err) {
+        const anyErr = err as { status?: number; message?: string };
+        console.error("장바구니 조회 실패:", anyErr);
+        // 인증 오류인 경우 이미 AuthGuard에서 처리되므로 여기서는 로깅만
+        if (anyErr?.status !== 401 && anyErr?.status !== 403) {
+          alert(anyErr?.message ?? "장바구니를 불러오는데 실패했어요.");
+        }
       }
     };
     void run();
   }, []);
 
   const toggleSelect = (itemId: string) =>
-    setSelected((prev) => ({ ...prev, [String(itemId)]: !prev[String(itemId)] }));
+    setSelected((prev) => ({
+      ...prev,
+      [String(itemId)]: !prev[String(itemId)],
+    }));
 
   const setAll = (checked: boolean) => {
     const next: Record<string, boolean> = {};
@@ -136,7 +142,10 @@ function CartPage() {
     setSelected(next);
   };
 
-  const handleQtyChangeByProduct = async (productId: string, nextQty: number) => {
+  const handleQtyChangeByProduct = async (
+    productId: string,
+    nextQty: number
+  ) => {
     if (nextQty < 1) return;
     const target = items.find((it) => it.productId === productId);
     if (!target) return;
@@ -158,7 +167,9 @@ function CartPage() {
   const handleRemove = async (itemId: string) => {
     try {
       await deleteCartItem(String(itemId));
-      setItems((prev) => prev.filter((it) => String(it.itemId) !== String(itemId)));
+      setItems((prev) =>
+        prev.filter((it) => String(it.itemId) !== String(itemId))
+      );
       setSelected((prev) => {
         const n = { ...prev };
         delete n[String(itemId)];
@@ -183,7 +194,10 @@ function CartPage() {
   const totalAmount = Math.max(0, itemsAmount + shippingFee);
 
   const handleProceedToOrder = () => {
-    const payload = selectedItems.map((it) => ({ productId: Number(it.productId), quantity: it.quantity }));
+    const payload = selectedItems.map((it) => ({
+      productId: Number(it.productId),
+      quantity: it.quantity,
+    }));
     const encoded = encodeURIComponent(JSON.stringify(payload));
     navigate(`/order/confirm?items=${encoded}`);
   };
@@ -214,11 +228,29 @@ function CartPage() {
               />
               <ItemThumb src={it.productThumbnailUrl} alt={it.productName} />
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 2 }}>
+                <div
+                  style={{ fontSize: 12, color: "#6b7280", marginBottom: 2 }}
+                >
                   {it.storeName || "브랜드명"}
                 </div>
-                <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 2, lineHeight: 1.3, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{it.productName}</div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#111827" }}>
+                <div
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 500,
+                    marginBottom: 2,
+                    lineHeight: 1.3,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                  }}
+                >
+                  {it.productName}
+                </div>
+                <div
+                  style={{ fontSize: 13, fontWeight: 600, color: "#111827" }}
+                >
                   {it.price.toLocaleString()}원
                 </div>
                 <QtyStepper>
@@ -229,7 +261,14 @@ function CartPage() {
                   >
                     -
                   </StepBtn>
-                  <span style={{ minWidth: 20, textAlign: "center", fontSize: 12, fontWeight: 500 }}>
+                  <span
+                    style={{
+                      minWidth: 20,
+                      textAlign: "center",
+                      fontSize: 12,
+                      fontWeight: 500,
+                    }}
+                  >
                     {it.quantity}
                   </span>
                   <StepBtn
@@ -241,7 +280,9 @@ function CartPage() {
                   </StepBtn>
                 </QtyStepper>
               </div>
-              <DeleteBtn onClick={() => handleRemove(String(it.itemId))}>×</DeleteBtn>
+              <DeleteBtn onClick={() => handleRemove(String(it.itemId))}>
+                ×
+              </DeleteBtn>
             </Row>
           </Section>
         ))
