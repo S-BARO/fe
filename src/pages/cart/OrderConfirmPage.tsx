@@ -1,9 +1,16 @@
 import styled from "@emotion/styled";
 import { useMemo, useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { createOrder, getUserProfile, updateUserAddress, type OrderCreateRequest, type OrderDetailResponse } from "../../libs/api";
+import {
+  createOrder,
+  getUserProfile,
+  updateUserAddress,
+  type OrderCreateRequest,
+  type OrderDetailResponse,
+} from "../../libs/api";
 
-const Page = styled.div`
+// 라벨: OrderConfirmPage-Page (css-19qyp3z로 생성될 수 있는 컴포넌트)
+const OrderConfirmPageContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -53,10 +60,20 @@ function useOrderItemsFromQuery() {
   return useMemo(() => {
     const params = new URLSearchParams(loc.search);
     const itemsStr = params.get("items");
-    if (!itemsStr) return [] as { productId: number; quantity: number; productName: string }[];
+    if (!itemsStr)
+      return [] as {
+        productId: number;
+        quantity: number;
+        productName: string;
+      }[];
     try {
       const parsed = JSON.parse(decodeURIComponent(itemsStr));
-      if (Array.isArray(parsed)) return parsed as { productId: number; quantity: number; productName: string }[];
+      if (Array.isArray(parsed))
+        return parsed as {
+          productId: number;
+          quantity: number;
+          productName: string;
+        }[];
       return [];
     } catch {
       return [];
@@ -89,7 +106,6 @@ export default function OrderConfirmPage() {
     void loadProfile();
   }, []);
 
-
   const handleCreate = async () => {
     if (items.length === 0) {
       alert("주문할 상품이 없습니다.");
@@ -118,7 +134,9 @@ export default function OrderConfirmPage() {
         orderItems: items,
       };
       const res: OrderDetailResponse = await createOrder(body);
-      navigate(`/order/success?orderId=${encodeURIComponent(String(res.orderId))}`);
+      navigate(
+        `/order/success?orderId=${encodeURIComponent(String(res.orderId))}`
+      );
     } catch (err) {
       const anyErr = err as { message?: string };
       alert(anyErr?.message ?? "주문에 실패했어요.");
@@ -126,16 +144,20 @@ export default function OrderConfirmPage() {
   };
 
   return (
-    <Page>
+    <OrderConfirmPageContainer>
       <Section>
         <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>주문 확인</h3>
-        <div style={{ marginTop: 8, color: "#6b7280", fontSize: 14 }}>총 {totalQty}개 상품</div>
+        <div style={{ marginTop: 8, color: "#6b7280", fontSize: 14 }}>
+          총 {totalQty}개 상품
+        </div>
       </Section>
 
       <Section>
         <div style={{ fontWeight: 600, marginBottom: 6 }}>배송지</div>
         {isLoadingProfile ? (
-          <div style={{ color: "#6b7280", fontSize: 14 }}>배송지 정보를 불러오는 중...</div>
+          <div style={{ color: "#6b7280", fontSize: 14 }}>
+            배송지 정보를 불러오는 중...
+          </div>
         ) : (
           <>
             <CheckboxLabel>
@@ -176,13 +198,33 @@ export default function OrderConfirmPage() {
       <Section>
         <div style={{ fontWeight: 600, marginBottom: 6 }}>주문 상품</div>
         {items.length === 0 ? (
-          <div style={{ color: "#6b7280", fontSize: 14 }}>선택된 상품이 없습니다.</div>
+          <div style={{ color: "#6b7280", fontSize: 14 }}>
+            선택된 상품이 없습니다.
+          </div>
         ) : (
-          <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: 8 }}>
+          <ul
+            style={{
+              listStyle: "none",
+              padding: 0,
+              margin: 0,
+              display: "grid",
+              gap: 8,
+            }}
+          >
             {items.map((it) => (
-              <li key={`${it.productId}`} style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: "#374151" }}>
+              <li
+                key={`${it.productId}`}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  fontSize: 14,
+                  color: "#374151",
+                }}
+              >
                 <span>{it.productName}</span>
-                <span style={{ marginLeft: 8, flexShrink: 0 }}>x {it.quantity}</span>
+                <span style={{ marginLeft: 8, flexShrink: 0 }}>
+                  x {it.quantity}
+                </span>
               </li>
             ))}
           </ul>
@@ -192,7 +234,6 @@ export default function OrderConfirmPage() {
       <Footer>
         <PrimaryBtn onClick={handleCreate}>주문하기</PrimaryBtn>
       </Footer>
-    </Page>
+    </OrderConfirmPageContainer>
   );
 }
-

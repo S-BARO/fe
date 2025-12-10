@@ -8,7 +8,8 @@ import {
   type CartItemDto,
 } from "../../libs/api";
 
-const Page = styled.div`
+// 라벨: CartPage-Page (emotion styled 컴포넌트)
+const CartPageContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -204,7 +205,7 @@ function CartPage() {
   };
 
   return (
-    <Page>
+    <CartPageContainer>
       <Section>
         <SelectAll>
           <input
@@ -310,7 +311,7 @@ function CartPage() {
           구매하기
         </BuyButton>
       </Footer>
-    </Page>
+    </CartPageContainer>
   );
 }
 
