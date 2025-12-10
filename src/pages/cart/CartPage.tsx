@@ -197,6 +197,10 @@ function CartPage() {
     const payload = selectedItems.map((it) => ({
       productId: Number(it.productId),
       quantity: it.quantity,
+<<<<<<< HEAD
+=======
+      productName: it.productName
+>>>>>>> e63269000f7fe938d7252fc863eb5eef3a1b6f7e
     }));
     const encoded = encodeURIComponent(JSON.stringify(payload));
     navigate(`/order/confirm?items=${encoded}`);

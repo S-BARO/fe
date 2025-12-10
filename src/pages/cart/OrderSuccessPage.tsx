@@ -6,7 +6,7 @@ const Page = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 390px;
+  max-width: 500px;
   margin: 0 auto;
   color: #111827;
   padding: 24px 16px;

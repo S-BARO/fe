@@ -53,6 +53,16 @@ export const getUserProfile = async (): Promise<UserProfile> => {
   }
 };
 
+// 사용자 주소 업데이트 함수
+export const updateUserAddress = async (address: string): Promise<void> => {
+  try {
+    await credentialApi.patch("/users/me/address", { address });
+  } catch (error) {
+    console.error("주소 업데이트 실패:", error);
+    throw error;
+  }
+};
+
 // 로그아웃 API
 export async function logout(): Promise<void> {
   try {

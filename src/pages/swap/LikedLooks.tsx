@@ -41,7 +41,7 @@ function LookItem({ look }: { look: LikedLookItem }) {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/product/${look.lookId}`);
+    navigate(`/look/${look.lookId}`);
   };
 
   return (

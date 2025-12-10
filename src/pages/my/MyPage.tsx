@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { isAxiosError } from "axios";
 import { getUserProfile } from "../../libs/api";
+import { useAuth } from "../../contexts/auth";
 import styled from "@emotion/styled";
 
 // HTTP 상태 코드 추출 헬퍼 함수
@@ -125,9 +126,15 @@ const LogoutButton = styled.button`
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  
-  &:hover {
+
+  &:hover:not(:disabled) {
     background: #dc2626;
+  }
+
+  &:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+    opacity: 0.7;
   }
 `;
 
@@ -146,7 +153,9 @@ const LinkButton = styled.button`
 
 function MyPage() {
   const navigate = useNavigate();
-  
+  const { logout } = useAuth();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
   const {
     data: userProfile,
     isLoading,
@@ -169,9 +178,21 @@ function MyPage() {
     }
   }, [error, navigate]);
 
-  const handleLogout = () => {
-    // 로그아웃 로직 구현
-    console.log("로그아웃");
+  const handleLogout = async () => {
+    if (isLoggingOut) return;
+
+    setIsLoggingOut(true);
+    try {
+      // AuthContext의 logout 메서드 호출 (상태 초기화 + API 호출)
+      await logout();
+    } catch (error) {
+      console.error("로그아웃 중 일부 오류:", error);
+      // 일부 오류가 발생해도 계속 진행 (클라이언트 상태는 이미 초기화됨)
+    } finally {
+      // 성공/실패 관계없이 항상 홈으로 이동
+      // window.location을 사용하여 즉시 페이지 전환 (React Router 경쟁 조건 회피)
+      window.location.href = "/";
+    }
   };
 
   if (isLoading) {
@@ -218,7 +239,7 @@ function MyPage() {
   const getRoleText = (role: string) => {
     switch (role) {
       case "BUYER":
-        return "구매자";
+        return "일반 회원";
       case "SELLER":
         return "판매자";
       case "ADMIN":
@@ -269,8 +290,8 @@ function MyPage() {
 
       <LinkButton onClick={() => navigate("/my/orders")}>주문 내역 보기</LinkButton>
 
-      <LogoutButton onClick={handleLogout}>
-        로그아웃
+      <LogoutButton onClick={handleLogout} disabled={isLoggingOut} style={{ marginTop: 12 }}>
+        {isLoggingOut ? "로그아웃 중..." : "로그아웃"}
       </LogoutButton>
     </MyPageContainer>
   );

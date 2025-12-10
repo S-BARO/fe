@@ -41,6 +41,8 @@ export interface ProductDetail {
   description: string;
   images: string[];
   categories: string[];
+  /** 로그인 사용자의 좋아요 여부. 비로그인 시 null */
+  isLiked?: boolean | null;
 }
 
 export interface PopularResponse {
@@ -129,7 +131,7 @@ export interface LookImageItem {
 
 export interface LookProductItem {
   productId: number;
-  name: string;
+  productName: string;
   price: number;
   thumbnailUrl: string;
   displayOrder: number;
@@ -242,4 +244,9 @@ export interface UploadUrlResponse {
 export interface AiFittingRequest {
   sourceImageUrl: string;
   clothingImageUrl: string;
+}
+
+// 사용자 주소 업데이트 타입 정의
+export interface UpdateAddressRequest {
+  address: string;
 }
