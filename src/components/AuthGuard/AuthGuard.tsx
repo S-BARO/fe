@@ -1,5 +1,7 @@
+"use client";
+
 import { type ReactNode, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "../../contexts/auth";
 
 interface AuthGuardProps {
@@ -9,14 +11,14 @@ interface AuthGuardProps {
 
 export function AuthGuard({ children, fallback }: AuthGuardProps) {
   const { isAuthenticated, isLoading } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated && location.pathname !== "/login") {
-      navigate("/login", { replace: true });
+    if (!isLoading && !isAuthenticated && pathname !== "/login") {
+      router.replace("/login");
     }
-  }, [isAuthenticated, isLoading, navigate, location.pathname]);
+  }, [isAuthenticated, isLoading, router, pathname]);
 
   // 로딩 중이면 로딩 UI 표시
   if (isLoading) {

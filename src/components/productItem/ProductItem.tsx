@@ -1,6 +1,8 @@
+"use client";
+
 import { css } from "@emotion/react";
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useRouter } from "next/navigation";
 import {
   ProductBrand,
   ProductImage,
@@ -33,13 +35,13 @@ function ProductItem({
   image,
   isLiked: initialLiked = false,
 }: ProductItemProps) {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { isAuthenticated } = useAuth();
   const [isLiked, setIsLiked] = useState(initialLiked);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = () => {
-    navigate(`/product/${id}`);
+    router.push(`/product/${id}`);
   };
 
   const handleLikeClick = async (e: React.MouseEvent) => {
@@ -50,7 +52,7 @@ function ProductItem({
     // 로그인 체크
     if (!isAuthenticated) {
       alert("로그인이 필요합니다.");
-      navigate("/login");
+      router.push("/login");
       return;
     }
 
@@ -68,7 +70,7 @@ function ProductItem({
       const anyErr = err as { status?: number; message?: string };
       if (anyErr?.status === 401) {
         alert("로그인이 필요합니다.");
-        navigate("/login");
+        router.push("/login");
         return;
       }
       alert(anyErr?.message ?? "좋아요 처리에 실패했습니다.");

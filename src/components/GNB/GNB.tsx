@@ -1,4 +1,6 @@
-import { useNavigate, useLocation } from "react-router";
+"use client";
+
+import { useRouter, usePathname } from "next/navigation";
 import HomeTabIcon from "../icons/HomeTabIcon";
 import LikeTabIcon from "../icons/LikeTabIcon";
 import MypageTabIcon from "../icons/MypageTabIcon";
@@ -16,35 +18,35 @@ const TabLabel = styled.span<{ active: boolean }>`
 `;
 
 function GNB() {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouter();
+  const pathname = usePathname();
 
   // 현재 경로에 따라 active 상태를 결정
-  const isHome = location.pathname === "/";
-  const isSwap = location.pathname.startsWith("/swap");
-  const isLike = location.pathname.startsWith("/baro-fitting");
-  const isCart = location.pathname.startsWith("/cart");
-  const isMypage = location.pathname.startsWith("/my");
+  const isHome = pathname === "/";
+  const isSwap = pathname?.startsWith("/swap");
+  const isLike = pathname?.startsWith("/baro-fitting");
+  const isCart = pathname?.startsWith("/cart");
+  const isMypage = pathname?.startsWith("/my");
 
   return (
     <GNBWrapper>
-      <IconButton onClick={() => navigate("/baro-fitting")}>
+      <IconButton onClick={() => router.push("/baro-fitting")}>
         <LikeTabIcon active={isLike} />
         <TabLabel active={isLike}>AI 피팅</TabLabel>
       </IconButton>
-      <IconButton onClick={() => navigate("/swap")}>
+      <IconButton onClick={() => router.push("/swap")}>
         <SwapTabIcon active={isSwap} />
         <TabLabel active={isSwap}>스왑</TabLabel>
       </IconButton>
-      <IconButton onClick={() => navigate("/")}>
+      <IconButton onClick={() => router.push("/")}>
         <HomeTabIcon active={isHome} />
         <TabLabel active={isHome}>홈</TabLabel>
       </IconButton>
-      <IconButton onClick={() => navigate("/cart")}>
+      <IconButton onClick={() => router.push("/cart")}>
         <CartTabIcon active={isCart} />
         <TabLabel active={isCart}>장바구니</TabLabel>
       </IconButton>
-      <IconButton onClick={() => navigate("/my")}>
+      <IconButton onClick={() => router.push("/my")}>
         <MypageTabIcon active={isMypage} />
         <TabLabel active={isMypage}>마이</TabLabel>
       </IconButton>

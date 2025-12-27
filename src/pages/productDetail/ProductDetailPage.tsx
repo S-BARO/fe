@@ -1,5 +1,7 @@
+"use client";
+
 import { useState, useRef, useEffect } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getProductDetail, addCartItem, likeProduct, unlikeProduct } from "../../libs/api";
 import { useAuth } from "../../contexts/auth";
@@ -24,11 +26,12 @@ import {
   BuyButton,
   BottomSpacer,
   ChevronIconWrapper,
-} from "./styles";
+} from "../../components/productDetail/styles";
 
 function ProductDetailPage() {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
+  const params = useParams();
+  const id = params?.id as string | undefined;
+  const router = useRouter();
   const { isAuthenticated } = useAuth();
 
   // productId 유효성 검사
@@ -98,7 +101,7 @@ function ProductDetailPage() {
     // 로그인 체크
     if (!isAuthenticated) {
       alert("로그인이 필요해요");
-      navigate("/login");
+      router.push("/login");
       return;
     }
 
@@ -131,7 +134,7 @@ function ProductDetailPage() {
       // 401 에러 시 로그인 페이지로 이동
       if (anyErr?.status === 401 || anyErr?.status === 403) {
         alert("로그인이 필요해요");
-        navigate("/login");
+        router.push("/login");
         return;
       }
 

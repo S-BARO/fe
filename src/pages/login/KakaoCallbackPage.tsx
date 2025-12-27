@@ -1,12 +1,14 @@
+"use client";
+
 import { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useSearchParams, useRouter } from "next/navigation";
 import { loginWithOAuth } from "../../libs/api";
 import { useAuth } from "../../contexts/auth";
 import { initKakaoSDK } from "../../libs/kakaoAuth";
 
 function KakaoCallbackPage() {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const { initializeAuth } = useAuth();
 
   useEffect(() => {
@@ -16,8 +18,7 @@ function KakaoCallbackPage() {
         await initKakaoSDK();
 
         // URL에서 authorizationCode 가져오기
-        const params = new URLSearchParams(location.search);
-        const code = params.get("code");
+        const code = searchParams.get("code");
         
         if (!code) {
           throw new Error("No authorization code");
@@ -62,15 +63,15 @@ function KakaoCallbackPage() {
         // 백엔드에 accessToken 전송 (요청 형식: { provider: "KAKAO", accessToken: "..." })
         await loginWithOAuth("KAKAO", accessToken);
         await initializeAuth();
-        navigate("/", { replace: true });
+        router.replace("/");
       } catch (err) {
         console.error("Kakao callback error:", err);
-        navigate("/login", { replace: true });
+        router.replace("/login");
       }
     };
 
     void run();
-  }, [location.search, navigate, initializeAuth]);
+  }, [searchParams, router, initializeAuth]);
 
   return (
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>

@@ -1,3 +1,5 @@
+"use client";
+
 import { useRef, useEffect } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getPopularProducts, getNewestProducts } from "../../libs/api";
@@ -211,7 +213,7 @@ export default function ProductList() {
         </div>
       )}
 
-      {import.meta.env.DEV && (
+      {process.env.NODE_ENV === "development" && (
         <div className="fixed bottom-4 right-4 bg-black/80 text-white p-2 rounded text-xs">
           <div>현재 탭: {activeTab}</div>
           <div>총 상품: {allProducts.length}</div>

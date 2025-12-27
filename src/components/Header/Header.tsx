@@ -1,4 +1,6 @@
-import { useNavigate } from "react-router-dom";
+"use client";
+
+import { useRouter } from "next/navigation";
 import HomeFilter from "../Filter/HomeFilter";
 import {
   HeaderBar,
@@ -13,11 +15,11 @@ interface HeaderProps {
 }
 
 function Header({ showFilter = true, filterComponent }: HeaderProps) {
-  const navigate = useNavigate();
+  const router = useRouter();
   return (
     <div>
       <HeaderBar>
-        <div onClick={() => navigate("/")} className="">
+        <div onClick={() => router.push("/")} className="">
           <HeaderLogo src="/logo.png" alt="로고" />
         </div>
         <HeaderSearchIcon src="/search.png" alt="검색" />

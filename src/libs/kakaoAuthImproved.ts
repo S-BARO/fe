@@ -7,7 +7,7 @@ const KAKAO_CLIENT_ID = "7d021d3904622b1a17c327477770ba58";
 const loadKakaoSdkScript = (): Promise<void> => {
   return new Promise((resolve, reject) => {
     // 이미 로드됨
-    if (typeof window !== "undefined" && (window as any).Kakao) {
+    if (typeof window !== "undefined" && window.Kakao) {
       resolve();
       return;
     }
@@ -33,20 +33,18 @@ const loadKakaoSdkScript = (): Promise<void> => {
 
 // 카카오 SDK 초기화
 export const initKakaoSDK = (): Promise<void> => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      await loadKakaoSdkScript();
+  return loadKakaoSdkScript()
+    .then(() => {
       if (!window.Kakao) {
         throw new Error("Kakao SDK not available after loading");
       }
       if (!window.Kakao.isInitialized()) {
         window.Kakao.init(KAKAO_CLIENT_ID);
       }
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+    })
+    .catch((e) => {
+      throw e;
+    });
 };
 
 // 플랫폼 감지 함수
@@ -114,7 +112,7 @@ export const loginWithKakao = (): Promise<KakaoAuthResponse> => {
     }
 
     // v2 SDK 리다이렉트 방식
-    const hasAuthorize = typeof (kakao.Auth as any)?.authorize === "function";
+    const hasAuthorize = typeof kakao.Auth?.authorize === "function";
     if (hasAuthorize) {
       try {
         console.log("Using v2 authorize method");

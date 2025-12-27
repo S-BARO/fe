@@ -1,6 +1,8 @@
+"use client";
+
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useParams } from "next/navigation";
 import { getOrderDetail, type OrderDetailResponse } from "../../libs/api";
 
 const Page = styled.div`
@@ -32,7 +34,8 @@ const Thumb = styled.img`
 `;
 
 export default function OrderDetailPage() {
-  const { orderId } = useParams<{ orderId: string }>();
+  const params = useParams();
+  const orderId = params?.orderId as string | undefined;
   const [data, setData] = useState<OrderDetailResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -44,7 +47,7 @@ export default function OrderDetailPage() {
       try {
         const res = await getOrderDetail(orderId ?? "");
         setData(res);
-      } catch (e) {
+      } catch {
         setError("주문 정보를 불러오지 못했습니다.");
       } finally {
         setLoading(false);

@@ -1,5 +1,7 @@
+"use client";
+
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { isAxiosError } from "axios";
 import { getUserProfile } from "../../libs/api";
@@ -152,7 +154,7 @@ const LinkButton = styled.button`
 `;
 
 function MyPage() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { logout } = useAuth();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -173,10 +175,10 @@ function MyPage() {
     if (error) {
       const status = getHttpStatus(error);
       if (status === 401) {
-        navigate("/login", { replace: true });
+        router.replace("/login");
       }
     }
-  }, [error, navigate]);
+  }, [error, router]);
 
   const handleLogout = async () => {
     if (isLoggingOut) return;
@@ -288,7 +290,7 @@ function MyPage() {
         </InfoItem>
       </InfoSection>
 
-      <LinkButton onClick={() => navigate("/my/orders")}>주문 내역 보기</LinkButton>
+      <LinkButton onClick={() => router.push("/my/orders")}>주문 내역 보기</LinkButton>
 
       <LogoutButton onClick={handleLogout} disabled={isLoggingOut} style={{ marginTop: 12 }}>
         {isLoggingOut ? "로그아웃 중..." : "로그아웃"}

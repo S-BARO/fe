@@ -1,4 +1,6 @@
-import { Outlet, useLocation } from "react-router";
+"use client";
+
+import { usePathname } from "next/navigation";
 import Header from "../../components/Header/Header";
 import GNB from "../../components/GNB/GNB";
 import styled from "@emotion/styled";
@@ -24,13 +26,17 @@ const ScrollArea = styled.div`
   }
 `;
 
-function RootLayout() {
-  const location = useLocation();
-  const isProductDetailPage = location.pathname.startsWith("/product/");
-  const isLoginPage = location.pathname === "/login";
-  const isMyPage = location.pathname === "/my";
-  const isBaroFittingPage = location.pathname === "/baro-fitting";
-  const isCartPage = location.pathname === "/cart";
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname();
+  const isProductDetailPage = pathname?.startsWith("/product/");
+  const isLoginPage = pathname === "/login";
+  const isMyPage = pathname === "/my";
+  const isBaroFittingPage = pathname === "/baro-fitting";
+  const isCartPage = pathname === "/cart";
 
   const getFilterComponent = () => {
     if (
@@ -43,11 +49,11 @@ function RootLayout() {
       return null;
 
     // 홈페이지와 스왑페이지에서 필터 표시
-    if (location.pathname === "/") {
+    if (pathname === "/") {
       return <HomeFilter />;
     }
 
-    if (location.pathname === "/swap") {
+    if (pathname === "/swap") {
       return <SwapFilter />;
     }
 
@@ -79,21 +85,17 @@ function RootLayout() {
         }}
       >
         <Header
-          showFilter={
-            location.pathname === "/" || location.pathname === "/swap"
-          }
+          showFilter={pathname === "/" || pathname === "/swap"}
           filterComponent={filterComponent}
         />
         <ScrollArea
           hasGNB={!isProductDetailPage}
           data-label="RootLayout-ScrollArea"
         >
-          <Outlet />
+          {children}
         </ScrollArea>
         {!isProductDetailPage && <GNB />}
       </div>
     </div>
   );
 }
-
-export default RootLayout;

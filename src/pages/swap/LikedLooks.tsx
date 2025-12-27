@@ -1,5 +1,7 @@
+"use client";
+
 import { useRef, useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useRouter } from "next/navigation";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getLikedLooks } from "../../libs/api";
 import type { LikedLookItem } from "../../libs/api";
@@ -38,10 +40,10 @@ function LookSkeletonGrid({ count = 6 }: { count?: number }) {
 
 // 룩 아이템 컴포넌트
 function LookItem({ look }: { look: LikedLookItem }) {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const handleClick = () => {
-    navigate(`/look/${look.lookId}`);
+    router.push(`/look/${look.lookId}`);
   };
 
   return (
@@ -229,7 +231,7 @@ export default function LikedLooks() {
         </div>
       )}
 
-      {import.meta.env.DEV && (
+      {process.env.NODE_ENV === "development" && (
         <div className="fixed bottom-4 right-4 bg-black/80 text-white p-2 rounded text-xs z-50">
           <div>총 룩: {allLooks.length}</div>
           <div>다음 페이지: {hasNextPage ? "있음" : "없음"}</div>

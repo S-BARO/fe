@@ -1,6 +1,8 @@
+"use client";
+
 import styled from "@emotion/styled";
 import { useMemo } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { useSearchParams, useRouter } from "next/navigation";
 
 // 라벨: OrderSuccessPage-Page (emotion styled 컴포넌트)
 const OrderSuccessPageContainer = styled.div`
@@ -28,11 +30,11 @@ const PrimaryBtn = styled.button`
 `;
 
 export default function OrderSuccessPage() {
-  const loc = useLocation();
-  const navigate = useNavigate();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const orderId = useMemo(
-    () => new URLSearchParams(loc.search).get("orderId"),
-    [loc.search]
+    () => searchParams.get("orderId"),
+    [searchParams]
   );
 
   return (
@@ -44,7 +46,7 @@ export default function OrderSuccessPage() {
       <div style={{ marginTop: 12, fontSize: 14 }}>
         주문번호: <strong>{orderId}</strong>
       </div>
-      <PrimaryBtn onClick={() => navigate("/")}>홈으로</PrimaryBtn>
+      <PrimaryBtn onClick={() => router.push("/")}>홈으로</PrimaryBtn>
     </OrderSuccessPageContainer>
   );
 }

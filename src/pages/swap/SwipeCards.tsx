@@ -1,8 +1,10 @@
 // SwipeCards.tsx
+"use client";
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSpring, animated as a } from "@react-spring/web";
 import { useGesture } from "@use-gesture/react";
-import { useNavigate } from "react-router";
+import { useRouter } from "next/navigation";
 import "./SwipeCards.css";
 import {
   getSwipeLooks,
@@ -649,7 +651,7 @@ function ProductRow({
 }) {
   const [loaded, setLoaded] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
-  const navigate = useNavigate();
+  const router = useRouter();
   const displayName = product.productName || "";
 
   const handleAddToCart = async (e: React.MouseEvent) => {
@@ -675,7 +677,7 @@ function ProductRow({
 
   return (
     <li
-      onClick={() => navigate(`/product/${product.productId}`)}
+      onClick={() => router.push(`/product/${product.productId}`)}
       style={{
         display: "flex",
         alignItems: "center",
@@ -688,7 +690,7 @@ function ProductRow({
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          navigate(`/product/${product.productId}`);
+          router.push(`/product/${product.productId}`);
         }
       }}
     >

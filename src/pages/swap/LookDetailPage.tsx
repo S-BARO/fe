@@ -1,5 +1,7 @@
+"use client";
+
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useRouter, useParams } from "next/navigation";
 import { getLookDetail, addCartItem } from "../../libs/api";
 import type { LookDetailResponse } from "../../libs/api";
 
@@ -9,7 +11,8 @@ const SKELETON_BG = "#eceff3";
 const ROW_SKELETON_BG = "#eef2f7";
 
 function LookDetailPage() {
-  const { id } = useParams<{ id: string }>();
+  const params = useParams();
+  const id = params?.id as string | undefined;
   const [lookDetail, setLookDetail] = useState<LookDetailResponse | null>(null);
   const [isDetailLoading, setIsDetailLoading] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
@@ -239,7 +242,7 @@ function ProductRow({
 }) {
   const [loaded, setLoaded] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
-  const navigate = useNavigate();
+  const router = useRouter();
   const displayName = product.productName || "";
 
   const handleAddToCart = async (e: React.MouseEvent) => {
@@ -265,7 +268,7 @@ function ProductRow({
 
   return (
     <li
-      onClick={() => navigate(`/product/${product.productId}`)}
+      onClick={() => router.push(`/product/${product.productId}`)}
       style={{
         display: "flex",
         alignItems: "center",
@@ -278,7 +281,7 @@ function ProductRow({
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          navigate(`/product/${product.productId}`);
+          router.push(`/product/${product.productId}`);
         }
       }}
     >

@@ -1,5 +1,7 @@
+"use client";
+
 import styled from "@emotion/styled";
-import { useNavigate } from "react-router";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "../../contexts/auth";
 
@@ -98,7 +100,7 @@ const ErrorText = styled.div`
 `;
 
 function LoginPage() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { login, isLoading } = useAuth();
   const [error, setError] = useState<string | null>(null);
 
@@ -106,7 +108,7 @@ function LoginPage() {
     try {
       setError(null);
       await login();
-      navigate("/");
+      router.push("/");
     } catch (err) {
       console.error("카카오 로그인 실패:", err);
       setError("로그인에 실패했습니다. 다시 시도해주세요.");

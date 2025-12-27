@@ -22,7 +22,7 @@ const createCredentialInstance = (): AxiosInstance => {
   // 요청 인터셉터
   instance.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-      if (import.meta.env.DEV) {
+      if (process.env.NODE_ENV === "development") {
         console.debug(
           "Credential API Request:",
           config.method?.toUpperCase(),
@@ -32,7 +32,7 @@ const createCredentialInstance = (): AxiosInstance => {
       return config;
     },
     (error: AxiosError) => {
-      if (import.meta.env.DEV) {
+      if (process.env.NODE_ENV === "development") {
         console.debug("Credential API Request Error:", error.message);
       }
       return Promise.reject(error);
@@ -88,7 +88,7 @@ const createPublicInstance = (): AxiosInstance => {
   // 요청 인터셉터
   instance.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-      if (import.meta.env.DEV) {
+      if (process.env.NODE_ENV === "development") {
         console.debug(
           "Public API Request:",
           config.method?.toUpperCase(),
@@ -98,7 +98,7 @@ const createPublicInstance = (): AxiosInstance => {
       return config;
     },
     (error: AxiosError) => {
-      if (import.meta.env.DEV) {
+      if (process.env.NODE_ENV === "development") {
         console.debug("Public API Request Error:", error.message);
       }
       return Promise.reject(error);

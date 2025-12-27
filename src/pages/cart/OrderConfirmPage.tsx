@@ -1,6 +1,8 @@
+"use client";
+
 import styled from "@emotion/styled";
 import { useMemo, useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   createOrder,
   getUserProfile,
@@ -57,10 +59,9 @@ const CheckboxLabel = styled.label`
 `;
 
 function useOrderItemsFromQuery() {
-  const loc = useLocation();
+  const searchParams = useSearchParams();
   return useMemo(() => {
-    const params = new URLSearchParams(loc.search);
-    const itemsStr = params.get("items");
+    const itemsStr = searchParams.get("items");
     if (!itemsStr)
       return [] as {
         productId: number;
@@ -79,11 +80,11 @@ function useOrderItemsFromQuery() {
     } catch {
       return [];
     }
-  }, [loc.search]);
+  }, [searchParams]);
 }
 
 export default function OrderConfirmPage() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const items = useOrderItemsFromQuery();
   const [shippingAddress, setShippingAddress] = useState<string>("");
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
@@ -110,7 +111,7 @@ export default function OrderConfirmPage() {
   const handleCreate = async () => {
     if (items.length === 0) {
       alert("주문할 상품이 없습니다.");
-      navigate("/cart", { replace: true });
+      router.replace("/cart");
       return;
     }
     if (!shippingAddress || shippingAddress.trim() === "") {
@@ -135,7 +136,7 @@ export default function OrderConfirmPage() {
         orderItems: items,
       };
       const res: OrderDetailResponse = await createOrder(body);
-      navigate(
+      router.push(
         `/order/success?orderId=${encodeURIComponent(String(res.orderId))}`
       );
     } catch (err) {

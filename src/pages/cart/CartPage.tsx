@@ -1,6 +1,8 @@
+"use client";
+
 import styled from "@emotion/styled";
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router";
+import { useRouter } from "next/navigation";
 import {
   deleteCartItem,
   updateCartItemQuantity,
@@ -109,7 +111,7 @@ const SelectAll = styled.label`
 function CartPage() {
   const [items, setItems] = useState<CartItemDto[]>([]);
   const [selected, setSelected] = useState<Record<string, boolean>>({});
-  const navigate = useNavigate();
+  const router = useRouter();
 
   useEffect(() => {
     const run = async () => {
@@ -202,7 +204,7 @@ function CartPage() {
       productName: it.productName,
     }));
     const encoded = encodeURIComponent(JSON.stringify(payload));
-    navigate(`/order/confirm?items=${encoded}`);
+    router.push(`/order/confirm?items=${encoded}`);
   };
 
   return (

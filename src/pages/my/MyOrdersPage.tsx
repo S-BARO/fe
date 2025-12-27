@@ -1,7 +1,9 @@
+"use client";
+
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { getOrders, type OrdersSliceItem } from "../../libs/api";
-import { useNavigate } from "react-router";
+import { useRouter } from "next/navigation";
 
 const Page = styled.div`
   padding: 20px 16px;
@@ -37,7 +39,7 @@ export default function MyOrdersPage() {
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const [hasNext, setHasNext] = useState(true);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const fetchPage = async () => {
     if (loading) return;
@@ -64,7 +66,7 @@ export default function MyOrdersPage() {
         <div style={{ color: "#6b7280" }}>주문 내역이 없습니다.</div>
       ) : (
         items.map((o) => (
-          <OrderCard key={o.orderId} onClick={() => navigate(`/my/orders/${encodeURIComponent(String(o.orderId))}`)}>
+          <OrderCard key={o.orderId} onClick={() => router.push(`/my/orders/${encodeURIComponent(String(o.orderId))}`)}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
               <div style={{ fontWeight: 700 }}>주문번호 {o.orderId}</div>
               <div style={{ color: "#6b7280", fontSize: 12 }}>{new Date(o.orderedAt).toLocaleString()}</div>
